@@ -17,7 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.satyavati.wayfarer.MainActivity">
+        <activity android:name="com.application.microsoft.wayfarer.MainActivity">
             <intent-filter>
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -29,19 +29,19 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.satyavati.wayfarer.MapActivity">
+        <activity android:name="com.application.microsoft.wayfarer.MapActivity">
             <intent-filter>
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.satyavati.wayfarer.EstimationActivity">
+        <activity android:name="com.application.microsoft.wayfarer.EstimationActivity">
             <intent-filter>
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.satyavati.wayfarer.SignUpActivity">
+        <activity android:name="com.application.microsoft.wayfarer.SignUpActivity">
             <intent-filter>
 
                 <category android:name="android.intent.category.DEFAULT" />
