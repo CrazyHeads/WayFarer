@@ -10,38 +10,38 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.application.microsoft.wayfarer.WelcomeActivity">
+        <activity android:name="com.application.microsoft.wayfarer.activities.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.application.microsoft.wayfarer.MainActivity">
+        <activity android:name="com.application.microsoft.wayfarer.activities.MainActivity">
             <intent-filter>
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.application.microsoft.wayfarer.LoginActivity">
+        <activity android:name="com.application.microsoft.wayfarer.activities.LoginActivity">
             <intent-filter>
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.application.microsoft.wayfarer.MapActivity">
+        <activity android:name="com.application.microsoft.wayfarer.activities.MapActivity">
             <intent-filter>
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.application.microsoft.wayfarer.EstimationActivity">
+        <activity android:name="com.application.microsoft.wayfarer.activities.EstimationActivity">
             <intent-filter>
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.application.microsoft.wayfarer.SignUpActivity">
+        <activity android:name="com.application.microsoft.wayfarer.activities.SignUpActivity">
             <intent-filter>
 
                 <category android:name="android.intent.category.DEFAULT" />

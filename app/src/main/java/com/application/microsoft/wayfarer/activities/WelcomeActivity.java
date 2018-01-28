@@ -1,4 +1,4 @@
-package com.application.microsoft.wayfarer;
+package com.application.microsoft.wayfarer.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.application.microsoft.wayfarer.R;
 
 
 public class WelcomeActivity extends AppCompatActivity {

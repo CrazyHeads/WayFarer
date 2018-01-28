@@ -1,9 +1,9 @@
-package com.application.microsoft.wayfarer;
+package com.application.microsoft.wayfarer.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-
+import com.application.microsoft.wayfarer.R;
 
 
 public class MapActivity extends AppCompatActivity {

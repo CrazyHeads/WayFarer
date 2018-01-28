@@ -9,7 +9,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="30sp"
     android:layout_marginRight="30sp"
-    tools:context="com.application.microsoft.wayfarer.LoginActivity">
+    tools:context="com.application.microsoft.wayfarer.activities.LoginActivity">
 
 
     <TextView

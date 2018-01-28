@@ -6,7 +6,7 @@
     android:background="#e9f965"
     android:gravity="center_vertical|center_horizontal"
     android:layout_height="match_parent"
-    tools:context="com.application.microsoft.wayfarer.WelcomeActivity"
+    tools:context="com.application.microsoft.wayfarer.activities.WelcomeActivity"
     android:weightSum="1">
 
     <ImageView
