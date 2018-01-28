@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="30sp"
+    android:layout_marginRight="30sp"
+    tools:context="com.application.microsoft.wayfarer.LoginActivity">
+
+
+    <TextView
+    android:layout_marginTop="20sp"
+    android:textSize="25sp"
+    android:textColor="#1a237e"
+        android:textStyle="bold"
+    android:id="@+id/textView11"
+    android:layout_width="match_parent"
+    android:layout_height="50sp"
+        android:gravity="center_horizontal"
+    android:text="Login to Start" />
+
+    <TextView
+        android:layout_marginTop="50sp"
+        android:textSize="20sp"
+        android:textColor="@color/colorAccent"
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="Username" />
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="Enter username"
+        />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:textSize="20sp"
+        android:textColor="@color/colorAccent"
+        android:layout_marginTop="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:text="Password" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter password"
+        android:inputType="textPassword"
+        />
+
+    <Button
+        android:id="@+id/button4"
+        android:onClick="login"
+        android:layout_marginLeft="110sp"
+        android:layout_marginRight="110sp"
+        android:layout_marginTop="80sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mybutton"
+        android:text="Login"
+        android:textColor="#ffffff"
+        android:textAllCaps="false"/>
+
+    <Button
+        android:id="@+id/button3"
+        android:onClick="signup"
+        android:layout_marginLeft="70sp"
+        android:layout_marginRight="70sp"
+        android:layout_marginTop="40sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:textSize="15sp"
+        android:background="#0277bd"
+        android:text="Create an account"
+        android:textAllCaps="false"/>
+
+</LinearLayout>

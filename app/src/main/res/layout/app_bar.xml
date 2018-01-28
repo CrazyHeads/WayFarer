@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="#1faa00"
+    >
+    <ImageView
+        android:id="@+id/button1"
+        android:onClick="show"
+        android:layout_width="40sp"
+        android:layout_height="40sp"
+        android:background="@drawable/logo"
+        />
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_marginLeft="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WayFarer"
+        android:textStyle="italic"
+        android:textColor="#ffffff"
+        android:textSize="20sp"/>
+
+</android.support.v7.widget.Toolbar>

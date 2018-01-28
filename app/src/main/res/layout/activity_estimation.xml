@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.application.microsoft.wayfarer.EstimationActivity">
+
+    <include
+        layout = "@layout/app_bar"
+        android:id="@+id/app_bar">
+    </include>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_below="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="100sp"
+        android:text="Cost Estimation"
+        android:textSize="25sp"
+        android:textColor="@color/colorAccent"/>
+
+    <Button
+        android:id="@+id/button2"
+        android:onClick="save"
+        android:textAllCaps="false"
+        android:textColor="#ffffff"
+        android:background="#1b5e20"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="Save my Plan" />
+</RelativeLayout>
