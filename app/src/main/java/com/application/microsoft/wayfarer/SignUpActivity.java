@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.satyavati.microsoft.R;
 
 /**
  * Created by satyavati on 22-01-2018.

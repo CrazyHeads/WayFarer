@@ -9,7 +9,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import com.example.satyavati.microsoft.R;
+
 
 public class WelcomeActivity extends AppCompatActivity {
     ImageView click;
@@ -18,7 +18,8 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+        setContentView(
+                R.layout.activity_welcome);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

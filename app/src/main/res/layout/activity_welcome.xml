@@ -16,6 +16,5 @@
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"
 
-        android:background="@drawable/logo"
-        />
+        android:background="@drawable/logo"/>
 </LinearLayout>

@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.satyavati.microsoft.R;
+
 
 
 public class MainActivity extends AppCompatActivity {
