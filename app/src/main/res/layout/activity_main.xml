@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -28,6 +29,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+
     <Spinner
         android:prompt="@string/country_prompt"
         android:entries="@array/country_arrays"
@@ -42,151 +44,81 @@
         android:layout_marginTop="10sp"
         android:layout_below="@+id/app_bar" />
 
-    <TextView
-        android:id="@+id/statement"
-        android:layout_height="wrap_content"
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:text="Places of interest"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="17sp"
-        android:textColor = "#002f6c"
-        android:textSize="20sp"
-        android:layout_below="@+id/spinner1"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:gravity="center_horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="20sp"
-        android:layout_marginRight="20sp"
-        android:layout_marginTop="0sp"
-        android:layout_above="@+id/linearLayout2"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
-        <ImageButton
-            android:layout_width="70sp"
-            android:layout_height="60sp"
-            android:layout_margin="20sp"
-            android:background="@drawable/birla_science_museum"/>
-        <ImageButton
-            android:layout_width="70sp"
-            android:layout_height="60sp"
-            android:layout_margin="20sp"
-            android:background="@drawable/birla_mandir"/>
-        <ImageButton
-            android:layout_width="70sp"
-            android:layout_height="60sp"
-            android:layout_margin="20sp"
-            android:background="@drawable/buddha_statue"/>
-        </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:gravity="center_horizontal"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_above="@+id/linearLayout3"
-        android:layout_alignLeft="@+id/linearLayout1"
-        android:layout_alignStart="@+id/linearLayout1"
-        android:layout_alignRight="@+id/linearLayout1"
-        android:layout_alignEnd="@+id/linearLayout1">
-
-        <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="70sp"
-            android:layout_height="60sp"
-            android:layout_margin="20sp"
-            android:background="@drawable/charminar" />
-
-        <ImageButton
-            android:layout_width="68dp"
-            android:layout_height="60sp"
-            android:layout_margin="20sp"
-            android:background="@drawable/golconda_fort"/>
-        <ImageButton
-            android:layout_width="70sp"
-            android:layout_height="60sp"
-            android:layout_margin="20sp"
-            android:background="@drawable/mecca_masjid"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:layout_above="@+id/editText"
-        android:layout_alignLeft="@+id/linearLayout2"
-        android:layout_alignStart="@+id/linearLayout2"
-        android:layout_marginBottom="32dp"
-        android:layout_alignRight="@+id/linearLayout2"
-        android:layout_alignEnd="@+id/linearLayout2">
-        <ImageButton
-            android:layout_width="70sp"
-            android:layout_height="60sp"
-            android:layout_margin="20sp"
-            android:background="@drawable/nehru_zoological_park"/>
-
-        <ImageButton
-            android:layout_width="70sp"
-            android:layout_height="60sp"
-            android:layout_margin="20sp"
-            android:background="@drawable/ramoji_film_city"/>
-        <ImageButton
-            android:layout_width="70sp"
-            android:layout_height="60sp"
-            android:layout_margin="20sp"
-            android:background="@drawable/salar_jung_museum"/>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/button"
-        android:onClick="plan"
-        android:layout_width="wrap_content"
-        android:layout_height="50sp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
-        android:textAllCaps="false"
-        android:background="#311b92"
-        android:textColor="#ffffff"
+        android:layout_below="@+id/app_bar"
+        android:layout_marginTop="55dp">
 
-        android:text="Plan" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="70dp"
+            android:id="@+id/scrollView2">
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="13dp"
-        android:hint="Enter Start Location"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_marginLeft="20sp"
-        android:layout_above="@+id/button"
-        android:layout_alignLeft="@+id/linearLayout3"
-        android:layout_alignStart="@+id/linearLayout3" />
+            <GridView
+                android:id="@+id/gridView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="4dp"
+                android:columnWidth="80dp"
+                android:gravity="center"
+                android:numColumns="3"
+                android:verticalSpacing="10dp"
+                android:stretchMode="columnWidth"
+                android:horizontalSpacing="16dp"
+                android:padding="16dp"
+                android:clipToPadding="false">
+            </GridView>
 
-    <Button
-        android:id="@+id/plus_button"
-        android:layout_width="45sp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/circle_button"
-        android:text="+"
-        android:textColor="#FFFFFF"
-        android:textSize="23sp"
-        android:layout_marginRight="14dp"
-        android:layout_marginEnd="14dp"
-        android:layout_alignTop="@+id/editText"
-        android:layout_alignRight="@+id/btn"
-        android:layout_alignEnd="@+id/btn" />
+        </ScrollView>
+
+        <Button
+            android:id="@+id/button"
+            android:onClick="plan"
+            android:layout_width="wrap_content"
+            android:layout_height="50sp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:textAllCaps="false"
+            android:background="#311b92"
+            android:textColor="#ffffff"
+
+            android:text="Plan" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/scrollView2"
+            android:layout_centerHorizontal="true"
+            android:ems="10"
+            android:hint="Enter Start Location"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/plus_button"
+            android:layout_width="45sp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/editText"
+            android:layout_marginEnd="30dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/circle_button"
+            android:text="+"
+            android:textColor="#FFFFFF"
+            android:textSize="23sp" />
+
+
+    </RelativeLayout>
 
 
 </RelativeLayout>
