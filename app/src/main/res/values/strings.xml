@@ -2,13 +2,14 @@
     <string name="app_name"></string>
     <string name="country_prompt">Choose a city</string>
 
-    <string-array name="country_arrays">
-        <item>Hyderabad</item>
-        <item>Chennai</item>
-        <item>Ahmedabad</item>
-        <item>Delhi</item>
-        <item>Mumbai</item>
-        <item>Bangalore</item>
+    <string-array name="cities_arrays">
+        <item >Chennai</item>
+        <item >Hyderabad</item>
+        <item >Ahmedabad</item>
+        <item >Delhi</item>
+        <item >Mumbai</item>
+        <item >Bangalore</item>
     </string-array>
+
 
 </resources>

@@ -31,7 +31,7 @@
 
     <Spinner
         android:prompt="@string/country_prompt"
-        android:entries="@array/country_arrays"
+        android:entries="@array/cities_arrays"
         android:id="@+id/spinner"
         android:layout_width="230sp"
         android:layout_height="wrap_content"
@@ -92,7 +92,8 @@
         android:layout_marginBottom="20dp"
         android:background="#311b92"
         android:textAllCaps="false"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"
+        android:text="Plan"/>
 
     <EditText
         android:id="@+id/editText"

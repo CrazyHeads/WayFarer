@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -21,16 +24,19 @@ import com.application.microsoft.wayfarer.adapters.GridViewAdapter;
 import com.application.microsoft.wayfarer.handlers.HttpHandler;
 import com.application.microsoft.wayfarer.adapters.PlaceAdapter;
 import com.application.microsoft.wayfarer.models.Place;
+import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener  {
@@ -38,28 +44,51 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 	private ProgressDialog pDialog;
     GridView gridview;
     String api_key = "AIzaSyA2cA02iXGXYtR6Gby9OG6jpEwMcwgcDyc";
-    String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=hyderabad+city+point+of+interest&language=en&key="+api_key+"";
-
+    String[] cities;
     public ArrayList<Place> getPlacesList() {
         return placesList;
     }
-
     ArrayList<Place> placesList;
     private GridView gridView;
     private GridViewAdapter gridAdapter;
+    private String city = "";
 
-
+    String url = "";// = "https://maps.googleapis.com/maps/api/place/textsearch/json?query='"+city+"'+city+point+of+interest&language=en&key="+api_key+"";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         placesList = new ArrayList<>();
         final Bitmap[] bitmap = new Bitmap[1];
-//        initView();
-        new GetPlaces().execute();
+        cities = getResources().getStringArray(R.array.cities_arrays);
+        Spinner spinner = (Spinner)findViewById(R.id.spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item,cities );
         gridView = (GridView) findViewById(R.id.gridView);
         gridAdapter = new GridViewAdapter(this, R.layout.row,placesList);
         gridView.setAdapter(gridAdapter);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int arg2, long arg3) {
+                int index = arg0.getSelectedItemPosition();
+
+                city = cities[index];
+
+                url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="+city+"+point+of+interest&language=en&key="+api_key+"";
+                gridView = (GridView) findViewById(R.id.gridView);
+                gridAdapter.notifyDataSetChanged();
+                gridView.invalidateViews();
+                new GetPlaces().execute();
+                System.out.println(city);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final Place place = placesList.get(position);
@@ -81,6 +110,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
 
 
     public Bitmap GetBitmapfromUrl(String scr) {
@@ -117,9 +147,10 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
             HttpHandler sh = new HttpHandler();
             String jsonStr = sh.makeServiceCall(url);
             Log.e(TAG, "Response from url: " + jsonStr);
-
+            gridView.setAdapter(null);
             if (jsonStr != null) {
                 try {
+                    System.out.println(url);
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     JSONArray  jarray = jsonObj.getJSONArray("results");
                     for (int i = 0; i <  jarray.length(); i++) {
@@ -160,7 +191,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                         if (!placesList.contains(place))
                             placesList.add(place);
                     }
-                    System.out.println("DOne!!");
+                    System.out.println("Done!!");
                 } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
                     runOnUiThread(new Runnable() {
@@ -200,4 +231,5 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
         }
     }
+
 }
