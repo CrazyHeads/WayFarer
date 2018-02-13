@@ -4,9 +4,6 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
-/**
- * Created by RAJULA on 28-01-2018.
- */
 
 public class Place {
     String ID;
@@ -17,11 +14,25 @@ public class Place {
     List<String> Type;
     Boolean isOpen;
 
+    public String getDescription() {
+
+        return description;
+    }
+
+    public void setDescription(String description) {
+
+        this.description = description;
+    }
+
+    String description;
+
     public Double getLat() {
+
         return lat;
     }
 
     public void setLat(Double lat) {
+
         this.lat = lat;
     }
 
@@ -30,6 +41,7 @@ public class Place {
     }
 
     public void setLng(Double lng) {
+
         this.lng = lng;
     }
 
@@ -76,6 +88,7 @@ public class Place {
     }
 
     public Boolean getOpen() {
+
         return isOpen;
     }
 

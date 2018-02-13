@@ -15,7 +15,6 @@
 
     <Button
         android:id="@+id/btn"
-        android:onClick="show"
         android:background="@drawable/login"
         android:layout_width="40sp"
         android:layout_height="40sp"
@@ -33,10 +32,10 @@
     <Spinner
         android:prompt="@string/country_prompt"
         android:entries="@array/country_arrays"
-        android:id="@+id/spinner1"
+        android:id="@+id/spinner"
         android:layout_width="230sp"
         android:layout_height="wrap_content"
-        android:background="@android:drawable/btn_dropdown"
+        android:drawable="@color/Snow"
         android:spinnerMode="dropdown"
         tools:layout_editor_absoluteY="16dp"
         android:layout_marginLeft="80sp"
@@ -48,77 +47,79 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="380dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/app_bar"
         android:layout_marginTop="55dp">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="70dp"
-            android:id="@+id/scrollView2">
+        <!--<ScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_marginBottom="70dp"-->
+            <!--android:id="@+id/scrollView2">-->
 
-            <GridView
-                android:id="@+id/gridView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_margin="4dp"
-                android:columnWidth="80dp"
-                android:gravity="center"
-                android:numColumns="3"
-                android:verticalSpacing="10dp"
-                android:stretchMode="columnWidth"
-                android:horizontalSpacing="16dp"
-                android:padding="16dp"
-                android:clipToPadding="false">
-            </GridView>
-
-        </ScrollView>
-
-        <Button
-            android:id="@+id/button"
-            android:onClick="plan"
-            android:layout_width="wrap_content"
-            android:layout_height="50sp"
-            android:layout_alignParentBottom="true"
+        <GridView
+            android:id="@+id/gridView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentStart="true"
-            android:textAllCaps="false"
-            android:background="#311b92"
-            android:textColor="#ffffff"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:columnWidth="100dp"
+            android:drawSelectorOnTop="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="5dp" />
+    <!--</ScrollView>-->
+    </RelativeLayout>
 
-            android:text="Plan" />
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="50sp"
+        android:layout_alignEnd="@+id/btn"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/btn"
+        android:layout_marginBottom="20dp"
+        android:background="#311b92"
+        android:textAllCaps="false"
+        android:textColor="#ffffff" />
 
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/scrollView2"
-            android:layout_centerHorizontal="true"
-            android:ems="10"
-            android:hint="Enter Start Location"
-            android:inputType="textPersonName" />
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/plus_button"
+        android:layout_alignBottom="@+id/plus_button"
+        android:layout_toEndOf="@+id/plus_button"
+        android:layout_toRightOf="@+id/plus_button"
+        android:ems="10"
+        android:hint="Enter Start Location"
+       />
 
-        <Button
-            android:id="@+id/plus_button"
-            android:layout_width="45sp"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/editText"
-            android:layout_marginEnd="30dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/circle_button"
-            android:text="+"
-            android:textColor="#FFFFFF"
-            android:textSize="23sp" />
+    <Button
+        android:id="@+id/plus_button"
+        android:layout_width="45sp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/circle_button"
+        android:text="+"
+        android:textColor="#FFFFFF"
+        android:textSize="23sp" />
 
 
     </RelativeLayout>
 
 
-</RelativeLayout>
+

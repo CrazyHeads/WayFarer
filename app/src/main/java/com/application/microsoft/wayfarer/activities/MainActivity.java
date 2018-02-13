@@ -1,84 +1,108 @@
 package com.application.microsoft.wayfarer.activities;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.application.microsoft.wayfarer.R;
-import com.application.microsoft.wayfarer.classes.HttpHandler;
-import com.application.microsoft.wayfarer.classes.PlaceAdapter;
+import com.application.microsoft.wayfarer.adapters.GridViewAdapter;
+import com.application.microsoft.wayfarer.handlers.HttpHandler;
+import com.application.microsoft.wayfarer.adapters.PlaceAdapter;
 import com.application.microsoft.wayfarer.models.Place;
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 
-
-public class MainActivity extends AppCompatActivity {
-    private String TAG = MainActivity.class.getSimpleName();
-
-    private ProgressDialog pDialog;
+public class MainActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener  {
+	private String TAG = MainActivity.class.getSimpleName();
+	private ProgressDialog pDialog;
     GridView gridview;
-
-
-
-    String api_key = "AIzaSyAhEjlG0p370mhPHMS0mQhlU9iSS6Kb0yc";
+    String api_key = "AIzaSyA2cA02iXGXYtR6Gby9OG6jpEwMcwgcDyc";
     String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=hyderabad+city+point+of+interest&language=en&key="+api_key+"";
 
-    ArrayList<Place> placesList;
+    public ArrayList<Place> getPlacesList() {
+        return placesList;
+    }
 
+    ArrayList<Place> placesList;
+    private GridView gridView;
+    private GridViewAdapter gridAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         placesList = new ArrayList<>();
-        initView();
-
-
+        final Bitmap[] bitmap = new Bitmap[1];
+//        initView();
         new GetPlaces().execute();
+        gridView = (GridView) findViewById(R.id.gridView);
+        gridAdapter = new GridViewAdapter(this, R.layout.row,placesList);
+        gridView.setAdapter(gridAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                final Place place = placesList.get(position);
+                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+                bitmap[0] =  GetBitmapfromUrl(place.getImgURL());
+                intent.putExtra("title", place.getDescription());
+                intent.putExtra("image",bitmap[0]);
+                startActivity(intent);
+            }
+        });
     }
 
-
-    private void initView()
-    {
-
-        gridview = (GridView) findViewById(R.id.gridView);
-
-//        gridview.setOnItemClickListener(this);
-    }
-
-    public void plan(View v) {
-        Intent myIntent = new Intent(MainActivity.this, EstimationActivity.class);
-        startActivity(myIntent);
-
-    }
-
-    public void show(View v) {
-        Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(myIntent);
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
     }
 
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+
+    public Bitmap GetBitmapfromUrl(String scr) {
+        try {
+            URL url=new URL(scr);
+            HttpURLConnection connection=(HttpURLConnection)url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input=connection.getInputStream();
+            Bitmap bmp = BitmapFactory.decodeStream(input);
+            return bmp;
+
+
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     private class GetPlaces extends AsyncTask<Void, Void, Void> {
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -86,30 +110,23 @@ public class MainActivity extends AppCompatActivity {
             pDialog.setMessage("Please wait...");
             pDialog.setCancelable(false);
             pDialog.show();
-
         }
 
         @Override
         protected Void doInBackground(Void... arg0) {
             HttpHandler sh = new HttpHandler();
-
-            // Making a request to url and getting response
             String jsonStr = sh.makeServiceCall(url);
             Log.e(TAG, "Response from url: " + jsonStr);
 
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
-
-
                     JSONArray  jarray = jsonObj.getJSONArray("results");
-
-
                     for (int i = 0; i <  jarray.length(); i++) {
                         JSONObject object =  jarray.getJSONObject(i);
-
                         Place place = new Place();
                         String photoReference = null;
+                        place.setID(object.getString("id"));
                         place.setName(object.getString("name"));
                         JSONObject geometry = object.getJSONObject("geometry");
                         JSONObject location = geometry.getJSONObject("location");
@@ -118,13 +135,32 @@ public class MainActivity extends AppCompatActivity {
                         JSONArray photos = object.getJSONArray("photos");
                         JSONObject getPhtotos = photos.getJSONObject(0);
                         photoReference = getPhtotos.getString("photo_reference");
+                        String name = object.getString("name").replace(" ","%20");
+                        String detailUrl = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&titles="+name+"";
+                        System.out.println(detailUrl);
+                        String jsonStr1 = sh.makeServiceCall(detailUrl);
+                        System.out.println(jsonStr1);
+                        Log.e(TAG, "Response from url: " + jsonStr1);
+                        JSONObject jsonObject = new JSONObject(jsonStr1);
+                        JSONObject details = jsonObject.getJSONObject("query");
+                        details = details.getJSONObject("pages");
+                        String k = details.keys().next();
+                        if (k.equals("-1")){
+                            place.setDescription(" ");
+                            System.out.println("No Desc!!");
+                        } else {
+                            details = details.getJSONObject(k);
+                            System.out.println("Yes Desc!!");
+                            place.setDescription(details.getString("extract"));
+                            System.out.println(place.getDescription());
+                        }
                         String imageUrl = "https://maps.googleapis.com/maps/api/place/photo?photoreference="+photoReference+"&sensor=false&maxheight=400&maxwidth=400&key="+ api_key +"";
                         System.out.println(imageUrl);
                         place.setImgURL(imageUrl);
-                        placesList.add(place);
-
-
+                        if (!placesList.contains(place))
+                            placesList.add(place);
                     }
+                    System.out.println("DOne!!");
                 } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
                     runOnUiThread(new Runnable() {
@@ -134,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
                                     "Json parsing error: " + e.getMessage(),
                                     Toast.LENGTH_LONG)
                                     .show();
+                            System.out.println("Exception!!");
                         }
                     });
 
@@ -147,28 +184,20 @@ public class MainActivity extends AppCompatActivity {
                                 "Couldn't get json from server. Check LogCat for possible errors!",
                                 Toast.LENGTH_LONG)
                                 .show();
+                        System.out.println("Json Error!!");
                     }
                 });
-
             }
-
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            // Dismiss the progress dialog
+            System.out.println("PostExecute!!");
             if (pDialog.isShowing())
                 pDialog.dismiss();
-            /**
-             * Updating parsed JSON data into ListView
-             * */
-            PlaceAdapter placeAdapter;
-            placeAdapter = new PlaceAdapter(getApplicationContext(), R.layout.row, placesList);
-            gridview.setAdapter(placeAdapter);
 
         }
-
     }
 }

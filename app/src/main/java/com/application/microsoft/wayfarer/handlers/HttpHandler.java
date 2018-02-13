@@ -1,8 +1,5 @@
-package com.application.microsoft.wayfarer.classes;
+package com.application.microsoft.wayfarer.handlers;
 
-/**
- * Created by RAJULA on 30-01-2018.
- */
 import android.util.Log;
 
 import java.io.BufferedInputStream;
@@ -15,16 +12,9 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-/**
- * Created by Ravi Tamada on 01/09/16.
- * www.androidhive.info
- */
 public class HttpHandler {
 
     private static final String TAG = HttpHandler.class.getSimpleName();
-
-    public HttpHandler() {
-    }
 
     public String makeServiceCall(String reqUrl) {
         String response = null;
