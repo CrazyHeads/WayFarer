@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,8 +31,8 @@ import java.util.ArrayList;
 public class GridViewAdapter extends ArrayAdapter<Place> {
     private Context context;
     private int layoutResourceId;
-    MainActivity mainActivity =  new MainActivity();
-    private ArrayList<Place> placesList = mainActivity. getPlacesList();
+    MainActivity mainActivity = new MainActivity();
+    private ArrayList<Place> placesList = placesList = mainActivity.getPlacesList();
 
     public GridViewAdapter(Context context, int layoutResourceId, ArrayList<Place> placesList) {
         super(context, layoutResourceId, placesList);
@@ -49,7 +51,8 @@ public class GridViewAdapter extends ArrayAdapter<Place> {
             row = inflater.inflate(layoutResourceId, parent, false);
             holder = new ViewHolder();
             holder.imageTitle = (TextView) row.findViewById(R.id.tvName);
-            holder.image = (ImageView) row.findViewById(R.id.ivimage);
+            holder.image = (ImageButton) row.findViewById(R.id.ivimage);
+            holder.checkbox = (CheckBox) row.findViewById(R.id.grid_item_checkbox);
             row.setTag(holder);
         } else {
             holder = (ViewHolder) row.getTag();
@@ -58,24 +61,30 @@ public class GridViewAdapter extends ArrayAdapter<Place> {
         System.out.println(place.getName());
         holder.imageTitle.setText(place.getName());
         Picasso.with(context).load(placesList.get(position).getImgURL()).into(holder.image);
-//        URL url = null;
-//        Bitmap bmp = null;
-//        try {
-//            url = new URL(place.getImgURL());
-//            bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        holder.image.setImageBitmap(bmp);
+        holder.checkbox.setId(position);
+        holder.checkbox.setTag(Integer.valueOf(position));
+        holder.checkbox.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                CheckBox cb = (CheckBox) v;
+                int id = cb.getId();
+                System.out.println(id);
+                cb.setChecked(true);
+                if (cb.isChecked()) {
+                    placesList.get(id).setSelected(true);
+                }
+
+                if (!cb.isChecked())
+                    placesList.get(id).setSelected(false);
+
+            }
+        });
         return row;
     }
 
     static class ViewHolder {
         TextView imageTitle;
-        ImageView image;
+        ImageButton image;
+        CheckBox checkbox;
     }
-
 
 }

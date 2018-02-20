@@ -44,7 +44,6 @@
         android:layout_below="@+id/app_bar" />
 
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="380dp"
@@ -64,13 +63,11 @@
         <GridView
             android:id="@+id/gridView"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_height="500dp"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerVertical="true"
+            android:layout_marginBottom="50dp"
             android:clickable="true"
             android:columnWidth="100dp"
             android:drawSelectorOnTop="true"
@@ -90,10 +87,20 @@
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/btn"
         android:layout_marginBottom="20dp"
-        android:background="#311b92"
+        android:background="#01233f"
         android:textAllCaps="false"
         android:textColor="#ffffff"
-        android:text="Plan"/>
+        android:text="Plan"
+        android:onClick="plan"
+        />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+    </LinearLayout>
 
     <EditText
         android:id="@+id/editText"

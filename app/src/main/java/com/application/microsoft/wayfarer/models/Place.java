@@ -14,6 +14,26 @@ public class Place {
     List<String> Type;
     Boolean isOpen;
 
+    public Boolean getSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(Boolean selected) {
+        isSelected = selected;
+    }
+
+    Boolean isSelected;
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    String city;
+
     public String getDescription() {
 
         return description;
@@ -96,7 +116,6 @@ public class Place {
 
         isOpen = open;
     }
-
 
 
 }

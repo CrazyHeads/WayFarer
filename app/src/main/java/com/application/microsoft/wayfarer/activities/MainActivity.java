@@ -2,12 +2,8 @@ package com.application.microsoft.wayfarer.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Address;
-import android.location.Geocoder;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -22,27 +18,22 @@ import android.widget.Toast;
 import com.application.microsoft.wayfarer.R;
 import com.application.microsoft.wayfarer.adapters.GridViewAdapter;
 import com.application.microsoft.wayfarer.handlers.HttpHandler;
-import com.application.microsoft.wayfarer.adapters.PlaceAdapter;
 import com.application.microsoft.wayfarer.models.Place;
-import com.google.android.gms.maps.model.LatLng;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener  {
 	private String TAG = MainActivity.class.getSimpleName();
 	private ProgressDialog pDialog;
-    GridView gridview;
     String api_key = "AIzaSyA2cA02iXGXYtR6Gby9OG6jpEwMcwgcDyc";
     String[] cities;
     public ArrayList<Place> getPlacesList() {
@@ -51,8 +42,10 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     ArrayList<Place> placesList;
     private GridView gridView;
     private GridViewAdapter gridAdapter;
+    
     private String city = "";
-
+    int index;
+    String publicURL = "https://maps.googleapis.com/maps/api/directions/json?origin=%20Mahavir%20towers%20hyderabad&destination=hps%20begumpet%20hyderabd&waypoint%20=%20BVRITH%20Bachupally%20Hyderabad&mode=transit&key=AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A";
     String url = "";// = "https://maps.googleapis.com/maps/api/place/textsearch/json?query='"+city+"'+city+point+of+interest&language=en&key="+api_key+"";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,23 +58,30 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item,cities );
         gridView = (GridView) findViewById(R.id.gridView);
+        placesList.clear();
         gridAdapter = new GridViewAdapter(this, R.layout.row,placesList);
-        gridView.setAdapter(gridAdapter);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
-                int index = arg0.getSelectedItemPosition();
+                index = arg0.getSelectedItemPosition();
 
                 city = cities[index];
-
-                url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="+city+"+point+of+interest&language=en&key="+api_key+"";
-                gridView = (GridView) findViewById(R.id.gridView);
-                gridAdapter.notifyDataSetChanged();
-                gridView.invalidateViews();
-                new GetPlaces().execute();
-                System.out.println(city);
+                if(index != 0) {
+                    url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + city + "+point+of+interest&language=en&key=" + api_key + "";
+                    gridView.clearAnimation();
+                    gridAdapter.clear();
+//                    placesList.removeAll(placesList);
+                    new GetPlaces().execute();
+                    gridAdapter.addAll(placesList);
+                    gridView = (GridView) findViewById(R.id.gridView);
+                    gridView.invalidateViews();
+                    gridAdapter.notifyDataSetChanged();
+                    gridView.setAdapter(gridAdapter);
+                    System.out.println(city);
+                }
+                index = -1;
             }
 
             @Override
@@ -110,6 +110,18 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+
+
+    public void plan(View v) {
+        Intent myIntent = new Intent(MainActivity.this, EstimationActivity.class);
+        Bundle args = new Bundle();
+        args.putSerializable("placesList",(Serializable)placesList);
+        myIntent.putExtra("BUNDLE",args);
+        startActivity(myIntent);
+
+    }
+
 
 
 
@@ -144,10 +156,10 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
         @Override
         protected Void doInBackground(Void... arg0) {
+//            placesList = new ArrayList<>();
             HttpHandler sh = new HttpHandler();
             String jsonStr = sh.makeServiceCall(url);
             Log.e(TAG, "Response from url: " + jsonStr);
-            gridView.setAdapter(null);
             if (jsonStr != null) {
                 try {
                     System.out.println(url);
@@ -157,6 +169,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                         JSONObject object =  jarray.getJSONObject(i);
                         Place place = new Place();
                         String photoReference = null;
+                        place.setCity(city);
                         place.setID(object.getString("id"));
                         place.setName(object.getString("name"));
                         JSONObject geometry = object.getJSONObject("geometry");
@@ -190,6 +203,10 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                         place.setImgURL(imageUrl);
                         if (!placesList.contains(place))
                             placesList.add(place);
+                    }
+                    for (int i = 0; i < placesList.size(); i++){
+                        if(placesList.get(i).getCity() != city)
+                            placesList.remove(i);
                     }
                     System.out.println("Done!!");
                 } catch (final JSONException e) {
