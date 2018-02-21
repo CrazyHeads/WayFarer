@@ -31,7 +31,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 
-public class MainActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener  {
+public class MainActivity extends AppCompatActivity {
 	private String TAG = MainActivity.class.getSimpleName();
 	private ProgressDialog pDialog;
     private GridView gridView;
@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
+		    Toast.makeText(getApplicationContext(),"Please Select a City!",  Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -103,18 +105,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         });
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-
-
+   
     public void plan(View v) {
         Intent myIntent = new Intent(MainActivity.this, EstimationActivity.class);
         Bundle args = new Bundle();
