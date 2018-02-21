@@ -51,7 +51,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/app_bar"
-        android:layout_marginTop="55dp">
+        android:layout_marginTop="55dp"
+        android:id="@+id/relativeLayout2">
 
         <!--<ScrollView-->
             <!--android:layout_width="match_parent"-->
@@ -61,23 +62,7 @@
             <!--android:layout_marginBottom="70dp"-->
             <!--android:id="@+id/scrollView2">-->
 
-        <GridView
-            android:id="@+id/gridView"
-            android:layout_width="fill_parent"
-            android:layout_height="500dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="50dp"
-            android:clickable="true"
-            android:columnWidth="100dp"
-            android:drawSelectorOnTop="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:numColumns="auto_fit"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="5dp" />
-    <!--</ScrollView>-->
+        <!--</ScrollView>-->
     </RelativeLayout>
 
     <Button
@@ -127,8 +112,27 @@
         android:textColor="#FFFFFF"
         android:textSize="23sp" />
 
+    <GridView
+        android:id="@+id/gridView"
+        android:layout_width="fill_parent"
+        android:layout_height="550dp"
+        android:layout_above="@+id/editText"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/relativeLayout2"
+        android:clickable="true"
+        android:columnWidth="100dp"
+        android:drawSelectorOnTop="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="5dp" />
 
-    </RelativeLayout>
+
+</RelativeLayout>
 
 
 
