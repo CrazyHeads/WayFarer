@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.application.microsoft.wayfarer">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 
     <application
@@ -31,12 +32,21 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="com.application.microsoft.wayfarer.activities.MapActivity">
-            <intent-filter>
 
-                <category android:name="android.intent.category.DEFAULT" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBJ2RVaMKwqdeqBo7aTZ75_58ZA7iGp-OU" />
+
+        <activity
+            android:name="com.application.microsoft.wayfarer.activities.MapActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
         <activity android:name="com.application.microsoft.wayfarer.activities.EstimationActivity">
             <intent-filter>
 
