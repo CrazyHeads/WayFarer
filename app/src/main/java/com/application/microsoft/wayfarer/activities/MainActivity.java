@@ -31,34 +31,23 @@ import java.net.URL;
 import java.util.ArrayList;
 
 
-<<<<<<< HEAD
-public class MainActivity extends AppCompatActivity  {
-=======
-public class MainActivity extends AppCompatActivity {
->>>>>>> 04214c59af5897e637babbbbe772991ac2b3f5a1
+public class MainActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener  {
 	private String TAG = MainActivity.class.getSimpleName();
 	private ProgressDialog pDialog;
-    private GridView gridView;
-    private GridViewAdapter gridAdapter;
-<<<<<<< HEAD
-    
-    private String city = ""; 
-=======
-    private String city = "";
-
-    String api_key = "AIzaSyDFm0y1hqGzoHUxDJ-vnf-6rMsWLc_nA30";
+    String api_key = "AIzaSyA2cA02iXGXYtR6Gby9OG6jpEwMcwgcDyc";
     String[] cities;
-    ArrayList<Place> placesList;
->>>>>>> 04214c59af5897e637babbbbe772991ac2b3f5a1
-    int index;
-    String publicURL = "https://maps.googleapis.com/maps/api/directions/json?origin=%20Mahavir%20towers%20hyderabad&destination=hps%20begumpet%20hyderabd&waypoint%20=%20BVRITH%20Bachupally%20Hyderabad&mode=transit&key=AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A";
-    String url = "";// = "https://maps.googleapis.com/maps/api/place/textsearch/json?query='"+city+"'+city+point+of+interest&language=en&key="+api_key+"";
-
     public ArrayList<Place> getPlacesList() {
         return placesList;
     }
+    ArrayList<Place> placesList;
+    private GridView gridView;
+    private GridViewAdapter gridAdapter;
 
-
+    private String city = "";
+    int index;
+    String publicURL = "https://maps.googleapis.com/maps/api/directions/json?origin=%20Mahavir%20towers%20hyderabad&destination=hps%20begumpet%20hyderabd&waypoint%20=%20BVRITH%20Bachupally%20Hyderabad&mode=transit&key=AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A";
+    String url = "";// = "https://maps.googleapis.com/maps/api/place/textsearch/json?query='"+city+"'+city+point+of+interest&language=en&key="+api_key+"";
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -83,24 +72,20 @@ public class MainActivity extends AppCompatActivity {
                     url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + city + "+point+of+interest&language=en&key=" + api_key + "";
                     gridView.clearAnimation();
                     gridAdapter.clear();
+//                    placesList.removeAll(placesList);
                     new GetPlaces().execute();
                     gridAdapter.addAll(placesList);
                     gridView = (GridView) findViewById(R.id.gridView);
                     gridView.invalidateViews();
                     gridAdapter.notifyDataSetChanged();
                     gridView.setAdapter(gridAdapter);
+                    System.out.println(city);
                 }
                 index = -1;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
-<<<<<<< HEAD
-                Toast.makeText(getApplicationContext(),"Please Select a City!",  Toast.LENGTH_LONG).show();
-=======
-		    Toast.makeText(getApplicationContext(),"Please Select a City!",  Toast.LENGTH_LONG).show();
->>>>>>> 04214c59af5897e637babbbbe772991ac2b3f5a1
-
             }
         });
 
@@ -116,18 +101,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-<<<<<<< HEAD
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 
 
 
-=======
-   
->>>>>>> 04214c59af5897e637babbbbe772991ac2b3f5a1
     public void plan(View v) {
         Intent myIntent = new Intent(MainActivity.this, EstimationActivity.class);
-        Bundle args = new Bundle();
-        args.putSerializable("placesList",(Serializable)placesList);
-        myIntent.putExtra("BUNDLE",args);
+
         startActivity(myIntent);
 
     }
@@ -145,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
             Bitmap bmp = BitmapFactory.decodeStream(input);
             return bmp;
 
+
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -157,13 +147,14 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Please wait...This ");
+            pDialog.setMessage("Please wait...");
             pDialog.setCancelable(false);
             pDialog.show();
         }
 
         @Override
         protected Void doInBackground(Void... arg0) {
+//            placesList = new ArrayList<>();
             HttpHandler sh = new HttpHandler();
             String jsonStr = sh.makeServiceCall(url);
             Log.e(TAG, "Response from url: " + jsonStr);

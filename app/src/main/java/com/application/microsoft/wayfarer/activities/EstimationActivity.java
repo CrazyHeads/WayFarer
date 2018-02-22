@@ -23,6 +23,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
 
 
 /**
@@ -35,6 +39,11 @@ public class EstimationActivity extends AppCompatActivity {
     private String destination;
     private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
     private static final String DIRECTION_API_KEY = "AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A";
+    private static final Hashtable<Integer, Integer> metroBusFares = new Hashtable<Integer, Integer>();
+    private static final Hashtable<Integer, Integer> ordinaryBusFares = new Hashtable<Integer, Integer>();
+    private static final Hashtable<Integer, Integer> metroRailFares = new Hashtable<Integer, Integer>();
+    private static final Hashtable<Integer, Integer> mmtsFares = new Hashtable<Integer, Integer>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +83,7 @@ public class EstimationActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
             url = createUrl();
-            String busNumber = "";
+            String transitNumber = "";
             int noOfStops;
             HttpHandler sh = new HttpHandler();
             String jsonStr = sh.makeServiceCall(url);
@@ -86,36 +95,36 @@ public class EstimationActivity extends AppCompatActivity {
                             .getJSONObject(0).getJSONArray("legs")
                             .getJSONObject(0).getJSONArray("steps");
                            // .getJSONObject(0).getJSONArray("steps");
-                    int lengthofSteps = jsonData.length();
-                    System.out.println(lengthofSteps);
-                    for(int i = 0,j = 0;i < jsonData.length()&& j < lengthofSteps;i++,j++) {
-                        JSONObject stop = jsonData.getJSONObject(j);
-                       // int l =  stop0.length();
-                      //  System.out.print(l);
+
+                    for(int i = 0;i < jsonData.length();i++) {
+                        JSONObject stop = jsonData.getJSONObject(i);
                         String travelMode = stop.getString("travel_mode");
-
+                        String distance = stop.getJSONObject("distance").getString("text");
+                        String duration = stop.getJSONObject("duration").getString("text");
                         System.out.println(travelMode);
-                        if (travelMode == "TRANSIT") {
-                              //JSONObject line = stop.getJSONObject("line");
-                            //JSONObject agencies = line.getJSONObject("agencies");
-                           // busNumber = agencies.getString("short_name");
-                          //  noOfStops = line.getInt("num_stops");
-
-                        } else if (travelMode == "WALKING") {
-                            JSONObject step = stop.getJSONObject("steps");
-                            String distance = step.getString("distance");
-                            String instructions = step.getString("html_instructions");
-                            JSONObject duration = step.getJSONObject("duration");
-                            String time = duration.getString("text");
-                            System.out.println(instructions+ " for " +distance+ " for " +time);
+                        String instructions = stop.getString("html_instructions");
+                        System.out.println(instructions);
+                        System.out.println(" for " +distance+ " for " + duration);
+                        if (travelMode.equals("TRANSIT") && instructions.contains("Bus")) {
+                            noOfStops = stop.getJSONObject("transit_details").getInt("num_stops");
+                            transitNumber = stop.getJSONObject("transit_details").getJSONObject("line").getString("short_name");
+                            System.out.println("No of Stops: "+noOfStops);
+                            System.out.println("Transit Number " +transitNumber);
+                            System.out.println("Metro Bus Fare "+calculateMetroBusFare(Double.parseDouble(distance.replace("km"," ").trim())));
+                            System.out.println("Ordinary Bus Fare "+calculateOrdinaryBusFare(Double.parseDouble(distance.replace("km"," ").trim())));
                         }
+                        else if(travelMode.equals("TRANSIT") && instructions.contains("Metro rail")) {
+                            noOfStops = stop.getJSONObject("transit_details").getJSONObject("line").getInt("num_stops");
+                            System.out.println("Transit Details:" +noOfStops);
+                            System.out.println("Metro Rail Fare "+calculateMetroRailFares(Double.parseDouble(distance.replace("km"," ").trim())));
+                        }
+                        else if (travelMode.equals("TRANSIT") && instructions.contains("Train")) {
+                            System.out.println("MMTS Fare "+calculateMMTSFares(Double.parseDouble(distance.replace("km"," ").trim())));
+
+                        }
+
                     }
-
-
-
-
                 } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
             return null;
@@ -124,14 +133,96 @@ public class EstimationActivity extends AppCompatActivity {
         }
 
         private String createUrl() {
-            origin = "BVRIT Hyderabad";
-            destination = "HPS Begumpet";
+            origin = "BVRIT HYDERABAD";
+            destination = "Vidyanagar";
             return DIRECTION_URL_API + "origin=" +origin+ "&destination=" +destination+ "&mode=transit&key="+DIRECTION_API_KEY;
         }
 
 
+        private double calculateMetroBusFare(double distance) {
+            //fare for RTC Metro Bus
+            metroBusFares.put(6,10);
+            metroBusFares.put(14,15);
+            metroBusFares.put(24,20);
+            metroBusFares.put(34,35);
+            metroBusFares.put(40,30);
+            Set<Integer> fares = metroBusFares.keySet();
+            for(Integer key: fares) {
+                if (distance <= key) {
+                   // System.out.println("Hii");
+                    return metroBusFares.get(key);
+                }
 
-    }
+            }
+            return -1;
+        }
+
+        private double calculateOrdinaryBusFare(double distance) {
+            //fare for ordinary RTC  Bus
+            ordinaryBusFares.put(2,5);
+            ordinaryBusFares.put(10,10);
+            ordinaryBusFares.put(18,15);
+            ordinaryBusFares.put(28,20);
+            ordinaryBusFares.put(40,25);
+            Set<Integer> fares = ordinaryBusFares.keySet();
+            for(Integer key: fares) {
+                if (distance <= key) {
+                    //System.out.println("Hii");
+                    return ordinaryBusFares.get(key);
+                }
+
+            }
+            return -1;
+        }
+
+        private double calculateMetroRailFares(double distance) {
+            //fares for metro rail
+            metroRailFares.put(2,10);
+            metroRailFares.put(4,15);
+            metroRailFares.put(6,25);
+            metroRailFares.put(8,30);
+            metroRailFares.put(10,35);
+            metroRailFares.put(14,40);
+            metroRailFares.put(18,45);
+            metroRailFares.put(22,45);
+            metroRailFares.put(26,55);
+            metroRailFares.put(27,60);
+            Set<Integer> fares = metroRailFares.keySet();
+            for(Integer key: fares) {
+                if (distance <= key) {
+                    //System.out.println("Hii");
+                    return metroRailFares.get(key);
+                }
+
+            }
+            return -1;
+        }
+
+
+        private double calculateMMTSFares(double distance) {
+            mmtsFares.put(15,5);
+            mmtsFares.put(30,10);
+            mmtsFares.put(40,11);
+            Set<Integer> fares = mmtsFares.keySet();
+            for(Integer key: fares) {
+                if (distance <= key) {
+                    //System.out.println("Hii");
+                    return mmtsFares.get(key);
+                }
+
+            }
+            return -1;
+
+        }
+
+
+
+
+
+
+
+
+        }
 
 
 }
