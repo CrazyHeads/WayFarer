@@ -86,15 +86,28 @@ public class EstimationActivity extends AppCompatActivity {
                             .getJSONObject(0).getJSONArray("legs")
                             .getJSONObject(0).getJSONArray("steps");
                            // .getJSONObject(0).getJSONArray("steps");
-                    for(int i = 0;i < jsonData.length();i++) {
-                        JSONObject stop0 = jsonData.getJSONObject(1);
-                        String travelMode = stop0.getString("travel_mode");
+                    int lengthofSteps = jsonData.length();
+                    System.out.println(lengthofSteps);
+                    for(int i = 0,j = 0;i < jsonData.length()&& j < lengthofSteps;i++,j++) {
+                        JSONObject stop = jsonData.getJSONObject(j);
+                       // int l =  stop0.length();
+                      //  System.out.print(l);
+                        String travelMode = stop.getString("travel_mode");
+
                         System.out.println(travelMode);
                         if (travelMode == "TRANSIT") {
-                            JSONObject line = stop0.getJSONObject("line");
-                            JSONObject agencies = line.getJSONObject("agencies");
-                            busNumber = agencies.getString("short_name");
-                            noOfStops = line.getInt("num_stops");
+                              //JSONObject line = stop.getJSONObject("line");
+                            //JSONObject agencies = line.getJSONObject("agencies");
+                           // busNumber = agencies.getString("short_name");
+                          //  noOfStops = line.getInt("num_stops");
+
+                        } else if (travelMode == "WALKING") {
+                            JSONObject step = stop.getJSONObject("steps");
+                            String distance = step.getString("distance");
+                            String instructions = step.getString("html_instructions");
+                            JSONObject duration = step.getJSONObject("duration");
+                            String time = duration.getString("text");
+                            System.out.println(instructions+ " for " +distance+ " for " +time);
                         }
                     }
 
