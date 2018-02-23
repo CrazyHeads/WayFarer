@@ -28,13 +28,13 @@ import java.util.ArrayList;
  */
 
 
-public class GridViewAdapter extends ArrayAdapter<Place> {
+public class ListViewAdapter extends ArrayAdapter<Place> {
     private Context context;
     private int layoutResourceId;
     MainActivity mainActivity = new MainActivity();
     private ArrayList<Place> placesList = placesList = mainActivity.getPlacesList();
 
-    public GridViewAdapter(Context context, int layoutResourceId, ArrayList<Place> placesList) {
+    public ListViewAdapter(Context context, int layoutResourceId, ArrayList<Place> placesList) {
         super(context, layoutResourceId, placesList);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -53,7 +53,7 @@ public class GridViewAdapter extends ArrayAdapter<Place> {
             holder.placeTitle = (TextView) row.findViewById(R.id.tvName);
             holder.image = (ImageButton) row.findViewById(R.id.ivimage);
             holder.placeDesc =(TextView) row.findViewById(R.id.tvDesc);
-            holder.checkbox = (CheckBox) row.findViewById(R.id.grid_item_checkbox);
+            holder.checkbox = (CheckBox) row.findViewById(R.id.list_item_checkbox);
             row.setTag(holder);
         } else {
             holder = (ViewHolder) row.getTag();

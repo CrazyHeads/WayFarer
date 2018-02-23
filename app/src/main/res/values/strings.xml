@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name"></string>
-    <string name="country_prompt">Choose a city</string>
+    <string name="app_name">WayFarer</string>
+    <string name="plan">Plan</string>
+    <string name="enter_start_location">Enter Start Location</string>
+    <string name="plus_button">+</string>
 
     <string-array name="cities_arrays">
         <item>Select City</item>

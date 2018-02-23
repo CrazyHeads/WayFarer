@@ -11,12 +11,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.application.microsoft.wayfarer.R;
-import com.application.microsoft.wayfarer.adapters.GridViewAdapter;
+import com.application.microsoft.wayfarer.adapters.ListViewAdapter;
 import com.application.microsoft.wayfarer.handlers.HttpHandler;
 import com.application.microsoft.wayfarer.models.Place;
 
@@ -31,8 +31,8 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
     private String TAG = MainActivity.class.getSimpleName();
     private ProgressDialog pDialog;
-    private GridView gridView;
-    private GridViewAdapter gridAdapter;
+    private ListView listView;
+    private ListViewAdapter listAdapter;
     private String city = "";
 
     String API_KEY = "AIzaSyCsZxCWGhQ9l7jkTBQx4kPCJu4EtAoRiFg";
@@ -54,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
         Spinner spinner = (Spinner)findViewById(R.id.spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, cities);
-        gridView = (GridView) findViewById(R.id.gridView);
+        listView = (ListView) findViewById(R.id.listView);
         placesList.clear();
-        gridAdapter = new GridViewAdapter(this, R.layout.row,placesList);
+        listAdapter = new ListViewAdapter(this, R.layout.row,placesList);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -67,14 +67,14 @@ public class MainActivity extends AppCompatActivity {
                 city = cities[index];
                 if(index != 0) {
                     PLACES_OF_INTEREST_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + city + "+point+of+interest&language=en&key=" + API_KEY + "";
-                    gridView.clearAnimation();
-                    gridAdapter.clear();
+                    listView.clearAnimation();
+                    listAdapter.clear();
                     new GetPlaces().execute();
-                    gridAdapter.addAll(placesList);
-                    gridView = (GridView) findViewById(R.id.gridView);
-                    gridView.invalidateViews();
-                    gridAdapter.notifyDataSetChanged();
-                    gridView.setAdapter(gridAdapter);
+                    listAdapter.addAll(placesList);
+                    listView = (ListView) findViewById(R.id.listView);
+                    listView.invalidateViews();
+                    listAdapter.notifyDataSetChanged();
+                    listView.setAdapter(listAdapter);
                     System.out.println(city);
                     Toast.makeText(getApplicationContext(), "Selected: " + city, Toast.LENGTH_LONG).show();
                 }
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void plan(View v) {
-        Intent intent = new Intent(MainActivity.this,PlanActivity.class);
+        Intent intent = new Intent(MainActivity.this,EstimationActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("placesList",placesList);
         intent.putExtras(bundle);
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("PostExecute!!");
             if (pDialog.isShowing())
                 pDialog.dismiss();
-            gridAdapter.notifyDataSetChanged();
+            listAdapter.notifyDataSetChanged();
 
         }
     }

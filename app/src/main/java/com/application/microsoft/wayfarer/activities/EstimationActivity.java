@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.GridView;
 
 import com.application.microsoft.wayfarer.R;
-import com.application.microsoft.wayfarer.adapters.GridViewAdapter;
+import com.application.microsoft.wayfarer.adapters.ListViewAdapter;
 import com.application.microsoft.wayfarer.models.Place;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;

@@ -1,4 +1,4 @@
-package com.thyme.smalam119.routeplannerapplication.NetworkCalls;
+package com.application.microsoft.wayfarer.NetworkCalls;
 
 import com.thyme.smalam119.routeplannerapplication.Model.Direction.Example;
 import retrofit2.Call;
