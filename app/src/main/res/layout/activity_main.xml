@@ -8,13 +8,14 @@
     android:layout_height="match_parent"
     tools:context="com.application.microsoft.wayfarer.activities.MainActivity">
 
+
     <include
         layout = "@layout/app_bar"
         android:id="@+id/app_bar">
     </include>
-
     <Button
         android:id="@+id/btn"
+        android:onClick="show"
         android:background="@drawable/login"
         android:layout_width="40sp"
         android:layout_height="40sp"
@@ -54,12 +55,12 @@
         android:id="@+id/relativeLayout2">
 
         <!--<ScrollView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_marginBottom="70dp"-->
-            <!--android:id="@+id/scrollView2">-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginBottom="70dp"-->
+        <!--android:id="@+id/scrollView2">-->
 
         <!--</ScrollView>-->
     </RelativeLayout>
@@ -85,7 +86,10 @@
         android:background="@android:color/transparent"
         android:focusable="true"
         android:focusableInTouchMode="true">
+        android:id="@+id/linearLayout1">
+
     </LinearLayout>
+
 
     <EditText
         android:id="@+id/editText"
@@ -97,7 +101,8 @@
         android:layout_toRightOf="@+id/plus_button"
         android:ems="10"
         android:hint="Enter Start Location"
-       />
+        />
+
 
     <Button
         android:id="@+id/plus_button"
@@ -129,6 +134,8 @@
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
         android:verticalSpacing="5dp" />
+
+
 
 
 </RelativeLayout>
