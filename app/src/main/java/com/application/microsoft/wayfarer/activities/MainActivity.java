@@ -1,10 +1,10 @@
 package com.application.microsoft.wayfarer.activities;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -24,35 +24,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
-<<<<<<< HEAD
-public class MainActivity extends AppCompatActivity  {
-=======
 public class MainActivity extends AppCompatActivity {
->>>>>>> 04214c59af5897e637babbbbe772991ac2b3f5a1
-	private String TAG = MainActivity.class.getSimpleName();
-	private ProgressDialog pDialog;
+    private String TAG = MainActivity.class.getSimpleName();
+    private ProgressDialog pDialog;
     private GridView gridView;
     private GridViewAdapter gridAdapter;
-<<<<<<< HEAD
-    
-    private String city = ""; 
-=======
     private String city = "";
 
-    String api_key = "AIzaSyDFm0y1hqGzoHUxDJ-vnf-6rMsWLc_nA30";
+    String API_KEY = "AIzaSyCsZxCWGhQ9l7jkTBQx4kPCJu4EtAoRiFg";
     String[] cities;
     ArrayList<Place> placesList;
->>>>>>> 04214c59af5897e637babbbbe772991ac2b3f5a1
     int index;
-    String publicURL = "https://maps.googleapis.com/maps/api/directions/json?origin=%20Mahavir%20towers%20hyderabad&destination=hps%20begumpet%20hyderabd&waypoint%20=%20BVRITH%20Bachupally%20Hyderabad&mode=transit&key=AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A";
-    String url = "";// = "https://maps.googleapis.com/maps/api/place/textsearch/json?query='"+city+"'+city+point+of+interest&language=en&key="+api_key+"";
+    String PLACES_OF_INTEREST_URL = "";
 
     public ArrayList<Place> getPlacesList() {
         return placesList;
@@ -63,11 +50,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         placesList = new ArrayList<>();
-        final Bitmap[] bitmap = new Bitmap[1];
         cities = getResources().getStringArray(R.array.cities_arrays);
         Spinner spinner = (Spinner)findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_dropdown_item,cities );
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, cities);
         gridView = (GridView) findViewById(R.id.gridView);
         placesList.clear();
         gridAdapter = new GridViewAdapter(this, R.layout.row,placesList);
@@ -80,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
                 city = cities[index];
                 if(index != 0) {
-                    url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + city + "+point+of+interest&language=en&key=" + api_key + "";
+                    PLACES_OF_INTEREST_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + city + "+point+of+interest&language=en&key=" + API_KEY + "";
                     gridView.clearAnimation();
                     gridAdapter.clear();
                     new GetPlaces().execute();
@@ -89,75 +75,40 @@ public class MainActivity extends AppCompatActivity {
                     gridView.invalidateViews();
                     gridAdapter.notifyDataSetChanged();
                     gridView.setAdapter(gridAdapter);
+                    System.out.println(city);
+                    Toast.makeText(getApplicationContext(), "Selected: " + city, Toast.LENGTH_LONG).show();
                 }
                 index = -1;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
-<<<<<<< HEAD
                 Toast.makeText(getApplicationContext(),"Please Select a City!",  Toast.LENGTH_LONG).show();
-=======
-		    Toast.makeText(getApplicationContext(),"Please Select a City!",  Toast.LENGTH_LONG).show();
->>>>>>> 04214c59af5897e637babbbbe772991ac2b3f5a1
 
             }
         });
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                final Place place = placesList.get(position);
-                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-                bitmap[0] =  GetBitmapfromUrl(place.getImgURL());
-                intent.putExtra("title", place.getDescription());
-                intent.putExtra("image",bitmap[0]);
-                startActivity(intent);
-            }
-        });
+
     }
 
-<<<<<<< HEAD
 
-
-
-=======
-   
->>>>>>> 04214c59af5897e637babbbbe772991ac2b3f5a1
     public void plan(View v) {
-        Intent myIntent = new Intent(MainActivity.this, EstimationActivity.class);
-        Bundle args = new Bundle();
-        args.putSerializable("placesList",(Serializable)placesList);
-        myIntent.putExtra("BUNDLE",args);
-        startActivity(myIntent);
+        Intent intent = new Intent(MainActivity.this,PlanActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("placesList",placesList);
+        intent.putExtras(bundle);
+        startActivity(intent);
 
     }
 
 
-
-
-    public Bitmap GetBitmapfromUrl(String scr) {
-        try {
-            URL url=new URL(scr);
-            HttpURLConnection connection=(HttpURLConnection)url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input=connection.getInputStream();
-            Bitmap bmp = BitmapFactory.decodeStream(input);
-            return bmp;
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
-    }
-
+    @SuppressLint("StaticFieldLeak")
     private class GetPlaces extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Please wait...This ");
+            pDialog.setMessage("Please wait...");
             pDialog.setCancelable(false);
             pDialog.show();
         }
@@ -165,55 +116,41 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... arg0) {
             HttpHandler sh = new HttpHandler();
-            String jsonStr = sh.makeServiceCall(url);
-            Log.e(TAG, "Response from url: " + jsonStr);
+            String jsonStr = sh.makeServiceCall(PLACES_OF_INTEREST_URL);
+            Log.e(TAG, "Response from PLACES_OF_INTEREST_URL: " + jsonStr);
             if (jsonStr != null) {
                 try {
-                    System.out.println(url);
+                    System.out.println(PLACES_OF_INTEREST_URL);
                     JSONObject jsonObj = new JSONObject(jsonStr);
-                    JSONArray  jarray = jsonObj.getJSONArray("results");
-                    for (int i = 0; i <  jarray.length(); i++) {
-                        JSONObject object =  jarray.getJSONObject(i);
+                    JSONArray  jsonArray = jsonObj.getJSONArray("results");
+                    for (int i = 0; i <  jsonArray.length(); i++) {
+                        JSONObject object =  jsonArray.getJSONObject(i);
                         Place place = new Place();
-                        String photoReference = null;
+                        String photoReference;
                         place.setCity(city);
-                        place.setID(object.getString("id"));
+                        place.setID(object.getString("place_id"));
+                        String placeStr = sh.makeServiceCall("https://maps.googleapis.com/maps/api/place/details/json?placeid="+place.getID()+"&key="+API_KEY+"");
+                        JSONObject jsonObj1 = new JSONObject(placeStr);
+                        place.setDescription(jsonObj1.getJSONObject("result").getJSONArray("reviews").getJSONObject(0).getString("text"));
                         place.setName(object.getString("name"));
                         JSONObject geometry = object.getJSONObject("geometry");
                         JSONObject location = geometry.getJSONObject("location");
                         place.setLat(location.getDouble("lat"));
                         place.setLng(location.getDouble("lng"));
                         JSONArray photos = object.getJSONArray("photos");
-                        JSONObject getPhtotos = photos.getJSONObject(0);
-                        photoReference = getPhtotos.getString("photo_reference");
-                        String name = object.getString("name").replace(" ","%20");
-                        String detailUrl = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&titles="+name+"";
-                        System.out.println(detailUrl);
-                        String jsonStr1 = sh.makeServiceCall(detailUrl);
-                        System.out.println(jsonStr1);
-                        Log.e(TAG, "Response from url: " + jsonStr1);
-                        JSONObject jsonObject = new JSONObject(jsonStr1);
-                        JSONObject details = jsonObject.getJSONObject("query");
-                        details = details.getJSONObject("pages");
-                        String k = details.keys().next();
-                        if (k.equals("-1")){
-                            place.setDescription(" ");
-                            System.out.println("No Desc!!");
-                        } else {
-                            details = details.getJSONObject(k);
-                            System.out.println("Yes Desc!!");
-                            place.setDescription(details.getString("extract"));
-                            System.out.println(place.getDescription());
-                        }
-                        String imageUrl = "https://maps.googleapis.com/maps/api/place/photo?photoreference="+photoReference+"&sensor=false&maxheight=400&maxwidth=400&key="+ api_key +"";
-                        System.out.println(imageUrl);
-                        place.setImgURL(imageUrl);
+                        JSONObject photoReferenceUrl = photos.getJSONObject(0);
+                        photoReference = photoReferenceUrl.getString("photo_reference");
+                        String IMAGE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference="+photoReference+"&sensor=false&key="+ API_KEY +"";
+                        System.out.println(IMAGE_URL);
+                        place.setImgURL(IMAGE_URL);
                         if (!placesList.contains(place))
                             placesList.add(place);
                     }
                     for (int i = 0; i < placesList.size(); i++){
-                        if(placesList.get(i).getCity() != city)
-                            placesList.remove(i);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            if(!Objects.equals(placesList.get(i).getCity(), city))
+                                placesList.remove(i);
+                        }
                     }
                     System.out.println("Done!!");
                 } catch (final JSONException e) {
@@ -252,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("PostExecute!!");
             if (pDialog.isShowing())
                 pDialog.dismiss();
+            gridAdapter.notifyDataSetChanged();
 
         }
     }
