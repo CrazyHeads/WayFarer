@@ -14,6 +14,14 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.Button;
+import android.widget.PopupWindow;
+import android.content.Context;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import com.application.microsoft.wayfarer.R;
 import com.application.microsoft.wayfarer.adapters.GridViewAdapter;
@@ -32,11 +40,16 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener  {
-	private String TAG = MainActivity.class.getSimpleName();
-	private ProgressDialog pDialog;
+    private String TAG = MainActivity.class.getSimpleName();
+    private ProgressDialog pDialog;
     private GridView gridView;
     private GridViewAdapter gridAdapter;
     private String city = "";
+    private LinearLayout parentLinearLayout;
+
+    Button showPopupBtn, closePopupBtn;
+    PopupWindow popupWindow;
+    RelativeLayout linearLayout1;
 
     String api_key = "AIzaSyDFm0y1hqGzoHUxDJ-vnf-6rMsWLc_nA30";
     String[] cities;
@@ -51,6 +64,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
 
     protected void onCreate(Bundle savedInstanceState) {
+        Button button1;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         placesList = new ArrayList<>();
@@ -63,6 +77,14 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         placesList.clear();
         gridAdapter = new GridViewAdapter(this, R.layout.row,placesList);
         spinner.setAdapter(adapter);
+        showPopupBtn = (Button) findViewById(R.id.plus_button);
+        linearLayout1 = (RelativeLayout) findViewById(R.id.relativeLayout2);
+        parentLinearLayout = (LinearLayout) findViewById(R.id.parent_linear_layout);
+
+
+
+
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
@@ -89,6 +111,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
             }
+
         });
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -101,7 +124,33 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
                 startActivity(intent);
             }
         });
+        showPopupBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //instantiate the popup.xml layout file
+                LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View customView = layoutInflater.inflate(R.layout.popup,null);
+
+                closePopupBtn = (Button) customView.findViewById(R.id.closePopupBtn);
+
+                //instantiate popup window
+                popupWindow = new PopupWindow(customView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
+                //display the popup window
+                popupWindow.showAtLocation(linearLayout1, Gravity.CENTER, 0, 0);
+
+                //close the popup window on button click
+                closePopupBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
+
+            }
+        });
     }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -124,8 +173,16 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
     }
 
+    public void onAddField(View v) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View rowView = inflater.inflate(R.layout.field, null);
+        // Add the new row before the add field button.
+        parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount() - 1);
+    }
 
-
+    public void onDelete(View v) {
+        parentLinearLayout.removeView((View) v.getParent());
+    }
 
     public Bitmap GetBitmapfromUrl(String scr) {
         try {
@@ -146,6 +203,10 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         }
     }
 
+    public void show(View v) {
+        Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(myIntent);
+    }
     private class GetPlaces extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
