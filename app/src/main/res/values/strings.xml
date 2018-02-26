@@ -4,6 +4,10 @@
     <string name="enter_start_location">Enter Start Location</string>
     <string name="plus_button">+</string>
 
+    <string name="item_deleted">Item deleted</string>
+    <string name="item_undo">Undo</string>
+
+
     <string-array name="cities_arrays">
         <item>Select City</item>
         <item >Hyderabad</item>
@@ -13,6 +17,6 @@
         <item >Mumbai</item>
         <item >Bangalore</item>
     </string-array>
-
+    <color name="background">#545454</color>
 
 </resources>

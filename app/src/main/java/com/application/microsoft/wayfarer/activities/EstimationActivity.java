@@ -6,36 +6,23 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import com.application.microsoft.wayfarer.R;
-//import com.application.microsoft.wayfarer.adapters.GridViewAdapter;
 import com.application.microsoft.wayfarer.handlers.HttpHandler;
-import com.application.microsoft.wayfarer.adapters.ListViewAdapter;
-
 import com.application.microsoft.wayfarer.models.Place;
+import com.application.microsoft.wayfarer.models.Route;
 import com.application.microsoft.wayfarer.models.Transit;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Set;
 
 
-/**
- * Created by satyavati on 22-01-2018.
- */
 
 public class EstimationActivity extends AppCompatActivity {
     Button select;
@@ -47,7 +34,8 @@ public class EstimationActivity extends AppCompatActivity {
     private static final Hashtable<Integer, Integer> ordinaryBusFares = new Hashtable<Integer, Integer>();
     private static final Hashtable<Integer, Integer> metroRailFares = new Hashtable<Integer, Integer>();
     private static final Hashtable<Integer, Integer> mmtsFares = new Hashtable<Integer, Integer>();
-    TextView source,des;
+    TextView transitDetails;
+    ArrayList<Place> placesList;
 
     public String getOrigin() {
         return origin;
@@ -64,22 +52,23 @@ public class EstimationActivity extends AppCompatActivity {
     public void setDestination(String destination) {
         this.destination = destination;
     }
+    ArrayList<Route> routes = new ArrayList<>();
+
+    public ArrayList<Route> getRoutes() {
+        return routes;
+    }
+
+    public void setRoutes(ArrayList<Route> routes) {
+        this.routes = routes;
+    }
 
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estimation);
-        MainActivity mainActivity = new MainActivity();
-//        Bundle bundle = getIntent().getExtras();
-//
-//        source = (TextView)findViewById(R.id.textView);
-//        des = (TextView)findViewById(R.id.textView4);
-//        source.setEnabled(false);
-//        des.setEnabled(false);
-
-        setOrigin("Nizampet");
-        setDestination("vidya nagar nallakunta");
+        placesList = getIntent().getParcelableArrayListExtra("selectedPlacesList");
+        transitDetails = (TextView) findViewById(R.id.transitDetails);
         new TransitDetails().execute();
 
 
@@ -96,98 +85,124 @@ public class EstimationActivity extends AppCompatActivity {
         String url;
         Transit transit = new Transit();
 
+
         @Override
         protected String doInBackground(String... strings) {
-            url = createUrl();
 
+            for (int k = 0; k + 2 <= placesList.size(); k++) {
+                Route route = new Route();
+                url = createUrl(placesList.get(k).getLat() +"," + placesList.get(k).getLng(), placesList.get(k+1).getLat() + "," + placesList.get(k+1).getLng());
+                System.out.println(placesList.get(k).getName()+" "+ placesList.get(k+1).getName());
+                route.setSource(placesList.get(k).getName());
+                route.setDestination(placesList.get(k+1).getName());
+                HttpHandler sh = new HttpHandler();
+                //                transitDetails.setText(placesList.get(k).getName() );
+                String jsonStr = sh.makeServiceCall(url);
+                ArrayList<Transit> transitList = new ArrayList<>();
+                if (jsonStr != null) {
+                    try {
+                        System.out.println(url);
+                        JSONObject jsonObj = new JSONObject(jsonStr);
+                        JSONArray jsonData = jsonObj.getJSONArray("routes")
+                                .getJSONObject(0).getJSONArray("legs")
+                                .getJSONObject(0).getJSONArray("steps");
+                        // .getJSONObject(0).getJSONArray("steps");
 
-            HttpHandler sh = new HttpHandler();
-            String jsonStr = sh.makeServiceCall(url);
-            if (jsonStr != null) {
-                try {
-                    System.out.println(url);
-                    JSONObject jsonObj = new JSONObject(jsonStr);
-                    JSONArray jsonData = jsonObj.getJSONArray("routes")
-                            .getJSONObject(0).getJSONArray("legs")
-                            .getJSONObject(0).getJSONArray("steps");
-                    // .getJSONObject(0).getJSONArray("steps");
+                        for (int i = 0; i < jsonData.length(); i++) {
+                            JSONObject stop = jsonData.getJSONObject(i);
+                            transit.setTravelMode(stop.getString("travel_mode"));
+                            transit.setDistance(stop.getJSONObject("distance").getString("text"));
+                            transit.setDuration(stop.getJSONObject("duration").getString("text"));
+                            System.out.println(transit.getTravelMode());
+//                            transitDetails.append(transit.getTravelMode());
+                            transit.setInstructions(stop.getString("html_instructions"));
+//                            transitDetails.append(transit.getInstructions() );
+                            System.out.println(transit.getInstructions());
+                            System.out.println(" for " + transit.getDistance() + " for " + transit.getDuration());
+//                            transitDetails.append(" for " + transit.getDistance() + " for " + transit.getDuration() );
+                            if (transit.getTravelMode().equals("TRANSIT") && transit.getInstructions().contains("Bus")) {
+                                transit.setNoOfStops(stop.getJSONObject("transit_details").getInt("num_stops"));
+                                transit.setTransitNumber(stop.getJSONObject("transit_details").getJSONObject("line").getString("short_name"));
+//                                transitDetails.append("No of Stops: " + transit.getNoOfStops()
+//                                + "Transit Number " + transit.getTransitNumber()  + "Metro Bus Fare " + calculateACBusFare(Double.parseDouble(transit.getDistance().replace("km", " ").trim()))
+//                                         + "Metro Bus Fare " + calculateACBusFare(Double.parseDouble(transit.getDistance().replace("km", " ").trim()))
+//                                        + "Ordinary Bus Fare " + calculateOrdinaryBusFare(Double.parseDouble(transit.getDistance().replace("km", " ").trim())) );
+                                System.out.println("No of Stops: " + transit.getNoOfStops());
+                                System.out.println("Transit Number " + transit.getTransitNumber());
+                                System.out.println("Metro Bus Fare " + calculateACBusFare(Double.parseDouble(transit.getDistance().replace("km", " ").trim())));
+                                System.out.println("Ordinary Bus Fare " + calculateOrdinaryBusFare(Double.parseDouble(transit.getDistance().replace("km", " ").trim())));
+                            } else if (transit.getTravelMode().equals("TRANSIT") && transit.getInstructions().contains("Metro rail")) {
+                                transit.setNoOfStops(stop.getJSONObject("transit_details").getInt("num_stops"));
+//                                transitDetails.append("Transit Details:" + transit.getNoOfStops()
+//                                + "Metro Rail Fare " + calculateMetroRailFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim())) );
+                                System.out.println("Transit Details:" + transit.getNoOfStops());
+                                System.out.println("Metro Rail Fare " + calculateMetroRailFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim())));
+                            } else if (transit.getTravelMode().equals("TRANSIT") && transit.getInstructions().contains("Train")) {
+//                                transitDetails.append("MMTS Fare " + calculateMMTSFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim())) );
+                                System.out.println("MMTS Fare " + calculateMMTSFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim())));
 
-                    for(int i = 0;i < jsonData.length();i++) {
-                        JSONObject stop = jsonData.getJSONObject(i);
-                        transit.setTravelMode(stop.getString("travel_mode"));
-                        transit.setDistance(stop.getJSONObject("distance").getString("text"));
-                        transit.setDuration(stop.getJSONObject("duration").getString("text"));
-                        System.out.println(transit.getTravelMode());
-                        transit.setInstructions(stop.getString("html_instructions"));
-                        System.out.println(transit.getInstructions());
-                        System.out.println(" for " +transit.getDistance()+ " for " + transit.getDuration());
-                        if (transit.getTravelMode().equals("TRANSIT") && transit.getInstructions().contains("Bus")) {
-                            transit.setNoOfStops(stop.getJSONObject("transit_details").getInt("num_stops"));
-                            transit.setTransitNumber(stop.getJSONObject("transit_details").getJSONObject("line").getString("short_name"));
-                            System.out.println("No of Stops: "+transit.getNoOfStops());
-                            System.out.println("Transit Number " +transit.getTransitNumber());
-                            System.out.println("Metro Bus Fare "+calculateMetroBusFare(Double.parseDouble(transit.getDistance().replace("km"," ").trim())));
-                            System.out.println("Ordinary Bus Fare "+calculateOrdinaryBusFare(Double.parseDouble(transit.getDistance().replace("km"," ").trim())));
+                            }
+                            transitList.add(transit);
+
                         }
-                        else if(transit.getTravelMode().equals("TRANSIT") && transit.getInstructions().contains("Metro rail")) {
-                            transit.setNoOfStops(stop.getJSONObject("transit_details").getInt("num_stops"));
-                            System.out.println("Transit Details:" +transit.getNoOfStops());
-                            System.out.println("Metro Rail Fare "+calculateMetroRailFares(Double.parseDouble(transit.getDistance().replace("km"," ").trim())));
-                        }
-                        else if (transit.getTravelMode().equals("TRANSIT") && transit.getInstructions().contains("Train")) {
-                            System.out.println("MMTS Fare "+calculateMMTSFares(Double.parseDouble(transit.getDistance().replace("km"," ").trim())));
-
-                        }
-
+                    } catch (JSONException e) {
                     }
-                } catch (JSONException e) {
+                    route.setTransitInfo(transitList);
+
                 }
+                routes.add(route);
             }
+
+
             return null;
-
-
         }
 
-        private String createUrl() {
+    }
+
+
+        private String createUrl(String origin, String destination) {
 
             return DIRECTION_URL_API + "origin=" +origin+ "&destination=" +destination+ "&mode=transit&key="+DIRECTION_API_KEY;
         }
 
 
-        private double calculateMetroBusFare(double distance) {
-            //fare for RTC Metro Bus
-            metroBusFares.put(6,10);
-            metroBusFares.put(14,15);
-            metroBusFares.put(24,20);
-            metroBusFares.put(34,35);
-            metroBusFares.put(40,30);
-            Set<Integer> fares = metroBusFares.keySet();
-            for(Integer key: fares) {
-                if (distance <= key) {
-                    // System.out.println("Hii");
-                    return metroBusFares.get(key);
-                }
+    private double calculateACBusFare(double distance) {
 
-            }
-            return -1;
+        //fare for RTC Metro Bus
+//            metroBusFares.put(6,10);
+//            metroBusFares.put(14,15);
+//            metroBusFares.put(24,20);
+//            metroBusFares.put(34,35);
+//            metroBusFares.put(40,30);
+//            Set<Integer> fares = metroBusFares.keySet();
+//            for(Integer key: fares) {
+//                if (distance <= key) {
+//                    // System.out.println("Hii");
+//                    return metroBusFares.get(key);
+//                }
+//
+//            }
+        if (distance == 2) {
+            return 15;
         }
+        if (distance <= 17) {
+            return 15 + ((distance/2) * 5);
+        }
+        else {
+            return 60 + ((distance/5) * 10);
+        }
+    }
 
-        private double calculateOrdinaryBusFare(double distance) {
-            //fare for ordinary RTC  Bus
-            ordinaryBusFares.put(2,5);
-            ordinaryBusFares.put(10,10);
-            ordinaryBusFares.put(18,15);
-            ordinaryBusFares.put(28,20);
-            ordinaryBusFares.put(40,25);
-            Set<Integer> fares = ordinaryBusFares.keySet();
-            for(Integer key: fares) {
-                if (distance <= key) {
-                    //System.out.println("Hii");
-                    return ordinaryBusFares.get(key);
-                }
 
+    private double calculateOrdinaryBusFare(double distance) {
+            if (distance == 2) {
+                return 8;
             }
-            return -1;
+            else if (distance <= 17) {
+                return 8 + ((distance/2) * 2);
+            }
+            return 24 + ((distance/5));
+
         }
 
         private double calculateMetroRailFares(double distance) {
@@ -229,16 +244,8 @@ public class EstimationActivity extends AppCompatActivity {
             return -1;
 
         }
-
-
-
-
-
-
-
-
-    }
-
-
 }
+
+
+
 

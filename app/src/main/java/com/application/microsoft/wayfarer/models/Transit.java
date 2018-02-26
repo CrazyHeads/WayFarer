@@ -1,8 +1,5 @@
 package com.application.microsoft.wayfarer.models;
 
-/**
- * Created by shravanivadlamudi on 23/02/18.
- */
 
 public class Transit {
     private  String travelMode;
@@ -11,6 +8,7 @@ public class Transit {
     private String instructions;
     private int noOfStops;
     private String transitNumber;
+
 
     public int getNoOfStops() {
         return noOfStops;

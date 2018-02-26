@@ -1,18 +1,62 @@
 package com.application.microsoft.wayfarer.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
 
-public class Place {
+public class Place implements Parcelable{
     String ID;
     String name;
     Double lat;
     Double lng;
     String imgURL;
-    List<String> Type;
+    List<String> type;
     Boolean isOpen;
+    Boolean isSelected;
+    String city;
+
+    public Place() {
+
+    }
+
+    protected Place(Parcel in) {
+        ID = in.readString();
+        name = in.readString();
+        if (in.readByte() == 0) {
+            lat = null;
+        } else {
+            lat = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            lng = null;
+        } else {
+            lng = in.readDouble();
+        }
+        imgURL = in.readString();
+        type = in.createStringArrayList();
+        byte tmpIsOpen = in.readByte();
+        isOpen = tmpIsOpen == 0 ? null : tmpIsOpen == 1;
+        byte tmpIsSelected = in.readByte();
+        isSelected = tmpIsSelected == 0 ? null : tmpIsSelected == 1;
+        city = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<Place> CREATOR = new Creator<Place>() {
+        @Override
+        public Place createFromParcel(Parcel in) {
+            return new Place(in);
+        }
+
+        @Override
+        public Place[] newArray(int size) {
+            return new Place[size];
+        }
+    };
 
     public Boolean getSelected() {
         return isSelected;
@@ -21,9 +65,7 @@ public class Place {
     public void setSelected(Boolean selected) {
         isSelected = selected;
     }
-
-    Boolean isSelected;
-
+   
     public String getCity() {
         return city;
     }
@@ -32,7 +74,7 @@ public class Place {
         this.city = city;
     }
 
-    String city;
+   
 
     public String getDescription() {
 
@@ -97,14 +139,14 @@ public class Place {
         this.imgURL = imgURL;
     }
 
-    public List<String> getType() {
+    public List<String> gettype() {
 
-        return Type;
+        return type;
     }
 
-    public void setType(List<String> type) {
+    public void settype(List<String> type) {
 
-        Type = type;
+        type = type;
     }
 
     public Boolean getOpen() {
@@ -118,4 +160,32 @@ public class Place {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(ID);
+        dest.writeString(name);
+        if (lat == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(lat);
+        }
+        if (lng == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(lng);
+        }
+        dest.writeString(imgURL);
+        dest.writeStringList(type);
+        dest.writeByte((byte) (isOpen == null ? 0 : isOpen ? 1 : 2));
+        dest.writeByte((byte) (isSelected == null ? 0 : isSelected ? 1 : 2));
+        dest.writeString(city);
+        dest.writeString(description);
+    }
 }

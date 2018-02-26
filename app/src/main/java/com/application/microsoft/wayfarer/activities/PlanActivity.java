@@ -2,15 +2,26 @@ package com.application.microsoft.wayfarer.activities;
 
 //import android.content.Intent;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.application.microsoft.wayfarer.NetworkCalls.ApiInterface;
 import com.application.microsoft.wayfarer.R;
 import com.application.microsoft.wayfarer.TSPEngine.TSPEngine;
+import com.application.microsoft.wayfarer.adapters.PlaceAdapter;
+import com.application.microsoft.wayfarer.adapters.RecyclerViewAdapter;
 import com.application.microsoft.wayfarer.handlers.HttpHandler;
+import com.application.microsoft.wayfarer.interfaces.OnStartDragListener;
 import com.application.microsoft.wayfarer.models.Place;
+import com.application.microsoft.wayfarer.utils.SimpleItemTouchHelperCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,16 +30,20 @@ import java.util.ArrayList;
 
 import static com.application.microsoft.wayfarer.utils.Functions.convertDistanceToMeter;
 
-public class PlanActivity extends AppCompatActivity {
+public class PlanActivity extends AppCompatActivity implements OnStartDragListener {
 
     ArrayList<Place> selectedPlaces = new ArrayList<>();
-    private ApiInterface apiService;
     private TSPEngine mTspEng;
     private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
     private static final String DIRECTION_API_KEY = "AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A";
     private String origin;
     private String destination;
     String distance;
+
+
+    RecyclerView rvPlaceItems;
+    PlaceAdapter placeAdapter;
+
 
     public String getDistance() {
         return distance;
@@ -62,81 +77,69 @@ public class PlanActivity extends AppCompatActivity {
         this.destination = destination;
     }
 
+
+    private ItemTouchHelper mItemTouchHelper;
+    private int nu = 0;
+    TextView tvNumber;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan);
-        selectedPlaces = getIntent().getParcelableArrayListExtra("placesList");
-        for(int i = 0; i < selectedPlaces.size(); i++){
-            if(selectedPlaces.get(i).getSelected() == null || !selectedPlaces.get(i).getSelected()){
-                selectedPlaces.remove(i);
+        ArrayList<Place> placesList = getIntent().getParcelableArrayListExtra("placesList");
+        Toast.makeText(getApplicationContext(),"This the optimized route to visit all the places selected! You can Edit it by Swiping the list, You can delete a place by swiping it!",  Toast.LENGTH_LONG).show();
+        System.out.println("before size" + placesList.size());
+        for (int i = 0; i < placesList.size(); i++) {
+            if (placesList.get(i).getSelected()) {
+                selectedPlaces.add(placesList.get(i));
+                System.out.println(placesList.get(i).getName());
             }
         }
-
-//        Place p = new Place();
-//        Place p3 = new Place();
-//        p3.setName("Jalavihar Water Park");
-//        p3.setLat(17.4329278);
-//        p3.setLng(78.464668);
-//        selectedPlaces.add(p3);
-//        p.setName("Golconda Fort");
-//        p.setLat(17.383309);
-//        p.setLng(78.4010528);
-//        selectedPlaces.add(p);
-//        Place p1 = new Place();
-//        p1.setName("Chilkur Balaji Temple");
-//        p1.setLat(17.3587171);
-//        p1.setLng(78.29873909999999);
-//        selectedPlaces.add(p1);
-//        Place p2 = new Place();
-//        p2.setName("Buddha Statue");
-//        p2.setLat(17.4155657);
-//        p2.setLng(78.47497300000001);
-//        selectedPlaces.add(p2);
-//
-//        Place p4 = new Place();
-//        p4.setName("T.Anjaiah Lumbini Park");
-//        p4.setLat(17.4100675);
-//        p4.setLng(78.47320839999999);
-//        selectedPlaces.add(p4);
-
-        mTspEng = new TSPEngine();
-        numberOfLocations = selectedPlaces.size();
-        mInputMatrixForTspDistance = new int[numberOfLocations][numberOfLocations];
-        optimizedLocationListDistance = new ArrayList<>();
+        System.out.println("after size" + selectedPlaces.size());
         new Distance().execute();
-    }
+        rvPlaceItems = (RecyclerView) findViewById(R.id.rvPlaceItems);
+        rvPlaceItems.setLayoutManager(new LinearLayoutManager(this));
+        rvPlaceItems.setItemAnimator(new DefaultItemAnimator());
 
+        placeAdapter = new PlaceAdapter(selectedPlaces);
+        rvPlaceItems.setAdapter(placeAdapter);
 
-    private void prepareDistanceList() {
-        System.out.println("noOfLocations" + numberOfLocations);
-        for (int i = 0; i < numberOfLocations; i++) {
-            String origin = selectedPlaces.get(i).getLat() + "," + selectedPlaces.get(i).getLng();
-            for (int j = 0; j < numberOfLocations; j++) {
-                String dest = selectedPlaces.get(j).getLat() + "," + selectedPlaces.get(j).getLng();
-//                  System.out.println(origin +" "+ dest );
-                mDistanceList = calculateDistance(mDistanceList, origin, dest);
-//                    System.out.println(mDistanceList.size());
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
-
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                moveItem(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                return true;
             }
-        }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                deleteItem(viewHolder.getAdapterPosition());
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(rvPlaceItems);
 
     }
 
-    private ArrayList<String> calculateDistance(final ArrayList<String> mDistanceList, final String origin, final String dest) {
 
-        setOrigin(origin);
-        setDestination(dest);
+    void moveItem(int oldPos, int newPos) {
+        Place place = selectedPlaces.get(oldPos);
 
-        new Distance().execute();
-
-        System.out.println(getDistance());
-        return mDistanceList;
+        selectedPlaces.remove(oldPos);
+        selectedPlaces.add(newPos, place);
+        placeAdapter.notifyItemMoved(oldPos, newPos);
     }
+
+    void deleteItem(final int position) {
+        selectedPlaces.remove(position);
+        placeAdapter.notifyItemRemoved(position);
+    
+}
+
 
     public void getOptimizeRoute(ArrayList<String> mDistanceList) {
-//        prepareDistanceList();
         int row = -1;
         System.out.println(mDistanceList.size());
         for (int i = 0; i < mDistanceList.size(); i++) {
@@ -163,6 +166,17 @@ public class PlanActivity extends AppCompatActivity {
         return DIRECTION_URL_API + "origin=" + origin + "&destination=" + destination + "&mode=driving&key=" + DIRECTION_API_KEY;
     }
 
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        
+    }
+
+    public void estimate(View view) {
+        Intent intent = new Intent(PlanActivity.this, EstimationActivity.class);
+        intent.putParcelableArrayListExtra("selectedPlacesList", selectedPlaces);
+        startActivity(intent);
+    }
+
     private class Distance extends AsyncTask<String, Void, Void> {
         ProgressDialog pDialog;
         @Override
@@ -178,6 +192,12 @@ public class PlanActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(String... strings) {
+
+            mTspEng = new TSPEngine();
+            numberOfLocations = selectedPlaces.size();
+            mInputMatrixForTspDistance = new int[numberOfLocations][numberOfLocations];
+            optimizedLocationListDistance = new ArrayList<>();
+
             for (int i = 0; i < numberOfLocations; i++) {
                 String origin = selectedPlaces.get(i).getLat() + "," + selectedPlaces.get(i).getLng();
                 for (int j = 0; j < numberOfLocations; j++) {

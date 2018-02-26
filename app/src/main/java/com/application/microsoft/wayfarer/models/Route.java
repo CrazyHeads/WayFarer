@@ -1,57 +1,40 @@
-package com.thyme.smalam119.routeplannerapplication.Model.Direction;
+package com.application.microsoft.wayfarer.models;
+
+import java.util.ArrayList;
 
 /**
- * Created by smalam119 on 12/19/17.
+ * Created by RAJULA on 26-02-2018.
  */
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import java.util.ArrayList;
-import java.util.List;
-
 public class Route {
+    String source;
+    String destination;
+    ArrayList<Transit> transitInfo;
 
-    @SerializedName("legs")
-    @Expose
-    private List<Leg> legs = new ArrayList<Leg>();
-    @SerializedName("overview_polyline")
-    @Expose
-    private OverviewPolyline overviewPolyline;
-
-    /**
-     *
-     * @return
-     * The legs
-     */
-    public List<Leg> getLegs() {
-        return legs;
+    public ArrayList<Transit> getTransitInfo() {
+        return transitInfo;
     }
 
-    /**
-     *
-     * @param legs
-     * The legs
-     */
-    public void setLegs(List<Leg> legs) {
-        this.legs = legs;
+    public void setTransitInfo(ArrayList<Transit> transitInfo) {
+        this.transitInfo = transitInfo;
     }
 
-    /**
-     *
-     * @return
-     * The overviewPolyline
-     */
-    public OverviewPolyline getOverviewPolyline() {
-        return overviewPolyline;
+    public String getSource() {
+        return source;
     }
 
-    /**
-     *
-     * @param overviewPolyline
-     * The overview_polyline
-     */
-    public void setOverviewPolyline(OverviewPolyline overviewPolyline) {
-        this.overviewPolyline = overviewPolyline;
+    public void setSource(String source) {
+        this.source = source;
     }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+
 
 }
