@@ -102,8 +102,9 @@ public class PlanActivity extends AppCompatActivity implements OnStartDragListen
         rvPlaceItems.setLayoutManager(new LinearLayoutManager(this));
         rvPlaceItems.setItemAnimator(new DefaultItemAnimator());
 
-        placeAdapter = new PlaceAdapter(selectedPlaces);
+        placeAdapter = new PlaceAdapter(optimizedLocationListDistance);
         rvPlaceItems.setAdapter(placeAdapter);
+
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -237,6 +238,7 @@ public class PlanActivity extends AppCompatActivity implements OnStartDragListen
                 System.out.println(i + ":" + optimizedLocationListDistance.get(i).getName());
 
             }
+            placeAdapter.notifyDataSetChanged();
         }
     }
 }

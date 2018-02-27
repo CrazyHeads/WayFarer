@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -23,9 +24,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-/**
- * Created by RAJULA on 25-02-2018.
- */
+
 
 public class RoutesViewAdapter extends ArrayAdapter<Route> {
     private Context context;
@@ -56,7 +55,7 @@ public class RoutesViewAdapter extends ArrayAdapter<Route> {
             final Route route = routesList.get(position);
             holder.source.setText(route.getSource());
             holder.source.setText(route.getDestination());
-            GridView transitDetails = (GridView) row.findViewById(R.id.grid_view);
+            ListView transitDetails = (ListView) row.findViewById(R.id.grid_view);
             transitDetails.setAdapter(new TransitViewAdapter(context, R.layout.transit_layout, route.getTransitInfo()));
             return row;
         }

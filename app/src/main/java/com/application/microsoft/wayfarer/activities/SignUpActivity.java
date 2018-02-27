@@ -51,7 +51,7 @@ public  class SignUpActivity extends AppCompatActivity {
     }
 
     public void signupSuccess() {
-        Intent myIntent = new Intent(SignUpActivity.this, MapActivity.class);
+        Intent myIntent = new Intent(SignUpActivity.this, MapsActivity.class);
         startActivity(myIntent);
     }
 

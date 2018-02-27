@@ -221,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void plan(View v) {
         Intent intent = new Intent(MainActivity.this,PlanActivity.class);
+
         intent.putParcelableArrayListExtra("placesList", placesList);
         String address = autoCompView.getText().toString();
         System.out.println(address + " " + city);
@@ -234,8 +235,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             placesList.add(0,p);
             startActivity(intent);
 
-        }
-        Toast.makeText(getApplicationContext(),"Please select a starting location !",  Toast.LENGTH_LONG).show();
+        } else
+            Toast.makeText(getApplicationContext(),"Please select a starting location in the city selected!",  Toast.LENGTH_LONG).show();
     }
 
     public void loginIcon(View v) {

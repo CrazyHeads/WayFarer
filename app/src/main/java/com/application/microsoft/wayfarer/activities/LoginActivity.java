@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+
 public class LoginActivity extends AppCompatActivity {
     Button click;
     Button select;
@@ -62,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
-        Intent myIntent = new Intent(LoginActivity.this, MapActivity.class);
+        Intent myIntent = new Intent(LoginActivity.this, MapsActivity.class);
         startActivity(myIntent);
     }
 
@@ -88,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void signup(View v) {
-        Intent myIntent = new Intent(LoginActivity.this, SignUpActivity.class);
+        Intent myIntent = new Intent(LoginActivity.this, MapsActivity.class);
         startActivity(myIntent);
 
     }
@@ -125,16 +126,18 @@ public class LoginActivity extends AppCompatActivity {
 
 
         @Override
+
         protected String doInBackground(String... params) {
             if(str_password.trim().equals("") ||str_username.trim().equals("")){
                 z = "Please fill all the fields";
             }else{
                 try {
                     Connection con = ConnectionFactory.getConnection();
+
                     if (con == null) {
                         z = "Error in connection with SQL server";
                     }else{
-                        String query = "select * from userDetails where password LIKE '"+str_password+"' and name LIKE '"+str_username+"';";
+                        String query = "select * from userDetails where name LIKE 'Shravani';";
                         System.out.println(query);
                         Statement stmt = con.createStatement();
                         ResultSet rs = stmt.executeQuery(query);

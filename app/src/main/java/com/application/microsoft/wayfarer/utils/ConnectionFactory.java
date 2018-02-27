@@ -19,8 +19,8 @@ public class ConnectionFactory {
             System.out.println("Connected");
 
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:jtds:sqlserver://wayfarer.database.windows.net:1433;database=wayfarer;user=rpavani@wayfarer;password=Tiger@1998;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;");
-            System.out.println("Connected");
+            connection = DriverManager.getConnection("jdbc:jtds:sqlserver://wayfarer.database.windows.net:1433;database=wayfarer;user=wayfarer@wayfarer;password=Tiger@1998;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;");
+
 
         } catch (Exception e){
             System.out.println("Exception: " + e.getMessage());

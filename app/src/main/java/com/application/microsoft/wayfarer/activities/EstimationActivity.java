@@ -1,5 +1,6 @@
 package com.application.microsoft.wayfarer.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,6 +41,8 @@ public class EstimationActivity extends AppCompatActivity {
     TextView transitDetails;
     ArrayList<Place> placesList;
     RoutesViewAdapter routesViewAdapter;
+    private ProgressDialog pDialog;
+
     public String getOrigin() {
         return origin;
     }
@@ -88,14 +91,33 @@ public class EstimationActivity extends AppCompatActivity {
 
     }
 
-    private class TransitDetails extends AsyncTask<String, Void, String> {
+    private class TransitDetails extends AsyncTask<String, Void,Void> {
 
         String url;
         Transit transit = new Transit();
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(EstimationActivity.this);
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            System.out.println("PostExecute!!");
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            routesViewAdapter.notifyDataSetChanged();
+
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
 
             for (int k = 0; k + 2 <= placesList.size(); k++) {
                 Route route = new Route();
@@ -165,6 +187,8 @@ public class EstimationActivity extends AppCompatActivity {
 
              return null;
         }
+
+
 
     }
 

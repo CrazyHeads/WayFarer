@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.application.microsoft.wayfarer.R;
@@ -50,7 +51,7 @@ public class TransitViewAdapter extends ArrayAdapter<Transit> {
             holder.instructions = (TextView) row.findViewById(R.id.instruction);
             holder.distanceDuration = (TextView) row.findViewById(R.id.destination_text_view);
             holder.fare = (TextView) row.findViewById(R.id.fare_txt_view);
-            holder.travelMode =(ImageButton) row.findViewById(R.id.mode_image);
+            holder.travelMode =(ImageView) row.findViewById(R.id.mode_image);
             holder.transitMode = (TextView) row.findViewById(R.id.transitNo);
             row.setTag(holder);
         } else {
@@ -71,12 +72,12 @@ public class TransitViewAdapter extends ArrayAdapter<Transit> {
             holder.travelMode.setImageResource(R.drawable.mmts);
             holder.fare.setText("MMTS Fare " + EstimationActivity.calculateMMTSFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim())));
         }
-         holder.distanceDuration.setText("Distance :" + transit.getDistance() + "\n" + "Duration :" + transit.getDuration());
+//         holder.distanceDuration.setText("Distance :" + transit.getDistance() + "\n" + "Duration :" + transit.getDuration());
         return row;
     }
 
     static class ViewHolder {
-       ImageButton travelMode;
+       ImageView travelMode;
        TextView distanceDuration;
        TextView instructions;
        TextView fare;
