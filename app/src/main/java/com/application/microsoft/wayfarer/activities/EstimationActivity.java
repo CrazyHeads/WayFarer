@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.application.microsoft.wayfarer.R;
+import com.application.microsoft.wayfarer.adapters.RoutesViewAdapter;
 import com.application.microsoft.wayfarer.handlers.HttpHandler;
 import com.application.microsoft.wayfarer.models.Place;
 import com.application.microsoft.wayfarer.models.Route;
@@ -36,7 +39,7 @@ public class EstimationActivity extends AppCompatActivity {
     private static final Hashtable<Integer, Integer> mmtsFares = new Hashtable<Integer, Integer>();
     TextView transitDetails;
     ArrayList<Place> placesList;
-
+    RoutesViewAdapter routesViewAdapter;
     public String getOrigin() {
         return origin;
     }
@@ -57,7 +60,7 @@ public class EstimationActivity extends AppCompatActivity {
     public ArrayList<Route> getRoutes() {
         return routes;
     }
-
+    ListView listView;
     public void setRoutes(ArrayList<Route> routes) {
         this.routes = routes;
     }
@@ -68,9 +71,14 @@ public class EstimationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estimation);
         placesList = getIntent().getParcelableArrayListExtra("selectedPlacesList");
-        transitDetails = (TextView) findViewById(R.id.transitDetails);
+//        transitDetails = (TextView) findViewById(R.id.transitDetails);
+        routesViewAdapter = new RoutesViewAdapter(this, R.layout.route_layout, routes);
+        listView = (ListView) findViewById(R.id.route_view);
+        listView.setAdapter(routesViewAdapter);
         new TransitDetails().execute();
 
+        routesViewAdapter.addAll(routes);
+        routesViewAdapter.notifyDataSetChanged();
 
     }
 
@@ -151,10 +159,11 @@ public class EstimationActivity extends AppCompatActivity {
 
                 }
                 routes.add(route);
+//                routesViewAdapter.add(route);
+
             }
 
-
-            return null;
+             return null;
         }
 
     }
@@ -166,7 +175,7 @@ public class EstimationActivity extends AppCompatActivity {
         }
 
 
-    private double calculateACBusFare(double distance) {
+    public static double calculateACBusFare(double distance) {
 
         //fare for RTC Metro Bus
 //            metroBusFares.put(6,10);
@@ -194,7 +203,7 @@ public class EstimationActivity extends AppCompatActivity {
     }
 
 
-    private double calculateOrdinaryBusFare(double distance) {
+    public static double calculateOrdinaryBusFare(double distance) {
             if (distance == 2) {
                 return 8;
             }
@@ -205,7 +214,7 @@ public class EstimationActivity extends AppCompatActivity {
 
         }
 
-        private double calculateMetroRailFares(double distance) {
+        public static double calculateMetroRailFares(double distance) {
             //fares for metro rail
             metroRailFares.put(2,10);
             metroRailFares.put(4,15);
@@ -229,7 +238,7 @@ public class EstimationActivity extends AppCompatActivity {
         }
 
 
-        private double calculateMMTSFares(double distance) {
+        public static double calculateMMTSFares(double distance) {
             mmtsFares.put(15,5);
             mmtsFares.put(30,10);
             mmtsFares.put(40,11);

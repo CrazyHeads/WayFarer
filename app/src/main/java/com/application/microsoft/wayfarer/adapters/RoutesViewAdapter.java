@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -15,8 +16,9 @@ import android.widget.TextView;
 import com.application.microsoft.wayfarer.R;
 import com.application.microsoft.wayfarer.activities.EstimationActivity;
 import com.application.microsoft.wayfarer.activities.MainActivity;
-import com.application.microsoft.wayfarer.models.Place;
 import com.application.microsoft.wayfarer.models.Route;
+import com.application.microsoft.wayfarer.models.Route;
+import com.application.microsoft.wayfarer.models.Transit;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -39,55 +41,30 @@ public class RoutesViewAdapter extends ArrayAdapter<Route> {
         @Override
         public View getView ( int position, final View convertView, ViewGroup parent){
             View row = convertView;
-            ListViewAdapter.ViewHolder holder = null;
+            RoutesViewAdapter.ViewHolder holder = null;
 
             if (row == null) {
                 LayoutInflater inflater = ((Activity) context).getLayoutInflater();
                 row = inflater.inflate(layoutResourceId, parent, false);
-                holder = new ListViewAdapter.ViewHolder();
-                holder.placeTitle = (TextView) row.findViewById(R.id.tvName);
-                holder.image = (ImageButton) row.findViewById(R.id.ivimage);
-//            holder.placeDesc =(TextView) row.findViewById(R.id.tvDesc);
-                holder.checkbox = (CheckBox) row.findViewById(R.id.list_item_checkbox);
+                holder = new ViewHolder();
+                holder.source = (TextView) row.findViewById(R.id.source_text_view);
+                holder.destination = (TextView) row.findViewById(R.id.destination_text_view);
                 row.setTag(holder);
             } else {
-                holder = (ListViewAdapter.ViewHolder) row.getTag();
+                holder = (RoutesViewAdapter.ViewHolder) row.getTag();
             }
-            holder.image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Do something
-                }
-            });
-            final Place place = placesList.get(position);
-            holder.placeTitle.setText(place.getName());
-//        holder.placeDesc.setText(place.getDescription());
-            Picasso.with(context).load(placesList.get(position).getImgURL()).into(holder.image);
-            holder.checkbox.setChecked(false);
-            holder.checkbox.setId(position);
-//        if(placesList.get(position).getSelected())
-//            holder.checkbox.setChecked(true);
-//        else
-//            holder.checkbox.setChecked(false);
-            holder.checkbox.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    CheckBox cb = (CheckBox) v;
-                    int id = cb.getId();
-                    System.out.println(id);
-                    if (cb.isChecked()) {
-                        placesList.get(id).setSelected(true);
-                    }
-
-                }
-            });
+            final Route route = routesList.get(position);
+            holder.source.setText(route.getSource());
+            holder.source.setText(route.getDestination());
+            GridView transitDetails = (GridView) row.findViewById(R.id.grid_view);
+            transitDetails.setAdapter(new TransitViewAdapter(context, R.layout.transit_layout, route.getTransitInfo()));
             return row;
         }
 
         static class ViewHolder {
-            TextView placeTitle;
-            ImageButton image;
-            CheckBox checkbox;
-//        TextView placeDesc;
+            TextView source;
+            TextView destination;
+
         }
 
 

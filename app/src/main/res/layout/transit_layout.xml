@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:screenOrientation="portrait"
@@ -8,10 +9,27 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/linearLayout">
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:id="@+id/instruction"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:text="Instruction"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+        </LinearLayout>
         <ImageView
-            android:id="@+id/action_image"
+            android:id="@+id/mode_image"
             android:layout_width="25sp"
             android:layout_height="30sp"
             android:layout_marginLeft="30sp"
@@ -22,17 +40,17 @@
             android:id="@+id/place_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/action_image"
+            android:layout_alignTop="@+id/mode_image"
             android:layout_marginLeft="32dp"
             android:layout_marginStart="32dp"
-            android:layout_toEndOf="@+id/action_image"
-            android:layout_toRightOf="@+id/action_image"
+            android:layout_toEndOf="@+id/mode_image"
+            android:layout_toRightOf="@+id/mode_image"
             android:text="PlaceText"
             android:textColor="#000000"
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/rate_txt_view"
+            android:id="@+id/fare_txt_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -42,7 +60,18 @@
             android:layout_marginRight="43dp"
             android:text="Rate/Price"
             android:textColor="#000000"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/transitNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="50dp"
+            android:paddingLeft="10dp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
 
 
     </RelativeLayout>

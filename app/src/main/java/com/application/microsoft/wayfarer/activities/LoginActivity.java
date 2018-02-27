@@ -134,7 +134,8 @@ public class LoginActivity extends AppCompatActivity {
                     if (con == null) {
                         z = "Error in connection with SQL server";
                     }else{
-                        String query = "select * from dbo.userDetails where password = '"+str_password+"' and name = '"+str_username+"'";
+                        String query = "select * from userDetails where password LIKE '"+str_password+"' and name LIKE '"+str_username+"';";
+                        System.out.println(query);
                         Statement stmt = con.createStatement();
                         ResultSet rs = stmt.executeQuery(query);
                         if(rs.next()){

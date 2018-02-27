@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } catch (MalformedURLException e) {
             Log.e(LOG_TAG, "Error processing Places API URL", e);
             return resultList;
+
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error connecting to Places API", e);
             return resultList;

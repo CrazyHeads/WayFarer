@@ -8,7 +8,9 @@ public class Transit {
     private String instructions;
     private int noOfStops;
     private String transitNumber;
-
+    private int[] busFare;
+    private int metroFare;
+    private int mmtsFare;
 
     public int getNoOfStops() {
         return noOfStops;
