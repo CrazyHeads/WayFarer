@@ -39,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:spinnerMode="dropdown"
+        android:background="@drawable/spinner_styling"
         tools:layout_editor_absoluteY="16dp"
         android:layout_marginLeft="80sp"
         android:layout_marginRight="80sp"
@@ -50,20 +51,21 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="380dp"
+        android:layout_above="@id/autoCompleteText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/app_bar"
+        android:layout_marginBottom="10sp"
         android:layout_marginTop="55dp"
         android:id="@+id/relativeLayout2">
 
         <ListView
             android:id="@+id/listView"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_marginBottom="100dp"
             android:clickable="true"
             android:columnWidth="1000dp"
             android:drawSelectorOnTop="true"
@@ -115,6 +117,4 @@
         android:textColor="#ffffff" />
 
 </RelativeLayout>
-
-
 

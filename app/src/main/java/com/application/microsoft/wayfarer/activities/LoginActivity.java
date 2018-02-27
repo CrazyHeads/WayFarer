@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onLoginSuccess() {
-        Intent myIntent = new Intent(LoginActivity.this, MapsActivity.class);
+        Intent myIntent = new Intent(LoginActivity.this, WelcomeActivity.class);
         startActivity(myIntent);
     }
 
@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void signup(View v) {
-        Intent myIntent = new Intent(LoginActivity.this, MapsActivity.class);
+        Intent myIntent = new Intent(LoginActivity.this,SignUpActivity.class);
         startActivity(myIntent);
 
     }
