@@ -1,1 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout = "@layout/app_bar"
+        android:id="@+id/app_bar">
+    </include>
+
+    <TextView
+        android:id="@+id/feedback_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/app_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="29dp"
+        android:text="Feedback"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/MediumAquamarine"
+        />
+
+    <TextView
+        android:id="@+id/feedback_paragraph"
+        android:layout_marginLeft="20sp"
+        android:layout_marginRight="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/feedback_heading"
+        android:layout_marginTop="49dp"
+        android:text="Paragraph dfghjklkjhgdedrghjgfddsfghjhhgfdghngbfdssfghgfdghnngfdghgfdghrgffffhgrfgtyhjkljhgedfghjk,jhfghgfhjmhghgbhngfh."
+        android:textSize="15sp"
+        android:textStyle="italic"/>
+
+    <EditText
+        android:inputType="textMultiLine"
+        android:layout_marginLeft="20sp"
+        android:layout_marginRight="20sp"
+        android:lines="8"
+        android:minLines="6"
+        android:layout_marginTop="300dp"
+        android:gravity="top|left"
+        android:maxLines="10"
+        android:background="@drawable/feedback_edittext_styling"
+        android:hint="Enter Feedback here"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:scrollbars="vertical"
+        android:textColor="#000000"
+    />
+
+    <Button
+        android:id="@+id/submit_button"
+        android:onClick="onSubmit"
+        android:layout_width="45sp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text=">"
+        android:textColor="@color/white"
+        android:background="@drawable/feedback_submit_button"/>
+
+
+</RelativeLayout>
+
 
