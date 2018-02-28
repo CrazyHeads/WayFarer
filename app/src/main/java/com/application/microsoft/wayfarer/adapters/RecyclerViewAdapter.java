@@ -37,18 +37,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.textView.setText((CharSequence) list.get(position));
-        holder.imageView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    mDragStartListener.onStartDrag(holder);
-                }
-                return false;
-            }
-        });
+//        holder.imageView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+//                    mDragStartListener.onStartDrag(holder);
+//                }
+//                return false;
+//            }
+//        });
     }
     @Override
     public int getItemCount() {
+
         return list.size();
     }
     @Override
@@ -60,7 +61,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onItemDismiss(int position) {
         list.remove(position);
+        notifyItemChanged(position);
         notifyItemRemoved(position);
+
     }
     public class ViewHolder extends RecyclerView.ViewHolder implements
             ItemTouchHelperViewHolder {
@@ -71,10 +74,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             textView=(TextView)itemView.findViewById(R.id.text);
 //            imageView=(ImageView)itemView.findViewById(R.id.handle);
         }
+
         @Override
         public void onItemSelected() {
             itemView.setBackgroundColor(Color.LTGRAY);
         }
+
         @Override
         public void onItemClear() {
             itemView.setBackgroundColor(0);

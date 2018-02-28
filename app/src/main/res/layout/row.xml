@@ -39,6 +39,7 @@
                 android:layout_alignParentRight="true"
                 android:gravity="bottom"
                 android:scaleY="2"
+                android:visibility="visible"
                 tools:ignore="ObsoleteLayoutParam,RtlHardcoded"
                 tools:targetApi="jelly_bean_mr1" />
 

@@ -10,12 +10,12 @@
 
     <string-array name="cities_arrays">
         <item>Select City</item>
-        <item >Hyderabad</item>
-        <item >Chennai</item>
-        <item >Ahmedabad</item>
-        <item >Delhi</item>
-        <item >Mumbai</item>
-        <item >Bangalore</item>
+        <item>Hyderabad</item>
+        <item>Chennai</item>
+        <item>Ahmedabad</item>
+        <item>Delhi</item>
+        <item>Mumbai</item>
+        <item>Bangalore</item>
     </string-array>
     <color name="background">#545454</color>
 

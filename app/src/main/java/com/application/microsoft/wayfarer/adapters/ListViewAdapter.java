@@ -38,6 +38,7 @@ public class ListViewAdapter extends ArrayAdapter<Place> {
     private int layoutResourceId;
     MainActivity mainActivity = new MainActivity();
     private ArrayList<Place> placesList =  mainActivity.getPlacesList();
+    private boolean[] checkBoxState = null;
     int id = 0;
 
     public ListViewAdapter(Context context, int layoutResourceId, ArrayList<Place> placesList) {
@@ -71,6 +72,9 @@ public class ListViewAdapter extends ArrayAdapter<Place> {
             }
         });
         final Place place = placesList.get(position);
+        checkBoxState = new boolean[placesList.size()];
+        if(checkBoxState != null)
+            holder.checkbox.setChecked(checkBoxState[position]);
         holder.placeTitle.setText(place.getName());
 //        holder.placeDesc.setText(place.getDescription());
         Picasso.with(context).load(placesList.get(position).getImgURL()).into(holder.image);
@@ -86,7 +90,11 @@ public class ListViewAdapter extends ArrayAdapter<Place> {
                 int id = cb.getId();
                 System.out.println(id);
                 if (cb.isChecked()) {
+
+                    checkBoxState[position] = true;
                     placesList.get(id).setSelected(true);
+                } else{
+                    checkBoxState[position] = false;
                 }
 
             }

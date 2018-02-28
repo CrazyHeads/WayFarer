@@ -3,6 +3,7 @@ package com.application.microsoft.wayfarer.activities;
 //import android.content.Intent;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +40,8 @@ public class PlanActivity extends AppCompatActivity implements OnStartDragListen
     private String origin;
     private String destination;
     String distance;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    SharedPreferences sharedPreferences;
 
 
     RecyclerView rvPlaceItems;
@@ -136,7 +139,7 @@ public class PlanActivity extends AppCompatActivity implements OnStartDragListen
     void deleteItem(final int position) {
         selectedPlaces.remove(position);
         placeAdapter.notifyItemRemoved(position);
-    
+        placeAdapter.notifyDataSetChanged();
 }
 
 

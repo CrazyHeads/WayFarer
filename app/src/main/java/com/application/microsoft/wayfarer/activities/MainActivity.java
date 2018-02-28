@@ -1,20 +1,29 @@
 package com.application.microsoft.wayfarer.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -52,17 +61,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ListViewAdapter listAdapter;
     private String city = "";
     AutoCompleteTextView autoCompView;
-
-    private static final String LOG_TAG = "Google Places Autocomplete";
+        private static final String LOG_TAG = "Google Places Autocomplete";
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
 
-    private static final String API_KEY = "AIzaSyASC_XDxuXBKGrQJGVD3gcwphwSL6rnN9M";
+    private static final String API_KEY = "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8";
     String[] cities;
     ArrayList<Place> placesList;
     int index;
     String PLACES_OF_INTEREST_URL = "";
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    SharedPreferences sharedPreferences;
+    final Context mContext = this;
+    private Button mButton;
 
     public ArrayList<Place> getPlacesList() {
         return placesList;
@@ -73,6 +85,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         placesList = new ArrayList<>();
+        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        String name  = sharedPreferences.getString("UserID","");
+        if(!name.equals("")){
+            Button button =(Button) findViewById(R.id.btn);
+            button.setVisibility(View.INVISIBLE);
+        }
+
         cities = getResources().getStringArray(R.array.cities_arrays);
         Spinner spinner = (Spinner)findViewById(R.id.spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
@@ -80,10 +99,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         listView = (ListView) findViewById(R.id.listView);
         placesList.clear();
         autoCompView = (AutoCompleteTextView) findViewById(R.id.autoCompleteText);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         autoCompView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_item));
         autoCompView.setOnItemClickListener(this);
         listAdapter = new ListViewAdapter(this, R.layout.row,placesList);
         spinner.setAdapter(adapter);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
@@ -114,7 +135,72 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        mButton = (Button) findViewById(R.id.plus_button);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                LayoutInflater li = LayoutInflater.from(mContext);
+                View dialogView = li.inflate(R.layout.custom_dialog, null);
+                android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(
+                        mContext);
+                alertDialogBuilder.setTitle("Add Location");
+                alertDialogBuilder.setView(dialogView);
+                final EditText userInput = (EditText) dialogView
+                        .findViewById(R.id.autoCompleteTextView);
+                AutoCompleteTextView actv1 = (AutoCompleteTextView) dialogView.findViewById(R.id.autoCompleteTextView);
+                actv1.setAdapter(new GooglePlacesAutocompleteAdapter(mContext, R.layout.list_item));
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("Add",null)
+                        .setNegativeButton("Done",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int id) {
+                                        dialog.dismiss();
+                                        hideKeyboard(MainActivity.this);
+                                    }
+                                });
+                AlertDialog dialog = alertDialogBuilder.create();
+                dialog.show();
+                Button b = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                b.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        String location = actv1.getText().toString();
+                        if(!location.equals("") && location.contains(city)){
+                            Place place = new Place();
+                            place.setName(location);
+                            place.setLat(getLocationFromAddress(mContext,location).latitude);
+                            place.setLng(getLocationFromAddress(mContext,location).longitude);
+                            place.setSelected(true);
+                            placesList.add(0,place);
+                            listAdapter.notifyDataSetChanged();
+                            Toast.makeText(getApplicationContext(), "Added your location" + location, Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Please select a location in the city selected!", Toast.LENGTH_LONG).show();
+                        }
+                        actv1.getText().clear();
+                    }
+                });
+            }
+        });
+
+
+
     }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
 
     @SuppressLint("LongLogTag")
     public static ArrayList autocomplete(String input) {
@@ -235,7 +321,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             placesList.add(0,p);
             startActivity(intent);
 
-        } else
+        } else if (placesList.size() <= 1)
+            Toast.makeText(getApplicationContext(),"Please select Places to Visit",  Toast.LENGTH_LONG).show();
+        else
             Toast.makeText(getApplicationContext(),"Please select a starting location in the city selected!",  Toast.LENGTH_LONG).show();
     }
 

@@ -1,8 +1,8 @@
 package com.application.microsoft.wayfarer.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.tv.TvInputService;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,33 +24,28 @@ import java.sql.Statement;
 public class LoginActivity extends AppCompatActivity {
     Button click;
     Button select;
-    private EditText et_username, et_password;
-    private String username, password;
+    private EditText et_email, et_password;
+    private String email, password;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    SharedPreferences sharedPreferences;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        click = (Button) findViewById(R.id.button4);
-        select = (Button) findViewById(R.id.button3);
-        et_username = (EditText) findViewById(R.id.username);
+        click = (Button) findViewById(R.id.login);
+        select = (Button) findViewById(R.id.signup);
+        et_email = (EditText) findViewById(R.id.username);
         et_password = (EditText) findViewById(R.id.password);
+        sharedPreferences = getSharedPreferences(MyPREFERENCES,Context.MODE_PRIVATE);
 
     }
 
-    //This function that i have mentioned in the
-    // .xml file of activity_main.xml android:onClick="show". and as well as AndroidMainfest.xml
-    // also we made changes.
+
     public void login(View v) {
-        //register();
         LoginActivity.DoLogin doLogin = new LoginActivity.DoLogin();
         doLogin.execute();
-
-
-        /*Intent myIntent = new Intent(LoginActivity.this, MapActivity.class);
-        startActivity(myIntent);
-        */
     }
 
     public void register() {
@@ -68,15 +63,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void intilize() {
-        username = et_username.getText().toString().trim();
+        email = et_email.getText().toString().trim();
         password = et_password.getText().toString().trim();
     }
 
     public boolean validate() {
         boolean valid = true;
 
-        if(username.isEmpty() || !(username.equals("admin"))) {
-            et_username.setError("Please Enter valid username");
+        if(email.isEmpty() || !(email.equals("admin"))) {
+            et_email.setError("Please Enter valid email!");
             valid = false;
         }
 
@@ -98,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         String z = "";
         String role, cd;
         Boolean isSuccess = false;
-        String str_username =  et_username.getText().toString();
+        String str_email =  et_email.getText().toString();
         String str_password = et_password.getText().toString();
 
 
@@ -111,16 +106,11 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String r) {
 
-            // Toast.makeText(this,r,Toast.LENGTH_SHORT).show();
-
-            if(isSuccess) {
-                Intent i = new Intent("com.application.microsoft.wayfarer.activities.WelcomeActivity");
-                startActivity(i);
+           if(isSuccess) {
+                Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                startActivity(intent);
                 finish();
             }
-
-
-
         }
 
 
@@ -128,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
 
         protected String doInBackground(String... params) {
-            if(str_password.trim().equals("") ||str_username.trim().equals("")){
+            if(str_password.trim().equals("") ||str_email.trim().equals("")){
                 z = "Please fill all the fields";
             }else{
                 try {
@@ -137,20 +127,27 @@ public class LoginActivity extends AppCompatActivity {
                     if (con == null) {
                         z = "Error in connection with SQL server";
                     }else{
-                        String query = "select * from userDetails where name LIKE 'Shravani';";
+                        String query = "select userId,name from userDetails where password LIKE '"+str_password+"' and email LIKE '"+str_email+"';";
                         System.out.println(query);
                         Statement stmt = con.createStatement();
                         ResultSet rs = stmt.executeQuery(query);
                         if(rs.next()){
                             z = "Login Successful";
+                            System.out.println("Done!");
                             isSuccess = true;
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("UserID", rs.getString("userId"));
+                            editor.putString("UserName", rs.getString("name"));
+                            editor.apply();
                         }else{
                             z = "Invalid Credentials";
+                            System.out.println("Invalid!!");
                             isSuccess = false;
+
                         }
-//                        rs.close();
-//                        stmt.close();
-//                        con.close();
+                        rs.close();
+                        stmt.close();
+                        con.close();
                     }
 
 
