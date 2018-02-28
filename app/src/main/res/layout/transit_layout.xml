@@ -45,9 +45,9 @@
             android:layout_marginStart="32dp"
             android:layout_toEndOf="@+id/mode_image"
             android:layout_toRightOf="@+id/mode_image"
-            android:text="PlaceText"
             android:textColor="#000000"
             android:textStyle="bold"/>
+        <!--            android:text="PlaceText"-->
 
         <TextView
             android:id="@+id/fare_txt_view"
@@ -58,10 +58,10 @@
             android:layout_alignTop="@+id/place_view"
             android:layout_marginEnd="43dp"
             android:layout_marginRight="43dp"
-            android:text="Rate/Price"
             android:textColor="#000000"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
+        <!--            android:text="Rate/Price"-->
 
         <TextView
             android:id="@+id/transitNo"
