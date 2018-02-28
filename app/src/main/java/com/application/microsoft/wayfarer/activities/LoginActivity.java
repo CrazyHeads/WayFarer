@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     public class DoLogin extends AsyncTask<String,String,String>
     {
-        String z = "";
+        String flag = "";
         String role, cd;
         Boolean isSuccess = false;
         String str_email =  et_email.getText().toString();
@@ -119,20 +119,20 @@ public class LoginActivity extends AppCompatActivity {
 
         protected String doInBackground(String... params) {
             if(str_password.trim().equals("") ||str_email.trim().equals("")){
-                z = "Please fill all the fields";
+                flag = "Please fill all the fields";
             }else{
                 try {
                     Connection con = ConnectionFactory.getConnection();
 
                     if (con == null) {
-                        z = "Error in connection with SQL server";
+                        flag = "Error in connection with SQL server";
                     }else{
                         String query = "select userId,name from userDetails where password LIKE '"+str_password+"' and email LIKE '"+str_email+"';";
                         System.out.println(query);
                         Statement stmt = con.createStatement();
                         ResultSet rs = stmt.executeQuery(query);
                         if(rs.next()){
-                            z = "Login Successful";
+                            flag = "Login Successful";
                             System.out.println("Done!");
                             isSuccess = true;
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -140,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("UserName", rs.getString("name"));
                             editor.apply();
                         }else{
-                            z = "Invalid Credentials";
+                            flag = "Invalid Credentials";
                             System.out.println("Invalid!!");
                             isSuccess = false;
 
@@ -155,12 +155,12 @@ public class LoginActivity extends AppCompatActivity {
                 }catch (Exception ex)
                 {
                     isSuccess = false;
-                    z = "Exceptions";
+                    flag = "Exceptions";
                     Log.e("ERROR", ex.getMessage());
 
                 }
             }
-            return z;
+            return flag;
         }
     }
 }

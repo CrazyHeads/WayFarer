@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ListViewAdapter listAdapter;
     private String city = "";
     AutoCompleteTextView autoCompView;
-        private static final String LOG_TAG = "Google Places Autocomplete";
+    private static final String LOG_TAG = "Google Places Autocomplete";
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             startActivity(intent);
 
         } else if (placesList.size() <= 1)
-            Toast.makeText(getApplicationContext(),"Please select Places to Visit",  Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Please select places to Visit",  Toast.LENGTH_LONG).show();
         else
             Toast.makeText(getApplicationContext(),"Please select a starting location in the city selected!",  Toast.LENGTH_LONG).show();
     }
@@ -361,7 +361,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         String photoReference;
                         place.setCity(city);
                         place.setID(object.getString("place_id"));
-                        String placeStr = sh.makeServiceCall("https://maps.googleapis.com/maps/api/place/details/json?placeid="+place.getID()+"&key="+API_KEY+"");
+                        //String placeStr = sh.makeServiceCall("https://maps.googleapis.com/maps/api/place/details/json?placeid="+place.getID()+"&key="+API_KEY+"");
+                        String placeStr = sh.makeServiceCall(PLACES_API_BASE+"/details/json?placeid="+place.getID()+"&key="+API_KEY+"");
                         JSONObject jsonObj1 = new JSONObject(placeStr);
                         place.setDescription(jsonObj1.getJSONObject("result").getJSONArray("reviews").getJSONObject(0).getString("text").split("\n")[0]);
                         place.setName(object.getString("name"));
@@ -372,7 +373,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         JSONArray photos = object.getJSONArray("photos");
                         JSONObject photoReferenceUrl = photos.getJSONObject(0);
                         photoReference = photoReferenceUrl.getString("photo_reference");
-                        String IMAGE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference="+photoReference+"&sensor=false&key="+ API_KEY +"";
+//                        String IMAGE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference="+photoReference+"&sensor=false&key="+ API_KEY +"";
+                        String IMAGE_URL = PLACES_API_BASE +"/photo?maxwidth=1000&photoreference="+photoReference+"&sensor=false&key="+ API_KEY +"";
+
                         System.out.println(IMAGE_URL);
                         place.setImgURL(IMAGE_URL);
                         place.setSelected(false);
