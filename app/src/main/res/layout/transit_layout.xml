@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:screenOrientation="portrait"
-    >
+    android:screenOrientation="portrait">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -28,6 +28,7 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+        
         <ImageView
             android:id="@+id/mode_image"
             android:layout_width="25sp"
@@ -47,7 +48,6 @@
             android:layout_toRightOf="@+id/mode_image"
             android:textColor="#000000"
             android:textStyle="bold"/>
-        <!--            android:text="PlaceText"-->
 
         <TextView
             android:id="@+id/fare_txt_view"
@@ -61,8 +61,7 @@
             android:textColor="#000000"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
-        <!--            android:text="Rate/Price"-->
-
+        
         <TextView
             android:id="@+id/transitNo"
             android:layout_width="wrap_content"
@@ -72,7 +71,6 @@
             android:textColor="#000000"
             android:textStyle="bold"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
-
 
     </RelativeLayout>
 
