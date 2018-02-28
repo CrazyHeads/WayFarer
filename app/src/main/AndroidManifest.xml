@@ -28,6 +28,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+         <activity android:name=".activities.FeedbackActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name="com.application.microsoft.wayfarer.activities.MenuActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -59,7 +64,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MyPlanActivity"></activity>
+        <activity android:name=".activities.MyPlanActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+      </activity>
     </application>
 
 </manifest>
