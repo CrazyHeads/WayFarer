@@ -15,9 +15,10 @@ import com.application.microsoft.wayfarer.R;
 public class MenuActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
-    CardView mycard ;
+    CardView mycard, mycard1, mycard2 ;
     Intent i ;
-    LinearLayout ll;
+    LinearLayout ll,ll1,ll2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,21 +33,17 @@ public class MenuActivity extends AppCompatActivity {
         System.out.println(name);
 
 
-        ll = (LinearLayout) findViewById(R.id.planLL);
-        mycard = (CardView) findViewById(R.id.plan);
+       mycard = (CardView) findViewById(R.id.plan);
         i = new Intent(this,MainActivity.class);
         mycard.setOnClickListener(v -> startActivity(i));
 
-//        ll = (LinearLayout) findViewById(R.id.myPlanLL);
-//        mycard = (CardView) findViewById(R.id.myPlan);
-//        i = new Intent(this,MyPlanActivity.class);
-//        mycard.setOnClickListener(v -> startActivity(i));
-//
-//        ll = (LinearLayout) findViewById(R.id.feedbackLL);
-//        mycard = (CardView) findViewById(R.id.feedback);
-//        i = new Intent(this,MenuActivity.class);
-//        mycard.setOnClickListener(v -> startActivity(i));
+        mycard1 = (CardView) findViewById(R.id.myPlan);
+        i1 = new Intent(this,MyPlanActivity.class);
+        mycard1.setOnClickListener(v -> startActivity(i1));
 
+        mycard2 = (CardView) findViewById(R.id.feedback);
+        i2 = new Intent(this,FeedbackActivity.class);
+        mycard2.setOnClickListener(v -> startActivity(i2));
     }
 
 
