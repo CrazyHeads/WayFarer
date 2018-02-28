@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:screenOrientation="portrait"
+    >
 
 <LinearLayout
     android:layout_width="fill_parent"
@@ -32,11 +34,11 @@
             android:layout_toRightOf="@+id/source_image"
             android:layout_alignTop="@+id/source_image"
             android:paddingTop="30px"
-            android:text="SourceText"
             android:textColor="#000000"
             android:textStyle="bold"
             tools:ignore="HardcodedText,ObsoleteLayoutParam,PxUsage,RtlHardcoded" />
-
+         <!--            android:text="SourceText"
+-->
 
     </LinearLayout>
 
@@ -71,8 +73,6 @@
             android:layout_marginBottom="48dp"
             android:background="@drawable/source_destination" />
 
-
-
         <TextView
             android:id="@+id/destination_text_view"
             android:layout_width="wrap_content"
@@ -82,10 +82,9 @@
             android:layout_toEndOf="@+id/destination_image"
             android:layout_toRightOf="@+id/destination_image"
             android:layout_alignTop="@+id/destination_image"
-            android:text="DestinationText"
             android:textColor="#000000"
             android:textStyle="bold"/>
-
+        <!--android:text="DestinationText"-->
 
     </LinearLayout>
 
