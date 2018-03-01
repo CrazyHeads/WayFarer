@@ -91,7 +91,6 @@ public class LoginActivity extends AppCompatActivity {
     public class DoLogin extends AsyncTask<String,String,String>
     {
         String flag = "";
-        String role, cd;
         Boolean isSuccess = false;
         String str_email =  et_email.getText().toString();
         String str_password = et_password.getText().toString();
@@ -139,6 +138,16 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("UserID", rs.getString("userId"));
                             editor.putString("UserName", rs.getString("name"));
                             editor.apply();
+                            sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
+                            String query1 = "insert into trips(userId,places) values("+rs.getString("userId")+", '"+sharedPreferences.getString("Plan","")+"');";
+                            Statement stmt1 = con.createStatement();
+                            int flag = stmt1.executeUpdate(query1);
+                            if (flag < 1) {
+                                System.out.println("Plan not Added!");
+                            } else {
+                                System.out.println("Added Plan!!");
+                            }
                         }else{
                             flag = "Invalid Credentials";
                             System.out.println("Invalid!!");

@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             place.setName(location);
                             place.setLat(getLocationFromAddress(mContext,location).latitude);
                             place.setLng(getLocationFromAddress(mContext,location).longitude);
+                            place.setCity(city);
                             place.setSelected(true);
                             placesList.add(0,place);
                             listAdapter.notifyDataSetChanged();
@@ -317,6 +318,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             LatLng latLng = getLocationFromAddress(this, address);
             p.setLat(latLng.latitude);
             p.setLng(latLng.longitude);
+            p.setCity(city);
             p.setSelected(true);
             placesList.add(0,p);
             startActivity(intent);
@@ -366,6 +368,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         JSONObject jsonObj1 = new JSONObject(placeStr);
                         place.setDescription(jsonObj1.getJSONObject("result").getJSONArray("reviews").getJSONObject(0).getString("text").split("\n")[0]);
                         place.setName(object.getString("name"));
+                        place.setCity(city);
                         JSONObject geometry = object.getJSONObject("geometry");
                         JSONObject location = geometry.getJSONObject("location");
                         place.setLat(location.getDouble("lat"));
