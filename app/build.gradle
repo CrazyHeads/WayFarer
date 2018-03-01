@@ -57,6 +57,8 @@ dependencies {
     compile "com.google.android.gms:play-services-location:11.8.0"
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    //noinspection GradleDynamicVersion
+    compile 'com.google.maps.android:android-maps-utils:0.5+'
 
 
 }

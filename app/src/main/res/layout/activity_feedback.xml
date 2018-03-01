@@ -32,11 +32,12 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/feedback_heading"
         android:layout_marginTop="49dp"
-        android:text="Paragraph dfghjklkjhgdedrghjgfddsfghjhhgfdghngbfdssfghgfdghnngfdghgfdghrgffffhgrfgtyhjkljhgedfghjk,jhfghgfhjmhghgbhngfh."
+        android:text="We'd love to hear from you! Share your thoughts or suggestions so we can get better than ever."
         android:textSize="15sp"
         android:textStyle="italic"/>
 
     <EditText
+        android:id="@+id/message"
         android:inputType="textMultiLine"
         android:layout_marginLeft="20sp"
         android:layout_marginRight="20sp"

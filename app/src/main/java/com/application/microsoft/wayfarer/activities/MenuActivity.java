@@ -34,12 +34,13 @@ public class MenuActivity extends AppCompatActivity {
 
 
        mycard = (CardView) findViewById(R.id.plan);
-        i = new Intent(this,MainActivity.class);
+        i = new Intent(this,MenuActivity.class);
         mycard.setOnClickListener(v -> startActivity(i));
 
         mycard1 = (CardView) findViewById(R.id.myPlan);
-        i1 = new Intent(this,MyPlanActivity.class);
+        i1 = new Intent(this,MapsActivity.class);
         mycard1.setOnClickListener(v -> startActivity(i1));
+
 
         mycard2 = (CardView) findViewById(R.id.feedback);
         i2 = new Intent(this,FeedbackActivity.class);
