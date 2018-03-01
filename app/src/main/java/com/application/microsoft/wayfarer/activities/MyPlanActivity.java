@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.application.microsoft.wayfarer.R;
 import com.application.microsoft.wayfarer.adapters.PlanViewAdapter;
@@ -98,15 +99,22 @@ public class MyPlanActivity  extends Activity
                         System.out.println(query);
                         Statement stmt = con.createStatement();
                         ResultSet rs = stmt.executeQuery(query);
-
-                        while(rs.next()) {
-                            Type type = new TypeToken<ArrayList<Place>>() {}.getType();
-                            ArrayList<Place> placesList = new Gson().fromJson(rs.getString("places"), type);
-                            Plan plan = new Plan();
-                            plan.setCity(rs.getString("city"));
-                            plan.setPlanedPlaces(placesList);
-                            plan.setMadeOn(rs.getDate("madeOn"));
-                            plans.add(plan);
+                        boolean flag = false;
+                           while (rs.next()) {
+                                Type type = new TypeToken<ArrayList<Place>>() {
+                                }.getType();
+                                ArrayList<Place> placesList = new Gson().fromJson(rs.getString("places"), type);
+                                Plan plan = new Plan();
+                                plan.setCity(rs.getString("city"));
+                                plan.setPlanedPlaces(placesList);
+                                plan.setMadeOn(rs.getDate("madeOn"));
+                                plans.add(plan);
+                                flag = true;
+                            }
+                        if(!flag) {
+                            Toast.makeText(getApplicationContext(), "No Saved Plans ! Create a Plan", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(MyPlanActivity.this,MainActivity.class);
+                            startActivity(intent);
                         }
                         rs.close();
                         stmt.close();
