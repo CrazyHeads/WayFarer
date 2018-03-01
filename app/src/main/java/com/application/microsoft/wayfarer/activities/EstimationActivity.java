@@ -1,10 +1,13 @@
 package com.application.microsoft.wayfarer.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -17,11 +20,15 @@ import com.application.microsoft.wayfarer.handlers.HttpHandler;
 import com.application.microsoft.wayfarer.models.Place;
 import com.application.microsoft.wayfarer.models.Route;
 import com.application.microsoft.wayfarer.models.Transit;
+import com.application.microsoft.wayfarer.utils.ConnectionFactory;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
@@ -38,6 +45,8 @@ public class EstimationActivity extends AppCompatActivity {
     private static final Hashtable<Integer, Integer> ordinaryBusFares = new Hashtable<Integer, Integer>();
     private static final Hashtable<Integer, Integer> metroRailFares = new Hashtable<Integer, Integer>();
     private static final Hashtable<Integer, Integer> mmtsFares = new Hashtable<Integer, Integer>();
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    SharedPreferences sharedPreferences;
     TextView transitDetails;
     ArrayList<Place> placesList;
     RoutesViewAdapter routesViewAdapter;
@@ -86,8 +95,26 @@ public class EstimationActivity extends AppCompatActivity {
     }
 
     public void save(View v) {
-        Intent myIntent = new Intent(EstimationActivity.this, LoginActivity.class);
-        startActivity(myIntent);
+        sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        String name  = sharedPreferences.getString("UserID","");
+        if(!name.equals("")){
+            SavePlan savePlan = new SavePlan();
+            savePlan.execute();
+            Intent myIntent = new Intent(EstimationActivity.this, MenuActivity.class);
+            startActivity(myIntent);
+
+        } else {
+            sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+            //        Type type = new TypeToken<ArrayList<Place>>() { }.getType();
+//        ArrayList<Place> restoreData = new Gson().fromJson(dataStr, type);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("Plan",new Gson().toJson(placesList) );
+            Intent intent = new Intent(EstimationActivity.this, LoginActivity.class);
+            intent.putParcelableArrayListExtra("selectedPlacesList",placesList);
+            startActivity(intent);
+        }
+
+
 
     }
 
@@ -252,6 +279,68 @@ public class EstimationActivity extends AppCompatActivity {
         }
         return -1;
 
+    }
+
+    public class SavePlan extends AsyncTask<String,String,String>
+    {
+        String flag = "";
+        String role, cd;
+        Boolean isSuccess = false;
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected void onPostExecute(String r) {
+
+            if(isSuccess) {
+                Intent intent = new Intent(EstimationActivity.this, MyPlanActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }
+
+
+
+        @Override
+
+        protected String doInBackground(String... params) {
+            try {
+                Connection con = ConnectionFactory.getConnection();
+
+                if (con == null) {
+                    flag = "Error in connection with SQL server";
+                }else{
+
+                    sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+                    String userID = sharedPreferences.getString("UserID","");
+                    String query = "insert into trips(userId,places,city) values("+userID+", '"+new Gson().toJson(placesList)+"', '"+placesList.get(0).getCity()+"');";
+                    Statement stmt = con.createStatement();
+                    int flag = stmt.executeUpdate(query);
+                    if (flag < 1) {
+                        System.out.println("Plan not Added!");
+                    } else {
+                        System.out.println("Added Plan!!");
+                    }
+
+                    stmt.close();
+                    con.close();
+                }
+
+
+
+            }catch (Exception ex)
+            {
+                isSuccess = false;
+                flag = "Exceptions";
+                Log.e("ERROR", ex.getMessage());
+
+            }
+
+            return flag;
+        }
     }
 
 }

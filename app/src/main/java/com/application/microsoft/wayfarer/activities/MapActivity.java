@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener{
@@ -175,9 +175,7 @@ class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         return url;
     }
 
-    /**
-     * A method to download json data from url
-     */
+
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;

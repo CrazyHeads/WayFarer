@@ -16,7 +16,7 @@ public class MenuActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
     CardView mycard, mycard1, mycard2 ;
-    Intent i ;
+    Intent i,i1,i2 ;
     LinearLayout ll,ll1,ll2;
 
 
