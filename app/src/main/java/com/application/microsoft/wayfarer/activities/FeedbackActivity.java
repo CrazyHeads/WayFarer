@@ -55,8 +55,8 @@ public class FeedbackActivity extends AppCompatActivity {
     }
 
     public void onSubmit(View v) {
-        Intent myIntent = new Intent(FeedbackActivity.this, MenuActivity.class);
-        startActivity(myIntent);
+      //  Intent myIntent = new Intent(FeedbackActivity.this, MenuActivity.class);
+      //  startActivity(myIntent);
         et_msg = (EditText) findViewById(R.id.message);
         msg =  et_msg.getText().toString().trim();
         SaveFeedBack saveFeedBack = new SaveFeedBack();
@@ -81,8 +81,8 @@ public class FeedbackActivity extends AppCompatActivity {
             Toast.makeText(FeedbackActivity.this, "Thankyou for your feedback", Toast.LENGTH_SHORT).show();
 
             if (isSuccess) {
-                Intent i = new Intent(FeedbackActivity.this, MenuActivity.class);
-                startActivity(i);
+               // Intent i = new Intent(FeedbackActivity.this, MenuActivity.class);
+              //  startActivity(i);
                 finish();
             }
 
