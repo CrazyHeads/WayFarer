@@ -22,37 +22,36 @@
         android:layout_marginTop="55dp"
         android:id="@+id/relativeLayout2">
 
-        <ListView
-            android:id="@+id/route_view"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="100dp"
-            android:clickable="true"
-            android:columnWidth="1000dp"
-            android:drawSelectorOnTop="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:numColumns="auto_fit"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="5dp" />
+           <ListView
+               android:id="@+id/route_view"
+               android:layout_width="fill_parent"
+               android:layout_height="wrap_content"
+               android:layout_above="@+id/total_budget_text_view"
+               android:layout_alignParentLeft="true"
+               android:layout_alignParentStart="true"
+               android:layout_marginBottom="24dp"
+               android:clickable="true"
+               android:columnWidth="1000dp"
+               android:drawSelectorOnTop="true"
+               android:focusable="true"
+               android:gravity="center"
+               android:numColumns="auto_fit"
+               android:stretchMode="columnWidth"
+               android:verticalSpacing="5dp" />
 
-        <TextView
-            android:id="@+id/total_budget_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="58dp"
-            android:layout_marginLeft="66dp"
-            android:layout_marginStart="66dp"
-            android:text="Total Bugdet"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:textSize="15sp"/>
+           <TextView
+               android:id="@+id/total_budget_text_view"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentBottom="true"
+               android:layout_alignParentLeft="true"
+               android:layout_alignParentStart="true"
+               android:layout_marginLeft="66dp"
+               android:layout_marginStart="66dp"
+               android:text="Total Bugdet"
+               android:textColor="#000000"
+               android:textSize="15sp"
+               android:textStyle="bold" />
 
         <TextView
             android:id="@+id/rupees_text_view"
@@ -108,7 +107,4 @@
         android:layout_alignParentStart="true"
         android:text="Save my Plan" />
 
-   
 </RelativeLayout>
-
-
