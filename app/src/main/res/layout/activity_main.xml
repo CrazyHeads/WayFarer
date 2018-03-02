@@ -85,6 +85,7 @@
         android:ems="10"
         android:hint="@string/enter_start_location"
         android:focusable="true"
+        android:inputType="textImeMultiLine"
         android:backgroundTint="@color/colorPrimaryDark"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
