@@ -7,9 +7,18 @@ import java.util.ArrayList;
  */
 
 public class Route {
+    public Double getFare() {
+        return fare;
+    }
+
+    public void setFare(Double fare) {
+        this.fare = fare;
+    }
+
     String source;
     String destination;
     ArrayList<Transit> transitInfo;
+    Double fare;
 
     public ArrayList<Transit> getTransitInfo() {
         return transitInfo;

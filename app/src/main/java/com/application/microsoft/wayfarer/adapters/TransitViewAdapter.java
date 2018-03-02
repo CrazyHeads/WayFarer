@@ -72,6 +72,7 @@ public class TransitViewAdapter extends ArrayAdapter<Transit> {
             holder.travelMode.setImageResource(R.drawable.mmts);
             holder.fare.setText("MMTS Fare " + EstimationActivity.calculateMMTSFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim())));
         }
+
 //         holder.distanceDuration.setText("Distance :" + transit.getDistance() + "\n" + "Duration :" + transit.getDuration());
         return row;
     }
@@ -82,6 +83,7 @@ public class TransitViewAdapter extends ArrayAdapter<Transit> {
        TextView instructions;
        TextView fare;
        TextView transitMode;
+       
     }
 
 

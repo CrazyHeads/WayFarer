@@ -193,7 +193,8 @@ public class EstimationActivity extends AppCompatActivity {
 
                 }
                 routes.add(route);
-                System.out.println("Total Fare -" +totalFare);
+                route.setFare(totalFare);
+                System.out.println("Total Fare " +totalFare);
 
             }
 

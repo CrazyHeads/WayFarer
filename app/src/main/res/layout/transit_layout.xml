@@ -72,6 +72,22 @@
             android:textStyle="bold"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
 
+
+
     </RelativeLayout>
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="25dp"
+        android:layout_marginEnd="66dp"
+        android:layout_marginRight="66dp"
+        android:ems="10"
+        android:inputType="textNoSuggestions|textPersonName"
+        android:text="Total Fare:" />
 
 </RelativeLayout>

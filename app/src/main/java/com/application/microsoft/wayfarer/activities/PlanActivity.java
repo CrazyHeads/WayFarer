@@ -137,10 +137,22 @@ public class PlanActivity extends AppCompatActivity implements OnStartDragListen
     }
 
     void deleteItem(final int position) {
-        selectedPlaces.remove(position);
-        placeAdapter.notifyItemRemoved(position);
-        placeAdapter.notifyDataSetChanged();
-}
+
+        System.out.println("Deleted from list"+position);
+        if (selectedPlaces.remove(position) == null) {
+            System.out.println("Cant remove anymore");
+            return;
+        }
+        else {
+            selectedPlaces.remove(position);
+            //placeAdapter.notifyItemRangeRemoved(position,1);
+            //placeAdapter.notifyItemRemoved(position);
+            //  placeAdapter.notifyItemRemoved(position);
+            placeAdapter.notifyDataSetChanged();
+        }
+        return;
+    }
+
 
 
     public void getOptimizeRoute(ArrayList<String> mDistanceList) {

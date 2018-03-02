@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
 
-    private static final String API_KEY = "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8";
+    private static final String API_KEY = "AIzaSyDFm0y1hqGzoHUxDJ-vnf-6rMsWLc_nA30";
     String[] cities;
     ArrayList<Place> placesList;
     int index;

@@ -34,11 +34,11 @@ public class MenuActivity extends AppCompatActivity {
 
 
        mycard = (CardView) findViewById(R.id.plan);
-        i = new Intent(this,MenuActivity.class);
+        i = new Intent(this,MainActivity.class);
         mycard.setOnClickListener(v -> startActivity(i));
 
         mycard1 = (CardView) findViewById(R.id.myPlan);
-        i1 = new Intent(this,MapsActivity.class);
+        i1 = new Intent(this,MyPlanActivity.class);
         mycard1.setOnClickListener(v -> startActivity(i1));
 
 
