@@ -13,87 +13,30 @@
         android:id="@+id/app_bar">
     </include>
 
-       <RelativeLayout
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
         android:layout_height="380dp"
+        android:layout_above="@+id/button2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/app_bar"
-        android:layout_marginTop="55dp"
-        android:id="@+id/relativeLayout2">
+        android:layout_marginBottom="15dp">
 
-           <ListView
-               android:id="@+id/route_view"
-               android:layout_width="fill_parent"
-               android:layout_height="wrap_content"
-               android:layout_above="@+id/total_budget_text_view"
-               android:layout_alignParentLeft="true"
-               android:layout_alignParentStart="true"
-               android:layout_marginBottom="24dp"
-               android:clickable="true"
-               android:columnWidth="1000dp"
-               android:drawSelectorOnTop="true"
-               android:focusable="true"
-               android:gravity="center"
-               android:numColumns="auto_fit"
-               android:stretchMode="columnWidth"
-               android:verticalSpacing="5dp" />
-
-           <TextView
-               android:id="@+id/total_budget_text_view"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_alignParentBottom="true"
-               android:layout_alignParentLeft="true"
-               android:layout_alignParentStart="true"
-               android:layout_marginLeft="66dp"
-               android:layout_marginStart="66dp"
-               android:text="Total Bugdet"
-               android:textColor="#000000"
-               android:textSize="15sp"
-               android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/rupees_text_view"
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/total_budget_text_view"
-            android:layout_marginEnd="98dp"
-            android:layout_marginRight="98dp"
-            android:text="Rs. "
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/amount_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/rupees_text_view"
-            android:layout_alignBottom="@+id/rupees_text_view"
-            android:layout_alignLeft="@+id/rupees_text_view"
-            android:layout_alignStart="@+id/rupees_text_view"
-            android:layout_marginLeft="26dp"
-            android:layout_marginStart="26dp"
-            android:text="00.00"
-            android:textColor="#000000"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="49dp"
+            android:layout_marginStart="49dp"
+            android:text="Calculating transit fare and details!" />
 
     </RelativeLayout>
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_below="@+id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cost Estimation"
-        android:textSize="20sp"
-        android:gravity="center_horizontal"
-        android:textColor="@color/colorAccent"/>
 
-    
+
     <Button
         android:id="@+id/button2"
         android:onClick="save"
@@ -106,5 +49,18 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:text="Save my Plan" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/app_bar"
+        android:layout_marginTop="19dp"
+        android:gravity="center_horizontal"
+        android:text="Cost Estimation"
+        android:textColor="@color/colorAccent"
+        android:textSize="20sp" />
 
 </RelativeLayout>
