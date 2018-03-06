@@ -1,4 +1,4 @@
-package se.walkercrou.places;
+package com.application.microsoft.wayfarer.utils;
 
 /**
  * Google Places API official "status" replies.
