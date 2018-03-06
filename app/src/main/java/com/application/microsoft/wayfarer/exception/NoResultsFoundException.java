@@ -1,6 +1,7 @@
-package se.walkercrou.places.exception;
+package com.application.microsoft.wayfarer.exception;
 
-import se.walkercrou.places.Statuses;
+import com.application.microsoft.wayfarer.exception.GooglePlacesException;
+import com.application.microsoft.wayfarer.utils.Statuses;
 
 public class NoResultsFoundException extends GooglePlacesException {
     public NoResultsFoundException(String errorMessage) {

@@ -1,10 +1,14 @@
-package se.walkercrou.places.exception;
+package com.application.microsoft.wayfarer.exception;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import static se.walkercrou.places.Statuses.*;
+import static com.application.microsoft.wayfarer.utils.Statuses.STATUS_INVALID_REQUEST;
+import static com.application.microsoft.wayfarer.utils.Statuses.STATUS_OK;
+import static com.application.microsoft.wayfarer.utils.Statuses.STATUS_OVER_QUERY_LIMIT;
+import static com.application.microsoft.wayfarer.utils.Statuses.STATUS_REQUEST_DENIED;
+import static com.application.microsoft.wayfarer.utils.Statuses.STATUS_ZERO_RESULTS;
 
 /**
  * Represents an exception or error thrown by Google Places API
