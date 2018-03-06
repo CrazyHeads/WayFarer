@@ -34,6 +34,7 @@ import android.widget.Filter;
 
 import com.application.microsoft.wayfarer.R;
 import com.application.microsoft.wayfarer.adapters.ListViewAdapter;
+import com.application.microsoft.wayfarer.exception.GooglePlacesException;
 import com.application.microsoft.wayfarer.handlers.HttpHandler;
 import com.application.microsoft.wayfarer.models.Place;
 import com.google.android.gms.maps.model.LatLng;
@@ -49,9 +50,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static com.application.microsoft.wayfarer.utils.Statuses.STATUS_OVER_QUERY_LIMIT;
+import static com.application.microsoft.wayfarer.utils.Statuses.STATUS_ZERO_RESULTS;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -59,14 +63,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ProgressDialog pDialog;
     private ListView listView;
     private ListViewAdapter listAdapter;
+    private int i = 0;
     private String city = "";
     AutoCompleteTextView autoCompView;
     private static final String LOG_TAG = "Google Places Autocomplete";
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
-
-    private static final String API_KEY = "AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A";
+    private static  ArrayList<String> listOfKeys = new ArrayList<String>(Arrays.asList(
+     //       "AIzaSyCy5fDtto3nCzohU5BSVe3MQlKjA0PJ-0E",
+            "AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE",
+            "AIzaSyDpTC7gSRLeCq3dbjBeOgasnCqvfdNhkT0",
+            "AIzaSyCi9z5JsxnkjNLUimfpsQj-43yM653a_Dg",
+            "AIzaSyAtmnpdgVvHyYyoILWHGzwqt_ePtrGmalk",
+            "AIzaSyB6382PsNOmIiD70laaSCIYJNb7pUkmkH4",
+            "AIzaSyBnq6HpzvkR4J2X9d0dgC56fxsHrsPs1rM",
+            "AIzaSyANKg3XWWULaLTGbsO2A5krC7tDoQgJ8RA",
+            "AIzaSyCt6VuMs_JrUqAcFwn70UtZp4pfLntUivI",
+            "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8",
+            "AIzaSyDYp78kpJERRjh6tfAo47fVuA28hdiw8Jw",
+            "AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A",
+            "AIzaSyD5kgC_dBf_jOo-p1Is3YIQ-xIUgWeKWRw",
+            "AIzaSyAlZniTEl_tErWaqg5irbIxSkim3BZQDRU",
+            "AIzaSyBbAugBoZdYCVHYBOSL8Gtd76G2a_V4JPo",
+            "AIzaSyCEBCEvu9Z0Jhzm_WLdgkpUCZdSkcHmrXg",
+            "AIzaSyB_MKmWEjS9IuAxSvl0-H7145EoWdwlWP0"
+    ));
+   // listOfKeys.add("AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE");
+    private static String API_KEY = "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8";
+   // private  static String API_KEY =  "AIzaSyCt6VuMs_JrUqAcFwn70UtZp4pfLntUivI";
+   // private static String API_KEY = "AIzaSyCy5fDtto3nCzohU5BSVe3MQlKjA0PJ-0E";
     String[] cities;
     ArrayList<Place> placesList;
     int index;
@@ -75,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     SharedPreferences sharedPreferences;
     final Context mContext = this;
     private Button mButton;
+    boolean isException = false;
+
 
     public ArrayList<Place> getPlacesList() {
         return placesList;
@@ -91,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Button button =(Button) findViewById(R.id.btn);
             button.setVisibility(View.INVISIBLE);
         }
+
 
         cities = getResources().getStringArray(R.array.cities_arrays);
         Spinner spinner = (Spinner)findViewById(R.id.spinner);
@@ -117,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     listView.clearAnimation();
                     listAdapter.clear();
                     new GetPlaces().execute();
+
                     listAdapter.addAll(placesList);
                     listView = (ListView) findViewById(R.id.listView);
                     listView.invalidateViews();
@@ -351,21 +381,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected Void doInBackground(Void... arg0) {
             HttpHandler sh = new HttpHandler();
             String jsonStr = sh.makeServiceCall(PLACES_OF_INTEREST_URL);
-            Log.e(TAG, "Response from PLACES_OF_INTEREST_URL: " + jsonStr);
+            Log.e(TAG, "Response from THE PLACES_OF_INTEREST_URL: " + jsonStr);
             if (jsonStr != null) {
                 try {
                     System.out.println(PLACES_OF_INTEREST_URL);
                     JSONObject jsonObj = new JSONObject(jsonStr);
-                    JSONArray  jsonArray = jsonObj.getJSONArray("results");
-                    for (int i = 0; i <  jsonArray.length(); i++) {
-                        JSONObject object =  jsonArray.getJSONObject(i);
+                    String statusCode = jsonObj.getString("status");
+                    System.out.println("Status: " +statusCode);
+                    System.out.println(isException);
+                    if (statusCode.equals("REQUEST_DENIED")) {
+                        isException = true;
+                    }
+                    System.out.println("WHAT"+isException);
+
+
+                    JSONArray jsonArray = jsonObj.getJSONArray("results");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
                         Place place = new Place();
                         String photoReference;
                         place.setCity(city);
                         place.setID(object.getString("place_id"));
                         //String placeStr = sh.makeServiceCall("https://maps.googleapis.com/maps/api/place/details/json?placeid="+place.getID()+"&key="+API_KEY+"");
-                        String placeStr = sh.makeServiceCall(PLACES_API_BASE+"/details/json?placeid="+place.getID()+"&key="+API_KEY+"");
+                        String placeStr = sh.makeServiceCall(PLACES_API_BASE + "/details/json?placeid=" + place.getID() + "&key=" + API_KEY + "");
                         JSONObject jsonObj1 = new JSONObject(placeStr);
+                       // statusCode = jsonObj1.getString("Status");
+                      //  System.out.println("Status: " +statusCode);
+
                         place.setDescription(jsonObj1.getJSONObject("result").getJSONArray("reviews").getJSONObject(0).getString("text").split("\n")[0]);
                         place.setName(object.getString("name"));
                         place.setCity(city);
@@ -377,7 +419,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         JSONObject photoReferenceUrl = photos.getJSONObject(0);
                         photoReference = photoReferenceUrl.getString("photo_reference");
 //                        String IMAGE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference="+photoReference+"&sensor=false&key="+ API_KEY +"";
-                        String IMAGE_URL = PLACES_API_BASE +"/photo?maxwidth=1000&photoreference="+photoReference+"&sensor=false&key="+ API_KEY +"";
+                        String IMAGE_URL = PLACES_API_BASE + "/photo?maxwidth=1000&photoreference=" + photoReference + "&sensor=false&key=" + API_KEY + "";
 
                         System.out.println(IMAGE_URL);
                         place.setImgURL(IMAGE_URL);
@@ -385,28 +427,37 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         if (!placesList.contains(place))
                             placesList.add(place);
                     }
-                    for (int i = 0; i < placesList.size(); i++){
+                    for (int i = 0; i < placesList.size(); i++) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            if(!Objects.equals(placesList.get(i).getCity(), city))
+                            if (!Objects.equals(placesList.get(i).getCity(), city))
                                 placesList.remove(i);
                         }
                     }
                     System.out.println("Done!!");
+                    isException = false;
                 } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
                     runOnUiThread(new Runnable() {
                         @Override
-                        public void run() {
+
+                    public void run() {
                             Toast.makeText(getApplicationContext(),
-                                    "Json parsing error: " + e.getMessage(),
+                                   "Json parsing error: " + e.getMessage(),
                                     Toast.LENGTH_LONG)
-                                    .show();
+                                   .show();
                             System.out.println("Exception!!");
+                    isException = true;
+
                         }
                     });
 
+                } catch (GooglePlacesException e) {
+                        isException = true;
+
                 }
-            } else {
+
+            }else {
+                isException = true;
                 Log.e(TAG, "Couldn't get json from server.");
                 runOnUiThread(new Runnable() {
                     @Override
@@ -425,12 +476,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            System.out.println("PostExecute!!");
+            System.out.println("PostExecute!!" +isException);
+            if(isException){
+                listOfKeys.remove(0);
+                listOfKeys.add(listOfKeys.size() - 1, API_KEY);
+                API_KEY = listOfKeys.get(0);
+                System.out.println("HELLO" + API_KEY);
+                isException = false;
+                System.out.println("Entered");
+                new GetPlaces().execute();
+            }
             if (pDialog.isShowing())
                 pDialog.dismiss();
             listAdapter.notifyDataSetChanged();
 
         }
+
     }
 
     public LatLng getLocationFromAddress(Context context, String strAddress) {
