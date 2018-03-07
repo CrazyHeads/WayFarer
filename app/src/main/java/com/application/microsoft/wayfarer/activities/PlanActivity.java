@@ -91,7 +91,7 @@ public class PlanActivity extends AppCompatActivity implements OnStartDragListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan);
         ArrayList<Place> placesList = getIntent().getParcelableArrayListExtra("placesList");
-        Toast.makeText(getApplicationContext(),"This the optimized route to visit all the places selected!Edit it by Swiping up/down, or delete a place by swiping left!",  Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"This the optimized route to visit all the places selected!",  Toast.LENGTH_LONG).show();
        // System.out.println("Before size" + placesList.size());
         for (int i = 0; i < placesList.size(); i++) {
             if (placesList.get(i).getSelected()) {

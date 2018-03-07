@@ -90,8 +90,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             "AIzaSyB_MKmWEjS9IuAxSvl0-H7145EoWdwlWP0"
     ));
    // listOfKeys.add("AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE");
-    private static String API_KEY = "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8";
-   // private  static String API_KEY =  "AIzaSyCt6VuMs_JrUqAcFwn70UtZp4pfLntUivI";
+   // private static String API_KEY = "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8";
+    private  static String API_KEY =  "AIzaSyAtmnpdgVvHyYyoILWHGzwqt_ePtrGmalk";
    // private static String API_KEY = "AIzaSyCy5fDtto3nCzohU5BSVe3MQlKjA0PJ-0E";
     String[] cities;
     ArrayList<Place> placesList;
@@ -133,6 +133,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         autoCompView.setOnItemClickListener(this);
         listAdapter = new ListViewAdapter(this, R.layout.row,placesList);
         spinner.setAdapter(adapter);
+        Toast.makeText(getApplicationContext(),"Make sure you have Internet Connection",  Toast.LENGTH_LONG).show();
+
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -441,10 +443,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         @Override
 
                     public void run() {
-                            Toast.makeText(getApplicationContext(),
+                            /*Toast.makeText(getApplicationContext(),
                                    "Json parsing error: " + e.getMessage(),
                                     Toast.LENGTH_LONG)
-                                   .show();
+                                   .show();*/
                             System.out.println("Exception!!");
                     isException = true;
 

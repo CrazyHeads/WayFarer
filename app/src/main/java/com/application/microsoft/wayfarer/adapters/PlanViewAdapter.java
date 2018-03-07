@@ -47,8 +47,11 @@ public class PlanViewAdapter extends ArrayAdapter<Plan> {
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
+
         }
-        viewHolder.text.setText(("Trip to " + data.get(position).getPlanedPlaces().get(0).getCity()));
+        //System.out.println(data.get(position).getPlanedPlaces().get(0).getCity());
+       // viewHolder.text.setText(("Trip to " + data.get(position).getPlanedPlaces().get(0).getCity()));
+        viewHolder.text.setText("Trip to "+ data.get(position).getCity());
         viewHolder.madeOn.setText("Made On " + data.get(position).getMadeOn().toString());
         return convertView;
     }

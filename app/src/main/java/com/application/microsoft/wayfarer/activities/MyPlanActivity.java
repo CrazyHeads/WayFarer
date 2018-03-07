@@ -49,14 +49,16 @@ public class MyPlanActivity  extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_plan);;
         listView = (ListView) findViewById(R.id.listView);
-        adapter = new PlanViewAdapter(MyPlanActivity.this, plans);
         new GetPlans().execute();
+
+        adapter = new PlanViewAdapter(MyPlanActivity.this, plans);
+
         listView.setAdapter(adapter);
         listView.setOnItemClickListener((parent, view, position, id) -> {
-//            Intent intent = new Intent(MyPlanActivity.this,MapsActivity.class);
-//            intent.putParcelableArrayListExtra("placesList",  plans.get(position));
-           // Intent intent = new Intent(MapsActivity.this,MapsActivity.class);
-           // startActivity(intent);
+            Intent intent = new Intent(MyPlanActivity.this,MapsActivity.class);
+           // intent.putParcelableArrayListExtra("placesList",  plans.get(position));
+          //  Intent intent = new Intent(MapsActivity.this,MapsActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -102,6 +104,7 @@ public class MyPlanActivity  extends Activity
                         ResultSet rs = stmt.executeQuery(query);
                         boolean flag = false;
                            while (rs.next()) {
+                               System.out.println("HII");
                                 Type type = new TypeToken<ArrayList<Place>>() {
                                 }.getType();
                                 ArrayList<Place> placesList = new Gson().fromJson(rs.getString("places"), type);
