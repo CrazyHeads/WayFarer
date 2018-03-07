@@ -1,5 +1,6 @@
 package com.application.microsoft.wayfarer.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -110,11 +111,15 @@ public  class SignUpActivity extends AppCompatActivity {
         String email = et_email.getText().toString().trim();
         String password = et_password.getText().toString().trim();
         String confirm_password = et_confirm_password.getText().toString().trim();
+        private ProgressDialog pDialog;
 
 
         @Override
         protected void onPreExecute() {
-
+            pDialog = new ProgressDialog(SignUpActivity.this);
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.show();
         }
 
         @Override
@@ -127,6 +132,8 @@ public  class SignUpActivity extends AppCompatActivity {
                 startActivity(i);
                 finish();
             }
+            if (pDialog.isShowing())
+                pDialog.dismiss();
 
         }
 

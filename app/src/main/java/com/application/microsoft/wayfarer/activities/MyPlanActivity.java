@@ -55,9 +55,9 @@ public class MyPlanActivity  extends Activity
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent = new Intent(MyPlanActivity.this,MapsActivity.class);
-           // intent.putParcelableArrayListExtra("placesList",  plans.get(position));
-          //  Intent intent = new Intent(MapsActivity.this,MapsActivity.class);
+            Intent intent = new Intent(MyPlanActivity.this, MapsActivity.class);
+            intent.putParcelableArrayListExtra("placesList",  plans.get(position).getPlanedPlaces());
+            System.out.println(plans.get(position).getPlanedPlaces().get(0).getName());//            Intent intent = new Intent(MapsActivity.this,MapsActivity.class);
             startActivity(intent);
         });
     }

@@ -1,5 +1,6 @@
 package com.application.microsoft.wayfarer.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -94,12 +95,16 @@ public class LoginActivity extends AppCompatActivity {
         Boolean isSuccess = false;
         String str_email =  et_email.getText().toString();
         String str_password = et_password.getText().toString();
-
+        private ProgressDialog pDialog;
 
 
         @Override
         protected void onPreExecute() {
-
+            super.onPreExecute();
+            pDialog = new ProgressDialog(LoginActivity.this);
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.show();
         }
 
         @Override
@@ -110,6 +115,9 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            Toast.makeText(getApplicationContext(),flag, Toast.LENGTH_SHORT).show();
         }
 
 

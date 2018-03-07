@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 
 import com.application.microsoft.wayfarer.R;
+import com.application.microsoft.wayfarer.models.Place;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -38,6 +39,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,12 +61,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     int PROXIMITY_RADIUS = 10000;
     double latitude, longitude;
     double end_latitude, end_longitude;
+    private ArrayList<Place> placesList;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        placesList = getIntent().getParcelableArrayListExtra("placesList");
+        System.out.println("SIze" + placesList.get(1).getName());
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -80,9 +88,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
 
 
     }
@@ -190,6 +196,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         }
+        for (Place place : placesList){
+            MarkerOptions markerOptions = new MarkerOptions();
+            System.out.println(new LatLng(place.getLat(), place.getLng()));
+            markerOptions.position(new LatLng(place.getLat(), place.getLng()));
+            markerOptions.title(place.getName());
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+            System.out.println("Place" + place.getName());
+            mMap.addMarker(markerOptions);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(place.getLat(), place.getLng())));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+        }
+
+
     }
 
     private String getDirectionsUrl()
@@ -263,6 +282,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
 
+        for (Place place : placesList){
+//            MarkerOptions markerOptions1 = new MarkerOptions();
+            System.out.println(new LatLng(place.getLat(), place.getLng()));
+            markerOptions.position(new LatLng(place.getLat(), place.getLng()));
+            markerOptions.title(place.getName());
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+            System.out.println("Place" + place.getName());
+            mMap.addMarker(markerOptions);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(place.getLat(), place.getLng())));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+        }
 
         Toast.makeText(MapsActivity.this,"Your Current Location", Toast.LENGTH_LONG).show();
 
