@@ -53,6 +53,7 @@ public class EstimationActivity extends AppCompatActivity {
    // RoutesViewAdapter routesViewAdapter;
     private ProgressDialog pDialog;
     double totalFare = 0.0;
+    private ArrayList<String> tripDetails;
 
     public String getOrigin() {
         return origin;
@@ -111,16 +112,27 @@ public class EstimationActivity extends AppCompatActivity {
             sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
             //        Type type = new TypeToken<ArrayList<Place>>() { }.getType();
 //        ArrayList<Place> restoreData = new Gson().fromJson(dataStr, type);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("Plan",new Gson().toJson(placesList) );
-            editor.putString("City", placesList.get(placesList.size()-1).getCity());
+//            SharedPreferences.Editor editor = sharedPreferences.edit();
+            tripDetails = new ArrayList<>();
+            tripDetails.add(0,new Gson().toJson(placesList));
+            tripDetails.add(1, placesList.get(0).getCity());
+            setTripDetails(tripDetails);
+//            editor.putString("Plan",new Gson().toJson(placesList) );
+//            editor.putString("City", placesList.get(0).getCity());
             Intent intent = new Intent(EstimationActivity.this, LoginActivity.class);
             intent.putParcelableArrayListExtra("selectedPlacesList",placesList);
             startActivity(intent);
         }
 
 
+    }
 
+    void setTripDetails(ArrayList<String> tripDetails){
+        this.tripDetails = tripDetails;
+    }
+
+    ArrayList<String> getTripDetails(){
+        return tripDetails;
     }
 
     private class TransitDetails extends AsyncTask<String, Void,Void> {

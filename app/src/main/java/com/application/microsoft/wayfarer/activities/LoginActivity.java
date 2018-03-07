@@ -147,8 +147,9 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("UserName", rs.getString("name"));
                             editor.apply();
                             sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-
-                            String query1 = "insert into trips(userId,places,city) values("+rs.getString("userId")+", '"+sharedPreferences.getString("Plan","")+"', '"+sharedPreferences.getString("City","")+"');";
+                            EstimationActivity estimationActivity = new EstimationActivity();
+                            String query1 = "insert into trips(userId,places,city) values("+rs.getString("userId")+", '"+estimationActivity.getTripDetails().get(0)+"', '"+estimationActivity.getTripDetails().get(1)+"');";
+                            System.out.println(query1);
                             Statement stmt1 = con.createStatement();
                             int flag = stmt1.executeUpdate(query1);
                             if (flag < 1) {
