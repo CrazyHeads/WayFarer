@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ));
    // listOfKeys.add("AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE");
    // private static String API_KEY = "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8";
-    private  static String API_KEY =  "AIzaSyAtmnpdgVvHyYyoILWHGzwqt_ePtrGmalk";
+    private  static String API_KEY =  "AIzaSyBWpF2dQ64Xw7cYevkEkHf6dY536VEFZAA"; //"AIzaSyAtmnpdgVvHyYyoILWHGzwqt_ePtrGmalk";
    // private static String API_KEY = "AIzaSyCy5fDtto3nCzohU5BSVe3MQlKjA0PJ-0E";
     String[] cities;
     ArrayList<Place> placesList;
@@ -148,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     listView.clearAnimation();
                     listAdapter.clear();
                     new GetPlaces().execute();
-
                     listAdapter.addAll(placesList);
                     listView = (ListView) findViewById(R.id.listView);
                     listView.invalidateViews();
@@ -439,6 +438,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     isException = false;
                 } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
+                    isException = true;
                     runOnUiThread(new Runnable() {
                         @Override
 
@@ -479,6 +479,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             System.out.println("PostExecute!!" +isException);
+            if (pDialog.isShowing())
+                pDialog.dismiss();
             if(isException){
                 listOfKeys.remove(0);
                 listOfKeys.add(listOfKeys.size() - 1, API_KEY);
@@ -488,8 +490,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 System.out.println("Entered");
                 new GetPlaces().execute();
             }
-            if (pDialog.isShowing())
-                pDialog.dismiss();
+
             listAdapter.notifyDataSetChanged();
 
         }
