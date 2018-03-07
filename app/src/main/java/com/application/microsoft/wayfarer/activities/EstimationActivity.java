@@ -113,6 +113,7 @@ public class EstimationActivity extends AppCompatActivity {
 //        ArrayList<Place> restoreData = new Gson().fromJson(dataStr, type);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("Plan",new Gson().toJson(placesList) );
+            editor.putString("City", placesList.get(placesList.size()-1).getCity());
             Intent intent = new Intent(EstimationActivity.this, LoginActivity.class);
             intent.putParcelableArrayListExtra("selectedPlacesList",placesList);
             startActivity(intent);
@@ -203,6 +204,7 @@ public class EstimationActivity extends AppCompatActivity {
 
             }
             sb.append("\n\nTOTAL FARE   " +totalFare + "\n");
+
 
 
             return null;
