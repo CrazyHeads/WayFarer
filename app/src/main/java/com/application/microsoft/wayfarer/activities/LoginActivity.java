@@ -1,6 +1,5 @@
 package com.application.microsoft.wayfarer.activities;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -95,29 +94,22 @@ public class LoginActivity extends AppCompatActivity {
         Boolean isSuccess = false;
         String str_email =  et_email.getText().toString();
         String str_password = et_password.getText().toString();
-        private ProgressDialog pDialog;
+
 
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
-            pDialog = new ProgressDialog(LoginActivity.this);
-            pDialog.setMessage("Please wait...");
-            pDialog.setCancelable(false);
-            pDialog.show();
+
         }
 
         @Override
         protected void onPostExecute(String r) {
 
-           if(isSuccess) {
+            if(isSuccess) {
                 Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
                 startActivity(intent);
                 finish();
             }
-            if (pDialog.isShowing())
-                pDialog.dismiss();
-            Toast.makeText(getApplicationContext(),flag, Toast.LENGTH_SHORT).show();
         }
 
 
@@ -147,9 +139,9 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("UserName", rs.getString("name"));
                             editor.apply();
                             sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-                            EstimationActivity estimationActivity = new EstimationActivity();
-                            String query1 = "insert into trips(userId,places,city) values("+rs.getString("userId")+", '"+estimationActivity.getTripDetails().get(0)+"', '"+estimationActivity.getTripDetails().get(1)+"');";
-                            System.out.println(query1);
+                            System.out.println(sharedPreferences.getString("Plan",""));
+                            //System.out.println(sharedPreferences.getString("City",""));
+                            String query1 = "insert into trips(userId,places,city) values("+rs.getString("userId")+", '"+sharedPreferences.getString("Plan","")+"','"+sharedPreferences.getString("City","")+"');";
                             Statement stmt1 = con.createStatement();
                             int flag = stmt1.executeUpdate(query1);
                             if (flag < 1) {

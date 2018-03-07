@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ));
    // listOfKeys.add("AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE");
    // private static String API_KEY = "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8";
-    private  static String API_KEY =  "AIzaSyBWpF2dQ64Xw7cYevkEkHf6dY536VEFZAA"; //"AIzaSyAtmnpdgVvHyYyoILWHGzwqt_ePtrGmalk";
+    private  static String API_KEY =  "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8"; //"AIzaSyAtmnpdgVvHyYyoILWHGzwqt_ePtrGmalk";
    // private static String API_KEY = "AIzaSyCy5fDtto3nCzohU5BSVe3MQlKjA0PJ-0E";
     String[] cities;
     ArrayList<Place> placesList;
@@ -154,8 +154,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     listAdapter.notifyDataSetChanged();
                     listView.setAdapter(listAdapter);
                     System.out.println(city);
+
                     Toast.makeText(getApplicationContext(), "Selected: " + city, Toast.LENGTH_LONG).show();
                 }
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("City", city);
+                editor.apply();
                 index = -1;
             }
 
