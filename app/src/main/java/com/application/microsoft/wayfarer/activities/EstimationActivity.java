@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
 
-
+/*Estimating the total cost of the selected places using Public Transit */
 
 public class EstimationActivity extends AppCompatActivity {
     private static double busFare = 8;
@@ -71,7 +71,7 @@ public class EstimationActivity extends AppCompatActivity {
         details.setMovementMethod(new ScrollingMovementMethod());
         new TransitDetails().execute();
     }
-
+/* Saving the selected Places List */
     public void save(View v) {
         sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         String name  = sharedPreferences.getString("UserID","");
@@ -94,11 +94,10 @@ public class EstimationActivity extends AppCompatActivity {
 
     }
 
-
     private class TransitDetails extends AsyncTask<String, Void,Void> {
         String url;
         Transit transit = new Transit();
-
+/* Displaying the please wait dialog box until the data is displayed*/
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -118,7 +117,7 @@ public class EstimationActivity extends AppCompatActivity {
             details.setText(String.valueOf(sb));
 
         }
-
+/* It invokes as soon as the PreExecute finishes executing.Here we are setting the Source and Destination from the PlacesList and displaying the respective Bus Transit Fare*/
         @Override
         protected Void doInBackground(String... strings) {
 
@@ -138,7 +137,7 @@ public class EstimationActivity extends AppCompatActivity {
                         JSONArray jsonData = jsonObj.getJSONArray("routes")
                                 .getJSONObject(0).getJSONArray("legs")
                                 .getJSONObject(0).getJSONArray("steps");
-
+/* Getting the distance,duration and mode from the JSON object */
                         for (int i = 0; i < jsonData.length(); i++) {
                             double fare = 0.0;
                             JSONObject stop = jsonData.getJSONObject(i);
@@ -185,6 +184,7 @@ public class EstimationActivity extends AppCompatActivity {
 
             return null;
         }
+        /* Printing the details of the transit mode,duration and distance*/
         public void printDetails() {
             sb.append(transit.getTravelMode());
             sb.append("\n\n");
@@ -214,12 +214,12 @@ public class EstimationActivity extends AppCompatActivity {
 
     }
 
-
+/* Generating direction URL */
     private String createUrl(String origin, String destination) {
 
         return DIRECTION_URL_API + "origin=" +origin+ "&destination=" +destination+ "&mode=transit&key="+DIRECTION_API_KEY;
     }
-
+/* Calculating the  respective busFares */
 
     public static double calculateACBusFare(double distance) {
 
@@ -270,7 +270,7 @@ public class EstimationActivity extends AppCompatActivity {
         return -1;
 
     }
-
+/* If the user clicks on the save plan,he will be directed to the Menus activity*/
     public class SavePlan extends AsyncTask<String,String,String>
     {
         String flag = "";
@@ -295,6 +295,7 @@ public class EstimationActivity extends AppCompatActivity {
 
 
         @Override
+        /* Inserting into the database of the selected Places,City and the UserId*/
 
         protected String doInBackground(String... params) {
             Connection con = null;
