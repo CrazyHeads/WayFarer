@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -296,8 +297,10 @@ public class EstimationActivity extends AppCompatActivity {
         @Override
 
         protected String doInBackground(String... params) {
+            Connection con = null;
+            Statement stmt = null;
             try {
-                Connection con = ConnectionFactory.getConnection();
+                con = ConnectionFactory.getConnection();
 
                 if (con == null) {
                     flag = "Error in connection with SQL server";
@@ -306,16 +309,13 @@ public class EstimationActivity extends AppCompatActivity {
                     sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                     String userID = sharedPreferences.getString("UserID","");
                     String query = "insert into trips(userId,places,city) values("+userID+", '"+new Gson().toJson(placesList)+"', '"+placesList.get(0).getCity()+"');";
-                    Statement stmt = con.createStatement();
+                    stmt = con.createStatement();
                     int flag = stmt.executeUpdate(query);
                     if (flag < 1) {
                         System.out.println("Plan not Added!");
                     } else {
                         System.out.println("Added Plan!!");
                     }
-
-                    stmt.close();
-                    con.close();
                 }
 
 
@@ -326,6 +326,14 @@ public class EstimationActivity extends AppCompatActivity {
                 flag = "Exceptions";
                 Log.e("ERROR", ex.getMessage());
 
+            } finally {
+
+                try {
+                    stmt.close();
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
 
             return flag;
