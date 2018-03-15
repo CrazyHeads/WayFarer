@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -38,9 +39,9 @@ import java.util.Set;
 
 
 public class EstimationActivity extends AppCompatActivity {
-    private static double busFare = 8;
-    private static double ACBusFare = 15;
-    private static double metroFare = 10;
+    Button select;
+    private String origin;
+    private String destination;
     private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
     private static final String DIRECTION_API_KEY = "AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A";
 
@@ -49,15 +50,35 @@ public class EstimationActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     TextView details;
     ArrayList<Place> placesList;
+
+   // RoutesViewAdapter routesViewAdapter;
     private ProgressDialog pDialog;
     double totalFare = 0.0;
     private ArrayList<String> tripDetails;
 
+    public String getOrigin() {
+        return origin;
+    }
 
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
     ArrayList<Route> routes = new ArrayList<>();
     StringBuffer sb = new StringBuffer();
     public ArrayList<Route> getRoutes() {
         return routes;
+    }
+    //ListView listView;
+    public void setRoutes(ArrayList<Route> routes) {
+        this.routes = routes;
     }
 
     @Override
@@ -66,9 +87,17 @@ public class EstimationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estimation);
         placesList = getIntent().getParcelableArrayListExtra("selectedPlacesList");
+       // routesViewAdapter = new RoutesViewAdapter(this, R.layout.route_layout, routes);
+       // listView = (ListView) findViewById(R.id.route_view);
+        //listView.setAdapter(routesViewAdapter);
         details = (TextView) findViewById(R.id.textView);
         details.setMovementMethod(new ScrollingMovementMethod());
         new TransitDetails().execute();
+
+
+       // routesViewAdapter.addAll(routes);
+      //  routesViewAdapter.notifyDataSetChanged();
+
     }
 
     public void save(View v) {
@@ -82,9 +111,16 @@ public class EstimationActivity extends AppCompatActivity {
 
         } else {
             sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+            //        Type type = new TypeToken<ArrayList<Place>>() { }.getType();
+//        ArrayList<Place> restoreData = new Gson().fromJson(dataStr, type);
             SharedPreferences.Editor editor = sharedPreferences.edit();
+          //  tripDetails = new ArrayList<>();
+           // tripDetails.add(0,new Gson().toJson(placesList));
+           // tripDetails.add(1, placesList.get(0).getCity());
+            //setTripDetails(tripDetails);
             editor.putString("Plan",new Gson().toJson(placesList));
             editor.apply();
+//            editor.putString("City", placesList.get(0).getCity());
             Intent intent = new Intent(EstimationActivity.this, LoginActivity.class);
             intent.putParcelableArrayListExtra("selectedPlacesList",placesList);
             startActivity(intent);
@@ -93,8 +129,16 @@ public class EstimationActivity extends AppCompatActivity {
 
     }
 
+    void setTripDetails(ArrayList<String> tripDetails){
+        this.tripDetails = tripDetails;
+    }
+
+    ArrayList<String> getTripDetails(){
+        return tripDetails;
+    }
 
     private class TransitDetails extends AsyncTask<String, Void,Void> {
+
         String url;
         Transit transit = new Transit();
 
@@ -115,6 +159,7 @@ public class EstimationActivity extends AppCompatActivity {
             if (pDialog.isShowing())
                 pDialog.dismiss();
             details.setText(String.valueOf(sb));
+          //  routesViewAdapter.notifyDataSetChanged();
 
         }
 
@@ -139,7 +184,6 @@ public class EstimationActivity extends AppCompatActivity {
                                 .getJSONObject(0).getJSONArray("steps");
 
                         for (int i = 0; i < jsonData.length(); i++) {
-                            double fare = 0.0;
                             JSONObject stop = jsonData.getJSONObject(i);
                             transit.setTravelMode(stop.getString("travel_mode"));
                             transit.setDistance(stop.getJSONObject("distance").getString("text"));
@@ -149,21 +193,16 @@ public class EstimationActivity extends AppCompatActivity {
                             if (transit.getTravelMode().equals("TRANSIT") && transit.getInstructions().contains("Bus")) {
                                 transit.setNoOfStops(stop.getJSONObject("transit_details").getInt("num_stops"));
                                 transit.setTransitNumber(stop.getJSONObject("transit_details").getJSONObject("line").getString("short_name"));
-                                fare = calculateOrdinaryBusFare(Double.parseDouble(transit.getDistance().replace("km", " ").trim()));
-                                printBusDetails(fare);
-                                totalFare += fare;
+                                printBusDetails();
+                                totalFare += calculateACBusFare(Double.parseDouble(transit.getDistance().replace("km", " ").trim()));
 
                             } else if (transit.getTravelMode().equals("TRANSIT") && transit.getInstructions().contains("Metro rail")) {
                                 transit.setNoOfStops(stop.getJSONObject("transit_details").getInt("num_stops"));
-                                fare = calculateMetroRailFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim()));
-                                printMetroDetails(fare);
-                                totalFare += fare;
+                                printMetroDetails();
+                                totalFare += calculateMetroRailFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim()));
                             } else if (transit.getTravelMode().equals("TRANSIT") && transit.getInstructions().contains("Train")) {
-                                fare = calculateMMTSFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim()));
-                                printTrainDetails(fare);
-                                totalFare += fare;
-                            } else {
-                                sb.append("\n");
+                                printTrainDetails();
+                                totalFare += calculateMMTSFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim()));
                             }
                             transitList.add(transit);
 
@@ -185,28 +224,39 @@ public class EstimationActivity extends AppCompatActivity {
             return null;
         }
         public void printDetails() {
+            System.out.println(transit.getTravelMode());
             sb.append(transit.getTravelMode());
             sb.append("\n\n");
+            System.out.println(transit.getInstructions());
             sb.append(transit.getInstructions());
+          //  sb.append("\n");
+            System.out.println(" for " + transit.getDistance() + " for " + transit.getDuration());
             sb.append(" for " + transit.getDistance() + " for " + transit.getDuration());
             sb.append("\n\n");
             return;
         }
-        public void printBusDetails(double fare) {
+        public void printBusDetails() {
+            System.out.println("No of Stops: " + transit.getNoOfStops());
             sb.append("No of Stops: " +transit.getNoOfStops() + "\n");
+            System.out.println("Transit Number " + transit.getTransitNumber());
             sb.append("Transit Number " +transit.getTransitNumber());
             sb.append("\n");
+            System.out.println("Ac Bus Fare " + calculateACBusFare(Double.parseDouble(transit.getDistance().replace("km", " ").trim())));
             sb.append("Ac Bus Fare " + calculateACBusFare(Double.parseDouble(transit.getDistance().replace("km", " ").trim())) + "\n");
-            sb.append("Ordinary Bus Fare " + fare);
+            System.out.println("Ordinary Bus Fare " + calculateOrdinaryBusFare(Double.parseDouble(transit.getDistance().replace("km", " ").trim())));
+            sb.append("Ordinary Bus Fare " + calculateOrdinaryBusFare(Double.parseDouble(transit.getDistance().replace("km", " ").trim())) + "\n\n");
             return;
         }
-        public void printMetroDetails(double fare) {
+        public void printMetroDetails() {
+            System.out.println("Transit Details:" + transit.getNoOfStops());
             sb.append("Transit Details: " + transit.getNoOfStops() + "\n");
-            sb.append("Metro Rail Fare " + fare);
+            System.out.println("Metro Rail Fare " + calculateMetroRailFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim())));
+            sb.append("Metro Rail Fare " + calculateMetroRailFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim())) +"\n");
             return;
         }
-        public void printTrainDetails(double fare) {
-            sb.append("MMTS Fare " +fare);
+        public void printTrainDetails() {
+            System.out.println("MMTS Fare " + calculateMMTSFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim())));
+            sb.append("MMTS Fare " + calculateMMTSFares(Double.parseDouble(transit.getDistance().replace("km", " ").trim())) + "\n");
         }
 
 
@@ -223,39 +273,38 @@ public class EstimationActivity extends AppCompatActivity {
     public static double calculateACBusFare(double distance) {
 
         if (distance <= 2) {
-            return ACBusFare;
+            return 15;
         }
         if (distance <= 17) {
-            return ACBusFare + ((distance/2) * 5);
+            return 15 + ((distance/2) * 5);
         }
         else {
-            return (ACBusFare + 3 + ((distance/2) * 5))+ ((distance/5) * 10);
+            return 60 + ((distance/5) * 10);
         }
     }
 
 
     public static double calculateOrdinaryBusFare(double distance) {
         if (distance <= 2) {
-            return busFare;
+            return 8;
         }
         else if (distance <= 17) {
-            return busFare + ((distance/2) * 2);
+            return 8 + ((distance/2) * 2);
         }
-        return (busFare + ((distance/2) * 2)) + ((distance/5));
+        return 24 + ((distance/5));
      }
 
     public static double calculateMetroRailFares(double distance) {
         //fares for metro rail
         if (distance <= 2) {
-            return metroFare;
+            return 10;
         }
 
-        return metroFare + (distance/2) * 5;
+        return 10 + (distance/2) * 5;
     }
 
 
     public static double calculateMMTSFares(double distance) {
-        //standard fares of MMTS
         mmtsFares.put(15,5);
         mmtsFares.put(30,10);
         mmtsFares.put(40,11);
@@ -296,9 +345,9 @@ public class EstimationActivity extends AppCompatActivity {
         @Override
 
         protected String doInBackground(String... params) {
+            Statement stmt = null;
+            Connection con = ConnectionFactory.getConnection();
             try {
-                Connection con = ConnectionFactory.getConnection();
-
                 if (con == null) {
                     flag = "Error in connection with SQL server";
                 }else{
@@ -306,32 +355,31 @@ public class EstimationActivity extends AppCompatActivity {
                     sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                     String userID = sharedPreferences.getString("UserID","");
                     String query = "insert into trips(userId,places,city) values("+userID+", '"+new Gson().toJson(placesList)+"', '"+placesList.get(0).getCity()+"');";
-                    Statement stmt = con.createStatement();
+                    stmt = con.createStatement();
                     int flag = stmt.executeUpdate(query);
                     if (flag < 1) {
                         System.out.println("Plan not Added!");
                     } else {
                         System.out.println("Added Plan!!");
                     }
-
-                    stmt.close();
-                    con.close();
                 }
-
-
-
             }catch (Exception ex)
             {
                 isSuccess = false;
                 flag = "Exceptions";
                 Log.e("ERROR", ex.getMessage());
 
+            } finally {
+                try {
+                    stmt.close();
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-
             return flag;
         }
     }
-
 }
 
 
