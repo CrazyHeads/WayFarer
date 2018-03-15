@@ -19,6 +19,7 @@ import com.application.microsoft.wayfarer.utils.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 
@@ -129,16 +130,17 @@ public class LoginActivity extends AppCompatActivity {
             if(str_password.trim().equals("") ||str_email.trim().equals("")){
                 flag = "Please fill all the fields";
             }else{
+                Connection con = ConnectionFactory.getConnection();
+                Statement stmt = null;
+                ResultSet rs = null;
                 try {
-                    Connection con = ConnectionFactory.getConnection();
-
                     if (con == null) {
                         flag = "Error in connection with SQL server";
                     }else{
                         String query = "select userId,name from userDetails where password LIKE '"+str_password+"' and email LIKE '"+str_email+"';";
                         System.out.println(query);
-                        Statement stmt = con.createStatement();
-                        ResultSet rs = stmt.executeQuery(query);
+                        stmt = con.createStatement();
+                        rs = stmt.executeQuery(query);
                         if(rs.next()){
                             flag = "Login Successful";
                             System.out.println("Done!");
@@ -162,21 +164,22 @@ public class LoginActivity extends AppCompatActivity {
                             flag = "Invalid Credentials";
                             System.out.println("Invalid!!");
                             isSuccess = false;
-
                         }
-                        rs.close();
-                        stmt.close();
-                        con.close();
                     }
-
-
-
                 }catch (Exception ex)
                 {
                     isSuccess = false;
                     flag = "Exceptions";
                     Log.e("ERROR", ex.getMessage());
 
+                } finally {
+                    try {
+                        rs.close();
+                        stmt.close();
+                        con.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             return flag;
