@@ -70,8 +70,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:hint="Enter 8 characters"
+        android:hint="Enter password"
          />
+
+    <TextView
+        android:id="@+id/text_view_id"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="(Must have minimum of 8 characters with 1 Capital letter, 1 Number and 1 symbol(!,@,#,$,..))" />
 
     <TextView
         android:id="@+id/textView9"
@@ -83,11 +89,11 @@
         android:text="Confirm Password" />
 
     <EditText
-        android:id="@+id/confrim_password"
+        android:id="@+id/confirm_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:hint="Enter confirm password"
+        android:hint="Re-enter password"
         />
 
     <Button
