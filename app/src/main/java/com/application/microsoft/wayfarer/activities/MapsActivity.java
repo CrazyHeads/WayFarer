@@ -33,7 +33,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-
+/* Finding the current location of the user and displaying the selected placesList along with the nearby restaurants,hospitals and police stations */
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -138,7 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .build();
         mGoogleApiClient.connect();
     }
-
+/* Once the user clicks on the button of hospital,restaurant and police stations,near by places of the respective button will be displayed*/
     public void onClick(View v)
     {
         Object dataTransfer[] = new Object[2];
@@ -186,6 +186,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         }
+        /* Adding markers to the selected placesList and displaying them on the map*/
         for (Place place : placesList){
             MarkerOptions markerOptions = new MarkerOptions();
             System.out.println(new LatLng(place.getLat(), place.getLng()));
@@ -200,6 +201,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
+    /* Getting the places directions url */
 
     private String getDirectionsUrl()
     {
@@ -210,6 +212,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         return googleDirectionsUrl.toString();
     }
+    /* Getting the near by places url */
 
     private String getUrl(double latitude, double longitude, String nearbyPlace)
     {
@@ -246,7 +249,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionSuspended(int i) {
 
     }
-
+/* Getting the current location of the user and moving the camera */
     @Override
     public void onLocationChanged(Location location) {
         Log.d("onLocationChanged", "entered");
