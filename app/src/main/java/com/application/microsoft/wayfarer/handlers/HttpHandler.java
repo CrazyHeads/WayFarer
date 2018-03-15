@@ -11,7 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-
+/* Making HttpConnections to download the data from URL*/
 public class HttpHandler {
 
     private static final String TAG = HttpHandler.class.getSimpleName();
@@ -36,7 +36,7 @@ public class HttpHandler {
         }
         return response;
     }
-
+/* Conversion of JSON response stream to String*/
     private String convertStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
