@@ -1,10 +1,10 @@
-package com.application.microsoft.wayfarer.activities;
+package com.application.microsoft.wayfarer.utils;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.application.microsoft.wayfarer.handlers.HttpHandler;
-import com.application.microsoft.wayfarer.models.Place;
+import com.application.microsoft.wayfarer.utils.DataParser;
+import com.application.microsoft.wayfarer.utils.DownloadUrl;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -15,9 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by shravanivadlamudi on 01/03/18.
- */
+
 
 public class NearByPlaces extends AsyncTask<Object, String, String> {
 

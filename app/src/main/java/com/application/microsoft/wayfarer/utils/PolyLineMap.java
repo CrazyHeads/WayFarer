@@ -10,10 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by mypc on 2/26/2018.
- */
-
 public class PolyLineMap {
 
     /** Receives a JSONObject and returns a list of lists containing latitude and longitude */
@@ -65,10 +61,6 @@ public class PolyLineMap {
     }
 
 
-    /**
-     * Method to decode polyline points
-     * Courtesy : http://jeffreysambells.com/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java
-     * */
     private List<LatLng> decodePoly(String encoded) {
 
         List<LatLng> poly = new ArrayList<>();

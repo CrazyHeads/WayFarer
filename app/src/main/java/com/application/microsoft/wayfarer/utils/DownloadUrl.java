@@ -1,4 +1,4 @@
-package com.application.microsoft.wayfarer.activities;
+package com.application.microsoft.wayfarer.utils;
 
 import android.util.Log;
 
@@ -10,9 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by shravanivadlamudi on 01/03/18.
- */
+
 
 public class DownloadUrl {
     public String readUrl(String myUrl) throws IOException

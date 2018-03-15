@@ -71,8 +71,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
     private static  ArrayList<String> listOfKeys = new ArrayList<String>(Arrays.asList(
-     //       "AIzaSyCy5fDtto3nCzohU5BSVe3MQlKjA0PJ-0E",
-            "AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE",
+             "AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE",
             "AIzaSyDpTC7gSRLeCq3dbjBeOgasnCqvfdNhkT0",
             "AIzaSyCi9z5JsxnkjNLUimfpsQj-43yM653a_Dg",
             "AIzaSyBWpF2dQ64Xw7cYevkEkHf6dY536VEFZAA",

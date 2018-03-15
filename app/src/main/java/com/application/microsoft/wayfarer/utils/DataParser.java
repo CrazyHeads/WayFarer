@@ -1,4 +1,4 @@
-package com.application.microsoft.wayfarer.activities;
+package com.application.microsoft.wayfarer.utils;
 
 import android.util.Log;
 
@@ -10,11 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by shravanivadlamudi on 01/03/18.
- */
 
-class DataParser {
+public class DataParser {
 
 
     private HashMap<String,String> getDuration(JSONArray googleDirectionsJson)

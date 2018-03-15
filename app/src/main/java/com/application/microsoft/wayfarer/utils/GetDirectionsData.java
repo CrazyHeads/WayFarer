@@ -1,8 +1,10 @@
-package com.application.microsoft.wayfarer.activities;
+package com.application.microsoft.wayfarer.utils;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
 
+import com.application.microsoft.wayfarer.utils.DataParser;
+import com.application.microsoft.wayfarer.utils.DownloadUrl;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
