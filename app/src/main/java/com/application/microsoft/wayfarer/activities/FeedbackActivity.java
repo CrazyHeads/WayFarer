@@ -15,7 +15,7 @@ import com.application.microsoft.wayfarer.utils.ConnectionFactory;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-
+/* Taking the feedback from the user*/
 
 public class FeedbackActivity extends AppCompatActivity {
     private EditText et_msg;
@@ -31,6 +31,7 @@ public class FeedbackActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
     }
+    /* Submitting the feedback */
 
     public void onSubmit(View v) {
         //  Intent myIntent = new Intent(FeedbackActivity.this, MenuActivity.class);
@@ -50,7 +51,7 @@ public class FeedbackActivity extends AppCompatActivity {
         protected void onPreExecute() {
 
         }
-
+/* Checking whether the submitted feedback is successfull and closing  */
         @Override
         protected void onPostExecute(String r) {
 
@@ -61,7 +62,7 @@ public class FeedbackActivity extends AppCompatActivity {
             }
 
         }
-
+/* Taking the feedback from the respective user and inserting into database*/
         @Override
         protected String doInBackground(String... params) {
             java.sql.Connection con = ConnectionFactory.getConnection();
