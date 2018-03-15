@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.application.microsoft.wayfarer.R;
+import com.application.microsoft.wayfarer.activities.MyPlanActivity;
 import com.application.microsoft.wayfarer.models.Plan;
 
 public class PlanViewAdapter extends ArrayAdapter<Plan> {
@@ -96,7 +97,6 @@ public class PlanViewAdapter extends ArrayAdapter<Plan> {
     public void  removeSelection() {
 
         selectedItemsIds = new  SparseBooleanArray();
-
         notifyDataSetChanged();
 
     }
@@ -119,9 +119,6 @@ public class PlanViewAdapter extends ArrayAdapter<Plan> {
 
     }
 
-
-
-    // Get number of selected item
 
     public int  getSelectedCount() {
 

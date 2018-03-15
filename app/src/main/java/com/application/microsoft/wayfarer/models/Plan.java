@@ -5,14 +5,31 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * Created by RAJULA on 01-03-2018.
- */
+
 
 public class Plan extends ArrayList<Parcelable> {
     ArrayList<Place> planedPlaces;
     String city;
     Date madeOn;
+
+    public String getPlanId() {
+        return planId;
+    }
+
+    public void setPlanId(String planId) {
+        this.planId = planId;
+    }
+
+    public String getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(String tripId) {
+        this.tripId = tripId;
+    }
+
+    String planId;
+    String tripId;
 
     public ArrayList<Place> getPlanedPlaces() {
         return planedPlaces;

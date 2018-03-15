@@ -7,21 +7,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Parcelable;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -38,15 +31,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import retrofit2.http.GET;
 
 public class MyPlanActivity extends Activity {
     public static final String MyPREFERENCES = "MyPrefs";
     SharedPreferences sharedPreferences;
     ArrayList<Plan> plans = new ArrayList<>();
+    ArrayList<Plan> removedPlans = new ArrayList<>();
     ListView listView;
     PlanViewAdapter adapter;
 
@@ -59,7 +49,6 @@ public class MyPlanActivity extends Activity {
         new GetPlans().execute();
 
         adapter = new PlanViewAdapter(MyPlanActivity.this, plans);
-
         listView.setAdapter(adapter);
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(MyPlanActivity.this, MapsActivity.class);
@@ -87,11 +76,7 @@ public class MyPlanActivity extends Activity {
 
             @Override
             public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
-
-                // TODO  Auto-generated method stub
-
                 switch (item.getItemId()) {
-
                     case R.id.selectAll:
                         final int checkedCount = plans.size();
                         adapter.removeSelection();
@@ -124,45 +109,30 @@ public class MyPlanActivity extends Activity {
                             @Override
 
                             public void onClick(DialogInterface dialog, int which) {
-
-                                // TODO  Auto-generated method stub
-
-                                SparseBooleanArray selected = adapter
-
-                                        .getSelectedIds();
-
+                                SparseBooleanArray selected = adapter.getSelectedIds();
                                 for (int i = (selected.size() - 1); i >= 0; i--) {
-
                                     if (selected.valueAt(i)) {
                                         Plan selecteditem = adapter.getItem(selected.keyAt(i));
+                                        removedPlans.add(selecteditem);
                                         adapter.remove(selecteditem);
-
-
                                     }
-
                                 }
-
+                                new DeletePlans().execute();
                                 mode.finish();
                                 selected.clear();
-
-
                             }
-
                         });
 
+
                         AlertDialog alert = builder.create();
-
                         alert.setTitle("Confirmation");
-
                         alert.show();
-
                         return true;
-
                     default:
-
                         return false;
 
                 }
+
             }
 
             @Override
@@ -174,8 +144,6 @@ public class MyPlanActivity extends Activity {
             }
 
         });
-
-
     }
 
     public class GetPlans extends AsyncTask<String, String, String> {
@@ -212,13 +180,12 @@ public class MyPlanActivity extends Activity {
                 if (con == null) {
                     flag = "Error in connection with SQL server";
                 } else {
-                    String query = "select places,city,madeOn from trips where userId = '" + sharedPreferences.getString("UserID", "") + "';";
+                    String query = "select planId,places,city,madeOn from trips where userId = '" + sharedPreferences.getString("UserID", "") + "';";
                     System.out.println(query);
                     Statement stmt = con.createStatement();
                     ResultSet rs = stmt.executeQuery(query);
                     boolean flag = false;
                     while (rs.next()) {
-                        System.out.println("HII");
                         Type type = new TypeToken<ArrayList<Place>>() {
                         }.getType();
                         ArrayList<Place> placesList = new Gson().fromJson(rs.getString("places"), type);
@@ -226,6 +193,7 @@ public class MyPlanActivity extends Activity {
                         plan.setCity(rs.getString("city"));
                         plan.setPlanedPlaces(placesList);
                         plan.setMadeOn(rs.getDate("madeOn"));
+                        plan.setPlanId(rs.getString("planId"));
                         plans.add(plan);
                         flag = true;
                     }
@@ -247,6 +215,77 @@ public class MyPlanActivity extends Activity {
 
             }
 
+            return flag;
+        }
+    }
+
+    public class DeletePlans extends AsyncTask<String,String,String>
+    {
+        String flag = "";
+        Boolean isSuccess = false;
+        private ProgressDialog pDialog;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(MyPlanActivity.this);
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(String r) {
+            super.onPostExecute(r);
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+
+            if(isSuccess) {
+                Intent intent = new Intent(MyPlanActivity.this, MyPlanActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            Toast.makeText(getApplicationContext(),flag,  Toast.LENGTH_LONG).show();
+        }
+
+
+
+        @Override
+
+        protected String doInBackground(String... params) {
+             try {
+                    Connection con = ConnectionFactory.getConnection();
+
+                    if (con == null) {
+                        flag = "Error in connection with SQL server";
+                    }else {
+                        for (Plan plan : removedPlans) {
+                            String query = "delete from trips where planId LIKE '" + plan.getPlanId() + "' and userId LIKE '" + sharedPreferences.getString("UserID", "") + "';";
+                            System.out.println(query);
+                            Statement stmt = con.createStatement();
+                            int rs = stmt.executeUpdate(query);
+                            if (rs > 0) {
+                               flag = "Removed selected plans";
+                            } else {
+                                flag = "Unable to Remove";
+                                System.out.println("Invalid!!");
+                                isSuccess = false;
+
+                            }
+                            stmt.close();
+                            con.close();
+                        }
+
+
+                    }
+                }catch (Exception ex)
+                {
+                    isSuccess = false;
+                    flag = "Exceptions";
+                    Log.e("ERROR", ex.getMessage());
+
+                }
             return flag;
         }
     }
