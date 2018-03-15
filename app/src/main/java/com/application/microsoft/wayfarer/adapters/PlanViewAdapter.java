@@ -5,6 +5,7 @@ import java.util.Date;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +19,7 @@ import com.application.microsoft.wayfarer.models.Plan;
 
 public class PlanViewAdapter extends ArrayAdapter<Plan> {
     customButtonListener customListner;
+    private SparseBooleanArray selectedItemsIds;
 
     public interface customButtonListener {
         public void onButtonClickListner(int position,String value);
@@ -28,7 +30,7 @@ public class PlanViewAdapter extends ArrayAdapter<Plan> {
 
     public PlanViewAdapter(Context context, ArrayList<Plan> data) {
         super(context , R.layout.plan_layout, data);
-
+        selectedItemsIds = new  SparseBooleanArray();
         this.data = data;
         this.context = context;
     }
@@ -49,8 +51,6 @@ public class PlanViewAdapter extends ArrayAdapter<Plan> {
             viewHolder = (ViewHolder) convertView.getTag();
 
         }
-        //System.out.println(data.get(position).getPlanedPlaces().get(0).getCity());
-       // viewHolder.text.setText(("Trip to " + data.get(position).getPlanedPlaces().get(0).getCity()));
         viewHolder.text.setText("Trip to "+ data.get(position).getCity());
         viewHolder.madeOn.setText("Made On " + data.get(position).getMadeOn().toString());
         return convertView;
@@ -61,4 +61,81 @@ public class PlanViewAdapter extends ArrayAdapter<Plan> {
         TextView madeOn;
         Button button;
     }
+
+    @Override
+    public void remove(Plan  object) {
+
+        data.remove(object);
+
+        notifyDataSetChanged();
+
+    }
+
+
+
+    // get List after update or delete
+
+    public  ArrayList<Plan> getMyList() {
+
+        return data;
+
+    }
+
+
+
+    public void  toggleSelection(int position) {
+
+        selectView(position, !selectedItemsIds.get(position));
+
+    }
+
+
+
+    // Remove selection after unchecked
+
+    public void  removeSelection() {
+
+        selectedItemsIds = new  SparseBooleanArray();
+
+        notifyDataSetChanged();
+
+    }
+
+
+
+    // Item checked on selection
+
+    public void selectView(int position, boolean value) {
+
+        if (value)
+
+            selectedItemsIds.put(position,  value);
+
+        else
+
+            selectedItemsIds.delete(position);
+
+        notifyDataSetChanged();
+
+    }
+
+
+
+    // Get number of selected item
+
+    public int  getSelectedCount() {
+
+        return selectedItemsIds.size();
+
+    }
+
+
+
+    public  SparseBooleanArray getSelectedIds() {
+
+        return selectedItemsIds;
+
+    }
+
+
 }

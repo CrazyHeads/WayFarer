@@ -71,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
     private static  ArrayList<String> listOfKeys = new ArrayList<String>(Arrays.asList(
-             "AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE",
+
+            "AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE",
             "AIzaSyDpTC7gSRLeCq3dbjBeOgasnCqvfdNhkT0",
             "AIzaSyCi9z5JsxnkjNLUimfpsQj-43yM653a_Dg",
             "AIzaSyBWpF2dQ64Xw7cYevkEkHf6dY536VEFZAA",
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         autoCompView.setOnItemClickListener(this);
         listAdapter = new ListViewAdapter(this, R.layout.row,placesList);
         spinner.setAdapter(adapter);
-        Toast.makeText(getApplicationContext(),"Make sure you have Internet Connection",  Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"Please select a city",  Toast.LENGTH_LONG).show();
 
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -143,6 +144,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 city = cities[index];
                 if(index != 0) {
+                    AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteText) ;
+                    autoCompleteTextView.setVisibility(View.VISIBLE);
+                    Button button =(Button) findViewById(R.id.button);
+                    button.setVisibility(View.VISIBLE);
+                    Button button1 =(Button) findViewById(R.id.plus_button);
+                    button1.setVisibility(View.VISIBLE);
                     PLACES_OF_INTEREST_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + city + "+point+of+interest&language=en&key=" + API_KEY + "";
                     listView.clearAnimation();
                     listAdapter.clear();
@@ -227,9 +234,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
         View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
         if (view == null) {
             view = new View(activity);
         }
@@ -238,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     @SuppressLint("LongLogTag")
-    public static ArrayList autocomplete(String input) {
+    public ArrayList autocompletePlace(String input) {
         ArrayList resultList = null;
 
         HttpURLConnection conn = null;
@@ -247,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
             sb.append("?key=" + API_KEY);
             sb.append("&components=country:ind");
+            sb.append("&components=locality:" + city.toLowerCase());
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
 
             URL url = new URL(sb.toString());
@@ -289,6 +295,60 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return resultList;
     }
 
+
+    @SuppressLint("LongLogTag")
+    public static ArrayList autocompleteCity(String input) {
+        ArrayList resultList = null;
+
+        HttpURLConnection conn = null;
+        StringBuilder jsonResults = new StringBuilder();
+        try {
+            StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
+            sb.append("?key=" + API_KEY);
+            sb.append("&components=country:ind");
+            sb.append("&input=" + URLEncoder.encode(input, "utf8"));
+
+            URL url = new URL(sb.toString());
+            conn = (HttpURLConnection) url.openConnection();
+            InputStreamReader in = new InputStreamReader(conn.getInputStream());
+
+            // Load the results into a StringBuilder
+            int read;
+            char[] buff = new char[1024];
+            while ((read = in.read(buff)) != -1) {
+                jsonResults.append(buff, 0, read);
+            }
+        } catch (MalformedURLException e) {
+            Log.e(LOG_TAG, "Error processing Places API URL", e);
+            return resultList;
+
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error connecting to Places API", e);
+            return resultList;
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+
+        try {
+            // Create a JSON object hierarchy from the results
+            JSONObject jsonObj = new JSONObject(jsonResults.toString());
+            JSONArray predsJsonArray = jsonObj.getJSONArray("predictions");
+
+            // Extract the Place descriptions from the results
+            resultList = new ArrayList(predsJsonArray.length());
+            for (int i = 0; i < predsJsonArray.length(); i++) {
+                resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
+            }
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Cannot process JSON results", e);
+        }
+
+        return resultList;
+    }
+
+
     @Override
     public void onItemClick(AdapterView adapterView, View view, int position, long id) {
         String str = (String) adapterView.getItemAtPosition(position);
@@ -319,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 protected FilterResults performFiltering(CharSequence constraint) {
                     FilterResults filterResults = new FilterResults();
                     if (constraint != null) {
-                        resultList = autocomplete(constraint.toString());
+                        resultList = autocompletePlace(constraint.toString());
                         filterResults.values = resultList;
                         filterResults.count = resultList.size();
                     }
@@ -492,6 +552,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 isException = false;
                 System.out.println("Entered");
                 new GetPlaces().execute();
+                placesList.clear();
             }
 
             listAdapter.notifyDataSetChanged();
