@@ -22,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
+/* Once the trip is saved,user has to login to start the trip*/
 public class LoginActivity extends AppCompatActivity {
     Button click;
     Button select;
@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         LoginActivity.DoLogin doLogin = new LoginActivity.DoLogin();
         doLogin.execute();
     }
-
+/* Checking whether login is sucessful or not */
     public void register() {
         intilize();
         if(!validate()) {
@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
             onLoginSuccess();
         }
     }
-
+/* If login is sucessful,then user will be directed to WelcomeActivity which in turn will be directed to MenuActivity*/ 
     public void onLoginSuccess() {
         Intent myIntent = new Intent(LoginActivity.this, WelcomeActivity.class);
         startActivity(myIntent);
@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         email = et_email.getText().toString().trim();
         password = et_password.getText().toString().trim();
     }
-
+/* Validating the email and Password */
     public boolean validate() {
         boolean valid = true;
 
@@ -84,12 +84,14 @@ public class LoginActivity extends AppCompatActivity {
 
         return valid;
     }
+    /*It takes from LoginActivity to SignUpActivity*/
 
     public void signup(View v) {
         Intent myIntent = new Intent(LoginActivity.this,SignUpActivity.class);
         startActivity(myIntent);
 
     }
+    /* Dialo box to show please wait until the data is displayed*/
     public class DoLogin extends AsyncTask<String,String,String>
     {
         String flag = "";
@@ -125,6 +127,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         @Override
+        /* Retrieving the userId and Password  from database if the  userId is already registered*/
 
         protected String doInBackground(String... params) {
             if(str_password.trim().equals("") ||str_email.trim().equals("")){
