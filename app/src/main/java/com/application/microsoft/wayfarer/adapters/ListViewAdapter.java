@@ -80,10 +80,10 @@ public class ListViewAdapter extends ArrayAdapter<Place> {
         Picasso.with(context).load(placesList.get(position).getImgURL()).into(holder.image);
         holder.checkbox.setChecked(false);
         holder.checkbox.setId(position);
-//        if(placesList.get(position).getSelected())
-//            holder.checkbox.setChecked(true);
-//        else
-//            holder.checkbox.setChecked(false);
+        if(placesList.get(position).getSelected())
+            holder.checkbox.setChecked(true);
+        else
+            holder.checkbox.setChecked(false);
         holder.checkbox.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 CheckBox cb = (CheckBox) v;
