@@ -9,7 +9,6 @@
     >
     <ImageView
         android:id="@+id/button1"
-        android:onClick="show"
         android:layout_width="40sp"
         android:layout_height="40sp"
         android:background="@drawable/logo"
