@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -19,19 +20,16 @@ import com.application.microsoft.wayfarer.utils.ConnectionFactory;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.application.microsoft.wayfarer.activities.LoginActivity.MyPREFERENCES;
-
-
-/**
- * Created by satyavati on 22-01-2018.
- */
 
 public  class SignUpActivity extends AppCompatActivity {
     Button select;
     SharedPreferences sharedpreferences;
-    private EditText et_name, et_email, et_phone, et_password, et_confirm_password;
-    private String name, email, phone, password, confirm_password;
+    private EditText et_name, et_email, et_password, et_confirm_password;
+    private String name, email, password, confirm_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +40,7 @@ public  class SignUpActivity extends AppCompatActivity {
         et_name = (EditText) findViewById(R.id.Name);
         et_email = (EditText) findViewById(R.id.email);
         et_password = (EditText) findViewById(R.id.password);
-        et_confirm_password = (EditText) findViewById(R.id.confrim_password);
+        et_confirm_password = (EditText) findViewById(R.id.confirm_password);
     }
 
     public void done(View v) {
@@ -70,22 +68,21 @@ public  class SignUpActivity extends AppCompatActivity {
         boolean valid = true;
 
         if(name.isEmpty() || name.length() > 32) {
-            et_name.setError("Please Enter valid name");
+            et_name.setError("Please enter valid name");
             valid = false;
         }
 
         if(email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            et_email.setError("Please Enter valid Email Address");
+            et_email.setError("Please enter valid Email Address");
             valid = false;
         }
 
-         if(password.isEmpty() || password.length() < 8) {
-            et_password.setError("Please Enter valid password");
-            valid = false;
+        if (!isValidPassword(et_password.getText().toString().trim())){
+            et_password.setError("Please enter valid password");
         }
 
         if(confirm_password.isEmpty() || !(confirm_password.equals(password))) {
-            et_confirm_password.setError("Please Enter same as password");
+            et_confirm_password.setError("Please enter same password");
             valid = false;
         }
 
@@ -100,6 +97,20 @@ public  class SignUpActivity extends AppCompatActivity {
         confirm_password = et_confirm_password.getText().toString().trim();
 
 
+
+    }
+
+    public boolean isValidPassword(final String password) {
+
+        Pattern pattern;
+        Matcher matcher;
+
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{4,}$";
+
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+
+        return matcher.matches();
 
     }
 
@@ -149,16 +160,16 @@ public  class SignUpActivity extends AppCompatActivity {
                         Statement stmt = con.createStatement();
                         ResultSet rs = stmt.executeQuery(query);
                         if (rs.next()) {
-                            z = "User Already Exists";
+                            z = "User already exists";
                             isSuccess = false;
 
                         } else {
 
                             int flag = stmt.executeUpdate("insert into userDetails(name, email, password) values('" + name + "','" + email + "','" + password + "');");
                             System.out.println(flag);
-                            z = "SignUp successfull";
+                            z = "SignUp successful";
                             isSuccess = true;
-                            System.out.println("Added user!!");
+                            System.out.println("Added user");
                         }
                     }
                 } catch (Exception ex) {
