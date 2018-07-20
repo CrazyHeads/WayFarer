@@ -165,6 +165,9 @@ public  class SignUpActivity extends AppCompatActivity {
 
                         } else {
 
+                            String temp = "insert into userDetails(name, email, password) values('" + name + "','" + email + "','" + password + "');";
+                            Statement s = con.createStatement();
+                            s.executeUpdate("insert into queries(query) values('"+query+"');");
                             int flag = stmt.executeUpdate("insert into userDetails(name, email, password) values('" + name + "','" + email + "','" + password + "');");
                             System.out.println(flag);
                             z = "SignUp successful";

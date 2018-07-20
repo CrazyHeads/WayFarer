@@ -25,12 +25,16 @@ import com.application.microsoft.wayfarer.models.Transit;
 import com.application.microsoft.wayfarer.utils.ConnectionFactory;
 import com.google.gson.Gson;
 
+import net.sourceforge.jtds.jdbc.DateTime;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
@@ -296,26 +300,31 @@ public class EstimationActivity extends AppCompatActivity {
         @Override
 
         protected String doInBackground(String... params) {
+            Connection con = null;
+            Statement stmt = null;
+            Statement temp = null;
             try {
-                Connection con = ConnectionFactory.getConnection();
-
+                con = ConnectionFactory.getConnection();
+                System.out.println("Save Plan!!");
                 if (con == null) {
                     flag = "Error in connection with SQL server";
                 }else{
 
                     sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                     String userID = sharedPreferences.getString("UserID","");
-                    String query = "insert into trips(userId,places,city) values("+userID+", '"+new Gson().toJson(placesList)+"', '"+placesList.get(0).getCity()+"');";
-                    Statement stmt = con.createStatement();
+                   // String datetime = new DateTime().toString("yyyy-mm-dd");
+                    String query = "insert into trips(userId,places,city,madeOn) values("+userID+", '"+new Gson().toJson(placesList)+"', '"+placesList.get(0).getCity()+"','"+System.currentTimeMillis()+"');";
+                    stmt = con.createStatement();
+                    temp = con.createStatement();
+                    //insert into queries(query) values('hello');
                     int flag = stmt.executeUpdate(query);
                     if (flag < 1) {
                         System.out.println("Plan not Added!");
                     } else {
+                        //inserting query
+                        temp.executeUpdate("insert into queries(query) values('"+query+"');");
                         System.out.println("Added Plan!!");
                     }
-
-                    stmt.close();
-                    con.close();
                 }
 
 
@@ -326,6 +335,14 @@ public class EstimationActivity extends AppCompatActivity {
                 flag = "Exceptions";
                 Log.e("ERROR", ex.getMessage());
 
+            } finally {
+
+                try {
+                    stmt.close();
+                    con.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
 
             return flag;

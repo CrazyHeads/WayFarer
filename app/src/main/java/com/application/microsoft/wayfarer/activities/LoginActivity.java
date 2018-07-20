@@ -148,6 +148,7 @@ public class LoginActivity extends AppCompatActivity {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("UserID", rs.getString("userId"));
                             editor.putString("UserName", rs.getString("name"));
+                            System.out.println(rs.getString("userId"));
                             editor.apply();
                             sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                             System.out.println(sharedPreferences.getString("Plan",""));
@@ -173,13 +174,13 @@ public class LoginActivity extends AppCompatActivity {
                     Log.e("ERROR", ex.getMessage());
 
                 } finally {
-                    try {
-                        rs.close();
-                        stmt.close();
-                        con.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        rs.close();
+//                        stmt.close();
+//                        con.close();
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                    }
                 }
             }
             return flag;

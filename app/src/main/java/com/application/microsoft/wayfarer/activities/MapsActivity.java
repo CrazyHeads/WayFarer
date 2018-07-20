@@ -34,6 +34,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
+/* Finding the current location of the user and displaying the selected placesList along with the nearby restaurants,hospitals and police stations */
+
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -200,13 +202,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
+    /* Getting the places directions url */
 
     private String getDirectionsUrl()
     {
         StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         googleDirectionsUrl.append("origin="+latitude+","+longitude);
         googleDirectionsUrl.append("&destination="+end_latitude+","+end_longitude);
-        googleDirectionsUrl.append("&key="+"AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8");
+        googleDirectionsUrl.append("&key="+"IzaSyBj-cnmMUY21M0vnIKz0k3tD3bRdyZea-Y");
 
         return googleDirectionsUrl.toString();
     }
@@ -218,8 +221,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
         googlePlacesUrl.append("&type=" + nearbyPlace);
         googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key="+"AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8");
-        //googlePlacesUrl.append("&key=" + "AIzaSyBj-cnmMUY21M0vnIKz0k3tD3bRdyZea-Y");
+       // googlePlacesUrl.append("&key="+"AAIzaSyCt6VuMs_JrUqAcFwn70UtZp4pfLntUivI");
+        googlePlacesUrl.append("&key=" + "AIzaSyBj-cnmMUY21M0vnIKz0k3tD3bRdyZea-Y");
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }

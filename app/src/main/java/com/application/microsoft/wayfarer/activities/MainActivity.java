@@ -71,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
     private static  ArrayList<String> listOfKeys = new ArrayList<String>(Arrays.asList(
-
+            "AIzaSyB_MKmWEjS9IuAxSvl0-H7145EoWdwlWP0",
+            "AIzaSyBG4_iI8Ukq0eoBrEZxR2sFDtPCH09kkL8",
             "AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE",
             "AIzaSyDpTC7gSRLeCq3dbjBeOgasnCqvfdNhkT0",
             "AIzaSyCi9z5JsxnkjNLUimfpsQj-43yM653a_Dg",
@@ -86,12 +87,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             "AIzaSyD5kgC_dBf_jOo-p1Is3YIQ-xIUgWeKWRw",
             "AIzaSyAlZniTEl_tErWaqg5irbIxSkim3BZQDRU",
             "AIzaSyBbAugBoZdYCVHYBOSL8Gtd76G2a_V4JPo",
-            "AIzaSyCEBCEvu9Z0Jhzm_WLdgkpUCZdSkcHmrXg",
-            "AIzaSyB_MKmWEjS9IuAxSvl0-H7145EoWdwlWP0"
+            "AIzaSyCEBCEvu9Z0Jhzm_WLdgkpUCZdSkcHmrXg"
+
     ));
    // listOfKeys.add("AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE");
-   // private static String API_KEY = "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8";
-    private  static String API_KEY =  "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8"; //"AIzaSyAtmnpdgVvHyYyoILWHGzwqt_ePtrGmalk";
+    private static String API_KEY = "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8";
+   // private  static String API_KEY =  "AIzaSyDpTC7gSRLeCq3dbjBeOgasnCqvfdNhkT0"; //"AIzaSyAtmnpdgVvHyYyoILWHGzwqt_ePtrGmalk";
    // private static String API_KEY = "AIzaSyCy5fDtto3nCzohU5BSVe3MQlKjA0PJ-0E";
     String[] cities;
     ArrayList<Place> placesList;

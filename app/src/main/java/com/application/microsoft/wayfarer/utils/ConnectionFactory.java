@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,13 +16,15 @@ public class ConnectionFactory {
     @SuppressLint("AuthLeak")
     public static Connection getConnection(){
         Connection connection = null;
+       // String connectionUrl = "jdbc:sqlserver://wayfarerapp.database.windows.net:1433;database=Wayfarer;user=wayfarer@wayfarerapp;password=Tiger@1998;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
+
         try{
-            System.out.println("Connected");
-
+            //i thin
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:jtds:sqlserver://wayfarer.database.windows.net:1433/wayfarer","wayfarer@wayfarer", "Tiger@1998");
-
-
+            //Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+           // connection = DriverManager.getConnection("jdbc:sqlserver://wayfarerapp.database.windows.net:1433;database=Wayfarer","wayfarer@wayfarerapp","Tiger@1998");
+            connection = DriverManager.getConnection("jdbc:sqlserver://wayfarerapp.database.windows.net:1433/Wayfarer;","wayfarer@wayfarerapp","Tiger@1998");
+            System.out.println("Connected");
         } catch (Exception e){
             System.out.println("Exception: " + e.getMessage());
         }
