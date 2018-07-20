@@ -1,7 +1,7 @@
 package com.application.microsoft.wayfarer.TSPEngine;
 
 import java.util.ArrayList;
-
+/* Calculation of Shortest Path using Travelling Salesman Problem*/
 public class TSPEngine {
 
     private ArrayList<Integer> outputArray = new ArrayList<Integer>();
@@ -11,6 +11,7 @@ public class TSPEngine {
     public TSPEngine() {
 
     }
+    /* Computing TSP which will return the output ArrayList*/ 
 
     public ArrayList<Integer> computeTSP(int[][] inputArray, int n) {
 
@@ -63,7 +64,7 @@ public class TSPEngine {
         g[start][set] = result;
         return result;
     }
-
+/* Retrieving the path when given source and the set of places*/
     private void getPath(int start, int set) {
         if (p[start][set] == -1) {
             return;

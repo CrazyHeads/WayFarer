@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     ));
    // listOfKeys.add("AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE");
-    private static String API_KEY = "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8";
+    private static String API_KEY = "AIzaSyDkM0-WNudAA2S03EJDzC7xOfCCfo8jgDM";
    // private  static String API_KEY =  "AIzaSyDpTC7gSRLeCq3dbjBeOgasnCqvfdNhkT0"; //"AIzaSyAtmnpdgVvHyYyoILWHGzwqt_ePtrGmalk";
    // private static String API_KEY = "AIzaSyCy5fDtto3nCzohU5BSVe3MQlKjA0PJ-0E";
     String[] cities;
@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         placesList = new ArrayList<>();
         sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         String name  = sharedPreferences.getString("UserID","");
+        /* Making the plan ,addLocation button and Starting Location invisible until the user selects a city*/
         if(!name.equals("")){
             Button button =(Button) findViewById(R.id.btn);
             button.setVisibility(View.INVISIBLE);
@@ -139,11 +140,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
+            /* If the user is selecting the city*/
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
                 index = arg0.getSelectedItemPosition();
 
                 city = cities[index];
+                /* If the selected City is greater than zero, then taking the places of interest from the url*/
                 if(index != 0) {
                     AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteText) ;
                     autoCompleteTextView.setVisibility(View.VISIBLE);
@@ -169,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 editor.apply();
                 index = -1;
             }
-
+                /* If none of the city is selected,then a message is displayed*/
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
                 Toast.makeText(getApplicationContext(),"Please Select a City!",  Toast.LENGTH_LONG).show();
@@ -179,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mButton = (Button) findViewById(R.id.plus_button);
         mButton.setOnClickListener(new View.OnClickListener() {
+            /*If plus button is clicked,then Add Location dialog is displayed where user can add custom location */
             @Override
             public void onClick(View arg0) {
                 LayoutInflater li = LayoutInflater.from(mContext);
@@ -206,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 dialog.show();
                 Button b = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 b.setOnClickListener(new View.OnClickListener() {
-
+                  /* Once the user adds the custom location,a message is displayed*/
                     @Override
                     public void onClick(View view) {
                         String location = actv1.getText().toString();
@@ -242,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-
+/* Giving the autoCompletePlace in the start Location and custom Location */
     @SuppressLint("LongLogTag")
     public ArrayList autocompletePlace(String input) {
         ArrayList resultList = null;
@@ -349,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return resultList;
     }
 
-
+/* Taking the postions of the selected places*/
     @Override
     public void onItemClick(AdapterView adapterView, View view, int position, long id) {
         String str = (String) adapterView.getItemAtPosition(position);
@@ -400,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return filter;
         }
     }
-
+/* In this method,the selected places are transferred to PlanActivity*/
     public void plan(View v) {
         Intent intent = new Intent(MainActivity.this,PlanActivity.class);
 
@@ -423,6 +427,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         else
             Toast.makeText(getApplicationContext(),"Please select a starting location in the city selected!",  Toast.LENGTH_LONG).show();
     }
+    /* Login Icon*/
 
     public void loginIcon(View v) {
         Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
@@ -432,6 +437,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     @SuppressLint("StaticFieldLeak")
+    
     private class GetPlaces extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -441,6 +447,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             pDialog.setCancelable(false);
             pDialog.show();
         }
+        /*  Getting  the places data from url */
 
         @Override
         protected Void doInBackground(Void... arg0) {
@@ -561,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
     }
-
+/* Getting the location using Latitude and Longitude */
     public LatLng getLocationFromAddress(Context context, String strAddress) {
 
         Geocoder coder = new Geocoder(context);

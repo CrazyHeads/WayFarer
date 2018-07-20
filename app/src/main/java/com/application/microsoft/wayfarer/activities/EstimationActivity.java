@@ -25,8 +25,6 @@ import com.application.microsoft.wayfarer.models.Transit;
 import com.application.microsoft.wayfarer.utils.ConnectionFactory;
 import com.google.gson.Gson;
 
-import net.sourceforge.jtds.jdbc.DateTime;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,20 +32,19 @@ import org.json.JSONObject;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
 
-
+/*Estimating the total cost of the selected places using Public Transit */
 
 public class EstimationActivity extends AppCompatActivity {
     private static double busFare = 8;
     private static double ACBusFare = 15;
     private static double metroFare = 10;
     private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
-    private static final String DIRECTION_API_KEY = "AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A";
-
+   // private static final String DIRECTION_API_KEY = "AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A";
+    private static final String DIRECTION_API_KEY = "AIzaSyDkM0-WNudAA2S03EJDzC7xOfCCfo8jgDM";
     private static final Hashtable<Integer, Integer> mmtsFares = new Hashtable<Integer, Integer>();
     public static final String MyPREFERENCES = "MyPrefs" ;
     SharedPreferences sharedPreferences;
@@ -74,7 +71,7 @@ public class EstimationActivity extends AppCompatActivity {
         details.setMovementMethod(new ScrollingMovementMethod());
         new TransitDetails().execute();
     }
-
+    /* Saving the selected Places List */
     public void save(View v) {
         sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         String name  = sharedPreferences.getString("UserID","");
@@ -97,11 +94,10 @@ public class EstimationActivity extends AppCompatActivity {
 
     }
 
-
     private class TransitDetails extends AsyncTask<String, Void,Void> {
         String url;
         Transit transit = new Transit();
-
+        /* Displaying the please wait dialog box until the data is displayed*/
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -121,7 +117,7 @@ public class EstimationActivity extends AppCompatActivity {
             details.setText(String.valueOf(sb));
 
         }
-
+        /* It invokes as soon as the PreExecute finishes executing.Here we are setting the Source and Destination from the PlacesList and displaying the respective Bus Transit Fare*/
         @Override
         protected Void doInBackground(String... strings) {
 
@@ -141,7 +137,7 @@ public class EstimationActivity extends AppCompatActivity {
                         JSONArray jsonData = jsonObj.getJSONArray("routes")
                                 .getJSONObject(0).getJSONArray("legs")
                                 .getJSONObject(0).getJSONArray("steps");
-
+/* Getting the distance,duration and mode from the JSON object */
                         for (int i = 0; i < jsonData.length(); i++) {
                             double fare = 0.0;
                             JSONObject stop = jsonData.getJSONObject(i);
@@ -188,6 +184,7 @@ public class EstimationActivity extends AppCompatActivity {
 
             return null;
         }
+        /* Printing the details of the transit mode,duration and distance*/
         public void printDetails() {
             sb.append(transit.getTravelMode());
             sb.append("\n\n");
@@ -217,12 +214,12 @@ public class EstimationActivity extends AppCompatActivity {
 
     }
 
-
+    /* Generating direction URL */
     private String createUrl(String origin, String destination) {
 
         return DIRECTION_URL_API + "origin=" +origin+ "&destination=" +destination+ "&mode=transit&key="+DIRECTION_API_KEY;
     }
-
+/* Calculating the  respective busFares */
 
     public static double calculateACBusFare(double distance) {
 
@@ -246,7 +243,7 @@ public class EstimationActivity extends AppCompatActivity {
             return busFare + ((distance/2) * 2);
         }
         return (busFare + ((distance/2) * 2)) + ((distance/5));
-     }
+    }
 
     public static double calculateMetroRailFares(double distance) {
         //fares for metro rail
@@ -273,7 +270,7 @@ public class EstimationActivity extends AppCompatActivity {
         return -1;
 
     }
-
+    /* If the user clicks on the save plan,he will be directed to the Menus activity*/
     public class SavePlan extends AsyncTask<String,String,String>
     {
         String flag = "";
@@ -298,31 +295,26 @@ public class EstimationActivity extends AppCompatActivity {
 
 
         @Override
+        /* Inserting into the database of the selected Places,City and the UserId*/
 
         protected String doInBackground(String... params) {
             Connection con = null;
             Statement stmt = null;
-            Statement temp = null;
             try {
                 con = ConnectionFactory.getConnection();
-                System.out.println("Save Plan!!");
+
                 if (con == null) {
                     flag = "Error in connection with SQL server";
                 }else{
 
                     sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                     String userID = sharedPreferences.getString("UserID","");
-                   // String datetime = new DateTime().toString("yyyy-mm-dd");
-                    String query = "insert into trips(userId,places,city,madeOn) values("+userID+", '"+new Gson().toJson(placesList)+"', '"+placesList.get(0).getCity()+"','"+System.currentTimeMillis()+"');";
+                    String query = "insert into trips(userId,places,city) values("+userID+", '"+new Gson().toJson(placesList)+"', '"+placesList.get(0).getCity()+"');";
                     stmt = con.createStatement();
-                    temp = con.createStatement();
-                    //insert into queries(query) values('hello');
                     int flag = stmt.executeUpdate(query);
                     if (flag < 1) {
                         System.out.println("Plan not Added!");
                     } else {
-                        //inserting query
-                        temp.executeUpdate("insert into queries(query) values('"+query+"');");
                         System.out.println("Added Plan!!");
                     }
                 }
@@ -350,7 +342,3 @@ public class EstimationActivity extends AppCompatActivity {
     }
 
 }
-
-
-
-

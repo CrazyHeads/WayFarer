@@ -8,10 +8,7 @@ import android.widget.TextView;
 
 import com.application.microsoft.wayfarer.R;
 
-/**
- * Created by RAJULA on 13-02-2018.
- */
-
+/* Getting the Places Of Interest Name along with the Image when the City is selected */
 public class DetailsActivity extends ActionBarActivity {
 
     @Override
