@@ -12,8 +12,12 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +40,9 @@ import com.application.microsoft.wayfarer.R;
 import com.application.microsoft.wayfarer.adapters.ListViewAdapter;
 import com.application.microsoft.wayfarer.exception.GooglePlacesException;
 import com.application.microsoft.wayfarer.handlers.HttpHandler;
+import com.application.microsoft.wayfarer.adapters.CitiesAutoCompleteAdapter;
 import com.application.microsoft.wayfarer.models.Place;
+import com.application.microsoft.wayfarer.utils.CityAPI;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -53,10 +59,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
-import static com.application.microsoft.wayfarer.utils.Statuses.STATUS_OVER_QUERY_LIMIT;
-import static com.application.microsoft.wayfarer.utils.Statuses.STATUS_ZERO_RESULTS;
-
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private String TAG = MainActivity.class.getSimpleName();
@@ -90,10 +92,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             "AIzaSyCEBCEvu9Z0Jhzm_WLdgkpUCZdSkcHmrXg"
 
     ));
-   // listOfKeys.add("AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE");
+    // listOfKeys.add("AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE");
     private static String API_KEY = "AIzaSyDkM0-WNudAA2S03EJDzC7xOfCCfo8jgDM";
-   // private  static String API_KEY =  "AIzaSyDpTC7gSRLeCq3dbjBeOgasnCqvfdNhkT0"; //"AIzaSyAtmnpdgVvHyYyoILWHGzwqt_ePtrGmalk";
-   // private static String API_KEY = "AIzaSyCy5fDtto3nCzohU5BSVe3MQlKjA0PJ-0E";
+    // private  static String API_KEY =  "AIzaSyDpTC7gSRLeCq3dbjBeOgasnCqvfdNhkT0"; //"AIzaSyAtmnpdgVvHyYyoILWHGzwqt_ePtrGmalk";
+    // private static String API_KEY = "AIzaSyCy5fDtto3nCzohU5BSVe3MQlKjA0PJ-0E";
     String[] cities;
     ArrayList<Place> placesList;
     int index;
@@ -103,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     final Context mContext = this;
     private Button mButton;
     boolean isException = false;
+    private Handler mThreadHandler;
+    private GooglePlacesAutocompleteAdapter mAdapter;
+    private HandlerThread mHandlerThread;
 
 
     public ArrayList<Place> getPlacesList() {
@@ -122,115 +127,96 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             button.setVisibility(View.INVISIBLE);
         }
 
+        AutoCompleteTextView autocompleteView = (AutoCompleteTextView) findViewById(R.id.autocomplete);
+        autocompleteView.setAdapter(new CitiesAutoCompleteAdapter(this, R.layout.autocomplete_list_item));
 
-        cities = getResources().getStringArray(R.array.cities_arrays);
-        Spinner spinner = (Spinner)findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item, cities);
-        listView = (ListView) findViewById(R.id.listView);
         placesList.clear();
         autoCompView = (AutoCompleteTextView) findViewById(R.id.autoCompleteText);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         autoCompView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_item));
         autoCompView.setOnItemClickListener(this);
         listAdapter = new ListViewAdapter(this, R.layout.row,placesList);
-        spinner.setAdapter(adapter);
+
         Toast.makeText(getApplicationContext(),"Please select a city",  Toast.LENGTH_LONG).show();
 
+        autocompleteView.setOnItemClickListener ((parent, view, position, id) -> {
+            // Get data associated with the specified position
+            // in the list (AdapterView)
+            index = position;
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            /* If the user is selecting the city*/
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                       int arg2, long arg3) {
-                index = arg0.getSelectedItemPosition();
+            city =  parent.getItemAtPosition(position).toString();
+            System.out.println(index+ "" + city);
+            /* If the selected City is greater than zero, then taking the places of interest from the url*/
+            if(index >= 0) {
+                hideKeyboard(MainActivity.this);
+                placesList.clear();
+                AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteText) ;
+                autoCompleteTextView.setVisibility(View.VISIBLE);
+                Button button =(Button) findViewById(R.id.button);
+                button.setVisibility(View.VISIBLE);
+                Button button1 =(Button) findViewById(R.id.plus_button);
+                button1.setVisibility(View.VISIBLE);
+                PLACES_OF_INTEREST_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + city + "+point+of+interest&language=en&key=" + API_KEY + "";
+//                listView.clearAnimation();
+//                listAdapter.clear();
+                new GetPlaces().execute();
+                listAdapter.addAll(placesList);
+                listView = (ListView) findViewById(R.id.listView);
+                listView.invalidateViews();
+                listAdapter.notifyDataSetChanged();
+                listView.setAdapter(listAdapter);
+                System.out.println(city);
 
-                city = cities[index];
-                /* If the selected City is greater than zero, then taking the places of interest from the url*/
-                if(index != 0) {
-                    AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteText) ;
-                    autoCompleteTextView.setVisibility(View.VISIBLE);
-                    Button button =(Button) findViewById(R.id.button);
-                    button.setVisibility(View.VISIBLE);
-                    Button button1 =(Button) findViewById(R.id.plus_button);
-                    button1.setVisibility(View.VISIBLE);
-                    PLACES_OF_INTEREST_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + city + "+point+of+interest&language=en&key=" + API_KEY + "";
-                    listView.clearAnimation();
-                    listAdapter.clear();
-                    new GetPlaces().execute();
-                    listAdapter.addAll(placesList);
-                    listView = (ListView) findViewById(R.id.listView);
-                    listView.invalidateViews();
-                    listAdapter.notifyDataSetChanged();
-                    listView.setAdapter(listAdapter);
-                    System.out.println(city);
-
-                    Toast.makeText(getApplicationContext(), "Selected: " + city, Toast.LENGTH_LONG).show();
-                }
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("City", city);
-                editor.apply();
-                index = -1;
+                Toast.makeText(getApplicationContext(), "Selected: " + city, Toast.LENGTH_LONG).show();
             }
-                /* If none of the city is selected,then a message is displayed*/
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                Toast.makeText(getApplicationContext(),"Please Select a City!",  Toast.LENGTH_LONG).show();
-
-            }
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("City", city);
+            editor.apply();
+            index = -1;
         });
 
+
         mButton = (Button) findViewById(R.id.plus_button);
-        mButton.setOnClickListener(new View.OnClickListener() {
-            /*If plus button is clicked,then Add Location dialog is displayed where user can add custom location */
-            @Override
-            public void onClick(View arg0) {
-                LayoutInflater li = LayoutInflater.from(mContext);
-                View dialogView = li.inflate(R.layout.custom_dialog, null);
-                android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(
-                        mContext);
-                alertDialogBuilder.setTitle("Add Location");
-                alertDialogBuilder.setView(dialogView);
-                final EditText userInput = (EditText) dialogView
-                        .findViewById(R.id.autoCompleteTextView);
-                AutoCompleteTextView actv1 = (AutoCompleteTextView) dialogView.findViewById(R.id.autoCompleteTextView);
-                actv1.setAdapter(new GooglePlacesAutocompleteAdapter(mContext, R.layout.list_item));
-                alertDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("Add",null)
-                        .setNegativeButton("Done",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int id) {
-                                        dialog.dismiss();
-                                        hideKeyboard(MainActivity.this);
-                                    }
-                                });
-                AlertDialog dialog = alertDialogBuilder.create();
-                dialog.show();
-                Button b = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                b.setOnClickListener(new View.OnClickListener() {
-                  /* Once the user adds the custom location,a message is displayed*/
-                    @Override
-                    public void onClick(View view) {
-                        String location = actv1.getText().toString();
-                        if(!location.equals("") && location.contains(city)){
-                            Place place = new Place();
-                            place.setName(location);
-                            place.setLat(getLocationFromAddress(mContext,location).latitude);
-                            place.setLng(getLocationFromAddress(mContext,location).longitude);
-                            place.setCity(city);
-                            place.setSelected(true);
-                            placesList.add(0,place);
-                            listAdapter.notifyDataSetChanged();
-                            Toast.makeText(getApplicationContext(), "Added your location" + location, Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Please select a location in the city selected!", Toast.LENGTH_LONG).show();
-                        }
-                        actv1.getText().clear();
-                    }
-                });
-            }
+        /*If plus button is clicked,then Add Location dialog is displayed where user can add custom location */
+        mButton.setOnClickListener(arg0 -> {
+            LayoutInflater li = LayoutInflater.from(mContext);
+            View dialogView = li.inflate(R.layout.custom_dialog, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                    mContext);
+            alertDialogBuilder.setTitle("Add Location");
+            alertDialogBuilder.setView(dialogView);
+            final EditText userInput = (EditText) dialogView.findViewById(R.id.autoCompleteTextView);
+            AutoCompleteTextView actv1 = (AutoCompleteTextView) dialogView.findViewById(R.id.autoCompleteTextView);
+            actv1.setAdapter(new GooglePlacesAutocompleteAdapter(mContext, R.layout.list_item));
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setPositiveButton("Add",null)
+                    .setNegativeButton("Done",
+                            (dialog, id) -> {
+                                dialog.dismiss();
+                                hideKeyboard(MainActivity.this);
+                            });
+            AlertDialog dialog = alertDialogBuilder.create();
+            dialog.show();
+            Button b = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            /* Once the user adds the custom location,a message is displayed*/
+            b.setOnClickListener(view -> {
+                String location = actv1.getText().toString();
+                if(!location.equals("") && location.contains(city)){
+                    Place place = new Place();
+                    place.setName(location);
+                    place.setLat(getLocationFromAddress(mContext,location).latitude);
+                    place.setLng(getLocationFromAddress(mContext,location).longitude);
+                    place.setCity(city);
+                    place.setSelected(true);
+                    placesList.add(0,place);
+                    listAdapter.notifyDataSetChanged();
+                    Toast.makeText(getApplicationContext(), "Added your location" + location, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please select a location in the city selected!", Toast.LENGTH_LONG).show();
+                }
+                actv1.getText().clear();
+            });
         });
 
 
@@ -246,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-/* Giving the autoCompletePlace in the start Location and custom Location */
+    /* Giving the autoCompletePlace in the start Location and custom Location */
     @SuppressLint("LongLogTag")
     public ArrayList autocompletePlace(String input) {
         ArrayList resultList = null;
@@ -291,59 +277,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             // Extract the Place descriptions from the results
             resultList = new ArrayList(predsJsonArray.length());
             for (int i = 0; i < predsJsonArray.length(); i++) {
-               resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
-            }
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "Cannot process JSON results", e);
-        }
-
-        return resultList;
-    }
-
-
-    @SuppressLint("LongLogTag")
-    public static ArrayList autocompleteCity(String input) {
-        ArrayList resultList = null;
-
-        HttpURLConnection conn = null;
-        StringBuilder jsonResults = new StringBuilder();
-        try {
-            StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
-            sb.append("?key=" + API_KEY);
-            sb.append("&components=country:ind");
-            sb.append("&input=" + URLEncoder.encode(input, "utf8"));
-
-            URL url = new URL(sb.toString());
-            conn = (HttpURLConnection) url.openConnection();
-            InputStreamReader in = new InputStreamReader(conn.getInputStream());
-
-            // Load the results into a StringBuilder
-            int read;
-            char[] buff = new char[1024];
-            while ((read = in.read(buff)) != -1) {
-                jsonResults.append(buff, 0, read);
-            }
-        } catch (MalformedURLException e) {
-            Log.e(LOG_TAG, "Error processing Places API URL", e);
-            return resultList;
-
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error connecting to Places API", e);
-            return resultList;
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-            }
-        }
-
-        try {
-            // Create a JSON object hierarchy from the results
-            JSONObject jsonObj = new JSONObject(jsonResults.toString());
-            JSONArray predsJsonArray = jsonObj.getJSONArray("predictions");
-
-            // Extract the Place descriptions from the results
-            resultList = new ArrayList(predsJsonArray.length());
-            for (int i = 0; i < predsJsonArray.length(); i++) {
                 resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
             }
         } catch (JSONException e) {
@@ -353,12 +286,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return resultList;
     }
 
-/* Taking the postions of the selected places*/
+
+
+
+    /* Taking the postions of the selected places*/
     @Override
     public void onItemClick(AdapterView adapterView, View view, int position, long id) {
         String str = (String) adapterView.getItemAtPosition(position);
+        hideKeyboard(MainActivity.this);
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
+
+
 
     class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
         private ArrayList resultList;
@@ -404,10 +343,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return filter;
         }
     }
-/* In this method,the selected places are transferred to PlanActivity*/
+    /* In this method,the selected places are transferred to PlanActivity*/
     public void plan(View v) {
         Intent intent = new Intent(MainActivity.this,PlanActivity.class);
-
         intent.putParcelableArrayListExtra("placesList", placesList);
         String address = autoCompView.getText().toString();
         System.out.println(address + " " + city);
@@ -419,6 +357,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             p.setLng(latLng.longitude);
             p.setCity(city);
             p.setSelected(true);
+            String IMAGE_URL = "http://leeford.in/wp-content/uploads/2017/09/image-not-found.jpg";
+            p.setImgURL(IMAGE_URL);
             placesList.add(0,p);
             startActivity(intent);
 
@@ -437,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     @SuppressLint("StaticFieldLeak")
-    
+
     private class GetPlaces extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -477,23 +417,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         //String placeStr = sh.makeServiceCall("https://maps.googleapis.com/maps/api/place/details/json?placeid="+place.getID()+"&key="+API_KEY+"");
                         String placeStr = sh.makeServiceCall(PLACES_API_BASE + "/details/json?placeid=" + place.getID() + "&key=" + API_KEY + "");
                         JSONObject jsonObj1 = new JSONObject(placeStr);
-                       // statusCode = jsonObj1.getString("Status");
-                      //  System.out.println("Status: " +statusCode);
+                        // statusCode = jsonObj1.getString("Status");
+                        //  System.out.println("Status: " +statusCode);
 
-                        place.setDescription(jsonObj1.getJSONObject("result").getJSONArray("reviews").getJSONObject(0).getString("text").split("\n")[0]);
-                        place.setName(object.getString("name"));
+                        if (jsonObj1.getJSONObject("result").has("reviews")) {
+                            place.setDescription(jsonObj1.getJSONObject("result").getJSONArray("reviews").getJSONObject(0).getString("text").split("\n")[0]);
+                        } else {
+                            place.setDescription("Not Available!");
+                        }
+                            place.setName(object.getString("name"));
                         place.setCity(city);
                         JSONObject geometry = object.getJSONObject("geometry");
                         JSONObject location = geometry.getJSONObject("location");
                         place.setLat(location.getDouble("lat"));
                         place.setLng(location.getDouble("lng"));
-                        JSONArray photos = object.getJSONArray("photos");
-                        JSONObject photoReferenceUrl = photos.getJSONObject(0);
-                        photoReference = photoReferenceUrl.getString("photo_reference");
-//                        String IMAGE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1000&photoreference="+photoReference+"&sensor=false&key="+ API_KEY +"";
-                        String IMAGE_URL = PLACES_API_BASE + "/photo?maxwidth=1000&photoreference=" + photoReference + "&sensor=false&key=" + API_KEY + "";
+                        String IMAGE_URL;
+                        if (object.has("photos")){
+                            JSONArray photos = object.getJSONArray("photos");
+                            JSONObject photoReferenceUrl = photos.getJSONObject(0);
+                            photoReference = photoReferenceUrl.getString("photo_reference");
+                            IMAGE_URL = PLACES_API_BASE + "/photo?maxwidth=1000&photoreference=" + photoReference + "&sensor=false&key=" + API_KEY + "";
 
-                        System.out.println(IMAGE_URL);
+                        } else {
+                            IMAGE_URL = "http://leeford.in/wp-content/uploads/2017/09/image-not-found.jpg";
+
+                        }
+
                         place.setImgURL(IMAGE_URL);
                         place.setSelected(false);
                         if (!placesList.contains(place))
@@ -513,19 +462,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     runOnUiThread(new Runnable() {
                         @Override
 
-                    public void run() {
+                        public void run() {
                             /*Toast.makeText(getApplicationContext(),
                                    "Json parsing error: " + e.getMessage(),
                                     Toast.LENGTH_LONG)
                                    .show();*/
                             System.out.println("Exception!!");
-                    isException = true;
+                            isException = true;
 
                         }
                     });
 
                 } catch (GooglePlacesException e) {
-                        isException = true;
+                    isException = true;
 
                 }
 
@@ -568,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
     }
-/* Getting the location using Latitude and Longitude */
+    /* Getting the location using Latitude and Longitude */
     public LatLng getLocationFromAddress(Context context, String strAddress) {
 
         Geocoder coder = new Geocoder(context);
