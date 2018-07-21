@@ -21,9 +21,7 @@ public class ConnectionFactory {
         try{
             //i thin
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            //Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-           // connection = DriverManager.getConnection("jdbc:sqlserver://wayfarerapp.database.windows.net:1433;database=Wayfarer","wayfarer@wayfarerapp","Tiger@1998");
-            connection = DriverManager.getConnection("jdbc:sqlserver://wayfarerapp.database.windows.net:1433/Wayfarer;","wayfarer@wayfarerapp","Tiger@1998");
+            connection = DriverManager.getConnection("jdbc:jtds:sqlserver://wayfarerapp.database.windows.net:1433/Wayfarer;","wayfarer@wayfarerapp","Tiger@1998");
             System.out.println("Connected");
         } catch (Exception e){
             System.out.println("Exception: " + e.getMessage());

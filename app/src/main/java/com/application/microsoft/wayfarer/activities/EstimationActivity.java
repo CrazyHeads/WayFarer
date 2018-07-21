@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Set;
 
+
+
 /*Estimating the total cost of the selected places using Public Transit */
 
 public class EstimationActivity extends AppCompatActivity {
@@ -302,14 +304,17 @@ public class EstimationActivity extends AppCompatActivity {
             Statement stmt = null;
             try {
                 con = ConnectionFactory.getConnection();
-
+                System.out.print("Innnn");
                 if (con == null) {
                     flag = "Error in connection with SQL server";
                 }else{
-
+                    System.out.print("In Save");
                     sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                     String userID = sharedPreferences.getString("UserID","");
-                    String query = "insert into trips(userId,places,city) values("+userID+", '"+new Gson().toJson(placesList)+"', '"+placesList.get(0).getCity()+"');";
+                    java.util.Date date = new java.util.Date();
+                    System.out.print(date);
+                    String query = "insert into trips(userId,places,city,madeOn) values("+userID+", '"+new Gson().toJson(placesList)+"', '"+placesList.get(0).getCity()+"', '"+date.toString()+"');";
+                    System.out.print(query);
                     stmt = con.createStatement();
                     int flag = stmt.executeUpdate(query);
                     if (flag < 1) {
@@ -329,12 +334,12 @@ public class EstimationActivity extends AppCompatActivity {
 
             } finally {
 
-                try {
-                    stmt.close();
-                    con.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+//                try {
+////                    stmt.close();
+////                    con.close();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
             }
 
             return flag;

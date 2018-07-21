@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         LoginActivity.DoLogin doLogin = new LoginActivity.DoLogin();
         doLogin.execute();
     }
-/* Checking whether login is sucessful or not */
+    /* Checking whether login is sucessful or not */
     public void register() {
         intilize();
         if(!validate()) {
@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
             onLoginSuccess();
         }
     }
-/* If login is sucessful,then user will be directed to WelcomeActivity which in turn will be directed to MenuActivity*/ 
+    /* If login is sucessful,then user will be directed to WelcomeActivity which in turn will be directed to MenuActivity*/
     public void onLoginSuccess() {
         Intent myIntent = new Intent(LoginActivity.this, WelcomeActivity.class);
         startActivity(myIntent);
@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         email = et_email.getText().toString().trim();
         password = et_password.getText().toString().trim();
     }
-/* Validating the email and Password */
+    /* Validating the email and Password */
     public boolean validate() {
         boolean valid = true;
 
@@ -151,7 +151,6 @@ public class LoginActivity extends AppCompatActivity {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("UserID", rs.getString("userId"));
                             editor.putString("UserName", rs.getString("name"));
-                            System.out.println(rs.getString("userId"));
                             editor.apply();
                             sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                             System.out.println(sharedPreferences.getString("Plan",""));
@@ -177,18 +176,17 @@ public class LoginActivity extends AppCompatActivity {
                     Log.e("ERROR", ex.getMessage());
 
                 } finally {
-//                    try {
-//                        rs.close();
-//                        stmt.close();
-//                        con.close();
-//                    } catch (SQLException e) {
-//                        e.printStackTrace();
-//                    }
+                    try {
+                        rs.close();
+                        stmt.close();
+                        con.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             return flag;
         }
     }
 }
-
 

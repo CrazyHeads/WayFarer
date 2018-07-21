@@ -44,15 +44,15 @@ public  class SignUpActivity extends AppCompatActivity {
     }
 
     public void done(View v) {
-       register();
-       SignUpActivity.DoSignup doSignup = new SignUpActivity.DoSignup();
+        register();
+        SignUpActivity.DoSignup doSignup = new SignUpActivity.DoSignup();
         doSignup.execute();
 
 
     }
 
     public void register() {
-         intialize();
+        intialize();
         if(!validate()){
             Toast.makeText(this, "Signup has Failed", Toast.LENGTH_SHORT).show();
 
@@ -151,39 +151,35 @@ public  class SignUpActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             try {
-                    java.sql.Connection con = ConnectionFactory.getConnection();
-                    if (con == null) {
-                        z = "Error in connection with SQL server";
-                        System.out.println("Connection Error!!");
+                java.sql.Connection con = ConnectionFactory.getConnection();
+                if (con == null) {
+                    z = "Error in connection with SQL server";
+                    System.out.println("Connection Error!!");
+                } else {
+                    String query = "select * from userDetails where email = '" + email + "' and name = '" + name + "'";
+                    Statement stmt = con.createStatement();
+                    ResultSet rs = stmt.executeQuery(query);
+                    if (rs.next()) {
+                        z = "User already exists";
+                        isSuccess = false;
+
                     } else {
-                        String query = "select * from userDetails where email = '" + email + "' and name = '" + name + "'";
-                        Statement stmt = con.createStatement();
-                        ResultSet rs = stmt.executeQuery(query);
-                        if (rs.next()) {
-                            z = "User already exists";
-                            isSuccess = false;
 
-                        } else {
-
-                            String temp = "insert into userDetails(name, email, password) values('" + name + "','" + email + "','" + password + "');";
-                            Statement s = con.createStatement();
-                            s.executeUpdate("insert into queries(query) values('"+query+"');");
-                            int flag = stmt.executeUpdate("insert into userDetails(name, email, password) values('" + name + "','" + email + "','" + password + "');");
-                            System.out.println(flag);
-                            z = "SignUp successful";
-                            isSuccess = true;
-                            System.out.println("Added user");
-                        }
+                        int flag = stmt.executeUpdate("insert into userDetails(name, email, password) values('" + name + "','" + email + "','" + password + "');");
+                        System.out.println(flag);
+                        z = "SignUp successful";
+                        isSuccess = true;
+                        System.out.println("Added user");
                     }
-                } catch (Exception ex) {
-                    isSuccess = false;
-                    z = "Exceptions";
-                    Log.e("ERROR", ex.getMessage());
-
                 }
+            } catch (Exception ex) {
+                isSuccess = false;
+                z = "Exceptions";
+                Log.e("ERROR", ex.getMessage());
+
+            }
 
             return z;
         }
     }
 }
-
