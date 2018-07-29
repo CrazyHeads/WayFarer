@@ -50,18 +50,18 @@
     <RelativeLayout
         android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
-        android:layout_height="364dp"
+        android:layout_height="349dp"
         android:layout_above="@id/autoCompleteText"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/app_bar"
         android:layout_marginBottom="10sp"
-        android:layout_marginTop="32dp">
+        android:layout_marginTop="47dp">
 
         <ListView
             android:id="@+id/listView"
             android:layout_width="fill_parent"
-            android:layout_height="344dp"
+            android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"

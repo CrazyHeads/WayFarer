@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.GradientDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -29,21 +30,29 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Filter;
+import com.application.microsoft.wayfarer.R;
 
 
 
 import com.application.microsoft.wayfarer.R;
 import com.application.microsoft.wayfarer.adapters.ListViewAdapter;
+import com.application.microsoft.wayfarer.adapters.TransparentProgressDialog;
 import com.application.microsoft.wayfarer.exception.GooglePlacesException;
 import com.application.microsoft.wayfarer.handlers.HttpHandler;
 import com.application.microsoft.wayfarer.adapters.CitiesAutoCompleteAdapter;
 import com.application.microsoft.wayfarer.models.Place;
 import com.application.microsoft.wayfarer.utils.CityAPI;
+import com.application.microsoft.wayfarer.utils.GifImageView;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,7 +71,7 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private String TAG = MainActivity.class.getSimpleName();
-    private ProgressDialog pDialog;
+    private TransparentProgressDialog pDialog;
     private ListView listView;
     private ListViewAdapter listAdapter;
     private int i = 0;
@@ -277,7 +286,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             // Extract the Place descriptions from the results
             resultList = new ArrayList(predsJsonArray.length());
             for (int i = 0; i < predsJsonArray.length(); i++) {
-                resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
+                String place = predsJsonArray.getJSONObject(i).getString("description");
+                if (place.contains(city.split(",")[0]))
+                    resultList.add(place);
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Cannot process JSON results", e);
@@ -379,13 +390,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @SuppressLint("StaticFieldLeak")
 
     private class GetPlaces extends AsyncTask<Void, Void, Void> {
-        @Override
+
+          @SuppressLint("SetTextI18n")
+          @Override
         protected void onPreExecute() {
-            super.onPreExecute();
-            pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Please wait...");
-            pDialog.setCancelable(false);
-            pDialog.show();
+              LayoutInflater li = LayoutInflater.from(mContext);
+              @SuppressLint("InflateParams") View dialogView = li.inflate(R.layout.progress_diaglog, null);
+              final ImageView imgView = (ImageView) dialogView.findViewById(R.id.imageView);
+              Glide.with(MainActivity.this).load(R.drawable.search_places).into(new GlideDrawableImageViewTarget(imgView));
+              TextView tv = (TextView) dialogView.findViewById(R.id.textView);
+              tv.setText("Searching for Places of Interests....");
+              pDialog = new TransparentProgressDialog(MainActivity.this, R.drawable.search_places);
+              for(int i = 0; i < 1000; i++);
+//              Ion.with(imgView).load("https://cdn.dribbble.com/users/127072/screenshots/1582404/pin-eye2.gif");
+              pDialog.setContentView(dialogView);
+//              pDialog.setMessage("Please wait...");
+//            pDialog.setCancelable(false);
+              pDialog.show();
         }
         /*  Getting  the places data from url */
 

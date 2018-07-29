@@ -1,6 +1,7 @@
 package com.application.microsoft.wayfarer.activities;
 
 //import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +12,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,10 +22,13 @@ import com.application.microsoft.wayfarer.R;
 import com.application.microsoft.wayfarer.TSPEngine.TSPEngine;
 import com.application.microsoft.wayfarer.adapters.PlaceAdapter;
 import com.application.microsoft.wayfarer.adapters.RecyclerViewAdapter;
+import com.application.microsoft.wayfarer.adapters.TransparentProgressDialog;
 import com.application.microsoft.wayfarer.handlers.HttpHandler;
 import com.application.microsoft.wayfarer.interfaces.OnStartDragListener;
 import com.application.microsoft.wayfarer.models.Place;
 import com.application.microsoft.wayfarer.utils.SimpleItemTouchHelperCallback;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -106,6 +112,7 @@ public class PlanActivity extends AppCompatActivity implements OnStartDragListen
         rvPlaceItems.setItemAnimator(new DefaultItemAnimator());
 
         placeAdapter = new PlaceAdapter(optimizedLocationListDistance);
+//        optimizedLocationListDistance.add(optimizedLocationListDistance.size(), optimizedLocationListDistance.get(0));
         rvPlaceItems.setAdapter(placeAdapter);
 
 
@@ -174,6 +181,7 @@ public class PlanActivity extends AppCompatActivity implements OnStartDragListen
             optimizedLocationListDistance.add(selectedPlaces.get(pointOrderByDistance.get(i)));
             System.out.println("Hey" + pointOrderByDistance.get(i) + selectedPlaces.get(pointOrderByDistance.get(i)).getName());
         }
+        optimizedLocationListDistance.add(selectedPlaces.get(pointOrderByDistance.get(0)));
 
     }
 
@@ -194,21 +202,34 @@ public class PlanActivity extends AppCompatActivity implements OnStartDragListen
     }
 
     private class Distance extends AsyncTask<String, Void, Void> {
-        ProgressDialog pDialog;
+        TransparentProgressDialog pDialog;
+        @SuppressLint("SetTextI18n")
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            // Showing progress dialog
-            pDialog = new ProgressDialog(PlanActivity.this);
-            pDialog.setMessage("Please wait...");
-            pDialog.setCancelable(false);
+//            // Showing progress dialog
+//            pDialog = new ProgressDialog(PlanActivity.this);
+//            pDialog.setMessage("Please wait...");
+//            pDialog.setCancelable(false);
+//            pDialog.show();
+            LayoutInflater li = LayoutInflater.from(PlanActivity.this);
+            @SuppressLint("InflateParams") View dialogView = li.inflate(R.layout.progress_diaglog, null);
+            final ImageView imgView = (ImageView) dialogView.findViewById(R.id.imageView);
+            Glide.with(PlanActivity.this).load(R.drawable.plan).into(new GlideDrawableImageViewTarget(imgView));
+            TextView tv = (TextView) dialogView.findViewById(R.id.textView);
+            tv.setText("Finding a optimized plan......");
+            pDialog = new TransparentProgressDialog(PlanActivity.this, R.drawable.search_places);
+            for(int i = 0; i < 1000; i++);
+//              Ion.with(imgView).load("https://cdn.dribbble.com/users/127072/screenshots/1582404/pin-eye2.gif");
+            pDialog.setContentView(dialogView);
+//              pDialog.setMessage("Please wait...");
+//            pDialog.setCancelable(false);
             pDialog.show();
 
         }
 
         @Override
         protected Void doInBackground(String... strings) {
-
             mTspEng = new TSPEngine();
             numberOfLocations = selectedPlaces.size();
             mInputMatrixForTspDistance = new int[numberOfLocations][numberOfLocations];

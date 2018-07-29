@@ -1,5 +1,6 @@
 package com.application.microsoft.wayfarer.activities;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,20 +10,25 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.application.microsoft.wayfarer.R;
 import com.application.microsoft.wayfarer.adapters.RoutesViewAdapter;
+import com.application.microsoft.wayfarer.adapters.TransparentProgressDialog;
 import com.application.microsoft.wayfarer.handlers.HttpHandler;
 import com.application.microsoft.wayfarer.models.Place;
 import com.application.microsoft.wayfarer.models.Route;
 import com.application.microsoft.wayfarer.models.Transit;
 import com.application.microsoft.wayfarer.utils.ConnectionFactory;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -52,7 +58,7 @@ public class EstimationActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     TextView details;
     ArrayList<Place> placesList;
-    private ProgressDialog pDialog;
+    private TransparentProgressDialog pDialog;
     double totalFare = 0.0;
     private ArrayList<String> tripDetails;
 
@@ -100,12 +106,26 @@ public class EstimationActivity extends AppCompatActivity {
         String url;
         Transit transit = new Transit();
         /* Displaying the please wait dialog box until the data is displayed*/
+        @SuppressLint("SetTextI18n")
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(EstimationActivity.this);
-            pDialog.setMessage("Please wait...");
-            pDialog.setCancelable(false);
+//            pDialog = new ProgressDialog(EstimationActivity.this);
+//            pDialog.setMessage("Please wait...");
+//            pDialog.setCancelable(false);
+//            pDialog.show();
+            LayoutInflater li = LayoutInflater.from(EstimationActivity.this);
+            @SuppressLint("InflateParams") View dialogView = li.inflate(R.layout.progress_diaglog, null);
+            final ImageView imgView = (ImageView) dialogView.findViewById(R.id.imageView);
+            Glide.with(EstimationActivity.this).load(R.drawable.route).into(new GlideDrawableImageViewTarget(imgView));
+            TextView tv = (TextView) dialogView.findViewById(R.id.textView);
+            tv.setText("Finding the mode of transport ...");
+            pDialog = new TransparentProgressDialog(EstimationActivity.this, R.drawable.search_places);
+            for(int i = 0; i < 1000; i++);
+//              Ion.with(imgView).load("https://cdn.dribbble.com/users/127072/screenshots/1582404/pin-eye2.gif");
+            pDialog.setContentView(dialogView);
+//              pDialog.setMessage("Please wait...");
+//            pDialog.setCancelable(false);
             pDialog.show();
         }
 
@@ -124,10 +144,12 @@ public class EstimationActivity extends AppCompatActivity {
         protected Void doInBackground(String... strings) {
 
             for (int k = 0; k + 2 <= placesList.size(); k++) {
+                sb.append("=====================================================\n\n");
                 Route route = new Route();
                 url = createUrl(placesList.get(k).getLat() +"," + placesList.get(k).getLng(), placesList.get(k+1).getLat() + "," + placesList.get(k+1).getLng());
                 System.out.println(placesList.get(k).getName()+" "+ placesList.get(k+1).getName());
                 route.setSource(placesList.get(k).getName());
+                sb.append(placesList.get(k).getName() + "\n");
                 route.setDestination(placesList.get(k+1).getName());
                 HttpHandler sh = new HttpHandler();
                 String jsonStr = sh.makeServiceCall(url);
@@ -200,7 +222,7 @@ public class EstimationActivity extends AppCompatActivity {
             sb.append("Transit Number " +transit.getTransitNumber());
             sb.append("\n");
             sb.append("Ac Bus Fare " + calculateACBusFare(Double.parseDouble(transit.getDistance().replace("km", " ").trim())) + "\n");
-            sb.append("Ordinary Bus Fare " + fare);
+            sb.append("Ordinary Bus Fare " + fare + "\n");
             return;
         }
         public void printMetroDetails(double fare) {

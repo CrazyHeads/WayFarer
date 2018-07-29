@@ -1,5 +1,6 @@
 package com.application.microsoft.wayfarer.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.application.microsoft.wayfarer.R;
 import com.application.microsoft.wayfarer.utils.CityAPI;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CitiesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
 
@@ -76,6 +78,7 @@ public class CitiesAutoCompleteAdapter extends ArrayAdapter<String> implements F
         return filter;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
@@ -84,7 +87,7 @@ public class CitiesAutoCompleteAdapter extends ArrayAdapter<String> implements F
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (position != (resultList.size() - 1))
-            view = inflater.inflate(R.layout.autocomplete_list_item, null);
+            view = Objects.requireNonNull(inflater).inflate(R.layout.autocomplete_list_item, null);
 
         //}
         //else {
