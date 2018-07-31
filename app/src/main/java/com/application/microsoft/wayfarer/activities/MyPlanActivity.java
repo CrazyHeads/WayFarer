@@ -181,7 +181,7 @@ public class MyPlanActivity extends Activity {
                     flag = "Error in connection with SQL server";
                 } else {
                     String query = "select planId,places,city,madeOn from trips where userId = '" + sharedPreferences.getString("UserID", "") + "';";
-                    System.out.println(query);
+                    System.out.println("MyPlans" + query);
                     Statement stmt = con.createStatement();
                     ResultSet rs = stmt.executeQuery(query);
                     boolean flag = false;

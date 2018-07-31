@@ -142,9 +142,8 @@ public class EstimationActivity extends AppCompatActivity {
         /* It invokes as soon as the PreExecute finishes executing.Here we are setting the Source and Destination from the PlacesList and displaying the respective Bus Transit Fare*/
         @Override
         protected Void doInBackground(String... strings) {
-
+            placesList.add(placesList.get(0));
             for (int k = 0; k + 2 <= placesList.size(); k++) {
-                sb.append("=====================================================\n\n");
                 Route route = new Route();
                 url = createUrl(placesList.get(k).getLat() +"," + placesList.get(k).getLng(), placesList.get(k+1).getLat() + "," + placesList.get(k+1).getLng());
                 System.out.println(placesList.get(k).getName()+" "+ placesList.get(k+1).getName());
