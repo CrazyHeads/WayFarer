@@ -200,9 +200,10 @@ public class EstimationActivity extends AppCompatActivity {
                 routes.add(route);
                 route.setFare(totalFare);
                 System.out.println("Total Fare " +totalFare);
+                totalFare = Math.ceil(totalFare);
 
             }
-            sb.append("\n\nTOTAL FARE   " +totalFare + "\n");
+            sb.append("\n\nTOTAL FARE Rs: " +totalFare + "\n");
 
 
 
@@ -333,12 +334,15 @@ public class EstimationActivity extends AppCompatActivity {
                     System.out.print("In Save");
                     sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
                     String userID = sharedPreferences.getString("UserID","");
-                    java.util.Date date = new java.util.Date();
-                    System.out.print(date);
-                    String query = "insert into trips(userId,places,city,madeOn) values("+userID+", '"+new Gson().toJson(placesList)+"', '"+placesList.get(0).getCity()+"', '"+date.toString()+"');";
+                   // System.out.println("Us")
+//                    java.util.Date date = new java.util.Date();
+//                    System.out.print(date);
+                   // String query = "insert into trips(userId,places,city,madeOn) values("+userID+", '"+new Gson().toJson(placesList)+"', '"+placesList.get(0).getCity()+"', '"+date.toString()+"');";
+                    String query = "insert into trips(userId,places,city) values("+userID+", '"+new Gson().toJson(placesList)+"', '"+placesList.get(0).getCity()+"');";
                     System.out.print(query);
                     stmt = con.createStatement();
                     int flag = stmt.executeUpdate(query);
+                    System.out.println("FLAG"+flag);
                     if (flag < 1) {
                         System.out.println("Plan not Added!");
                     } else {
