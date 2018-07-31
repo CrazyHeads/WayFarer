@@ -397,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
               LayoutInflater li = LayoutInflater.from(mContext);
               @SuppressLint("InflateParams") View dialogView = li.inflate(R.layout.progress_diaglog, null);
               final ImageView imgView = (ImageView) dialogView.findViewById(R.id.imageView);
-              Glide.with(MainActivity.this).load(R.drawable.search_places).into(new GlideDrawableImageViewTarget(imgView));
+              Glide.with(MainActivity.this).load(R.drawable.route).into(new GlideDrawableImageViewTarget(imgView));
               TextView tv = (TextView) dialogView.findViewById(R.id.textView);
               tv.setText("Searching for Places of Interests....");
               pDialog = new TransparentProgressDialog(MainActivity.this, R.drawable.search_places);

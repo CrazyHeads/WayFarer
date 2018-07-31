@@ -215,7 +215,7 @@ public class PlanActivity extends AppCompatActivity implements OnStartDragListen
             LayoutInflater li = LayoutInflater.from(PlanActivity.this);
             @SuppressLint("InflateParams") View dialogView = li.inflate(R.layout.progress_diaglog, null);
             final ImageView imgView = (ImageView) dialogView.findViewById(R.id.imageView);
-            Glide.with(PlanActivity.this).load(R.drawable.plan).into(new GlideDrawableImageViewTarget(imgView));
+            Glide.with(PlanActivity.this).load(R.drawable.route).into(new GlideDrawableImageViewTarget(imgView));
             TextView tv = (TextView) dialogView.findViewById(R.id.textView);
             tv.setText("Finding a optimized plan......");
             pDialog = new TransparentProgressDialog(PlanActivity.this, R.drawable.search_places);
