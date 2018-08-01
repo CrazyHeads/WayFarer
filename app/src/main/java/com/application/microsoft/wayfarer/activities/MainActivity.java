@@ -4,10 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.GradientDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -17,8 +15,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,27 +28,23 @@ import android.widget.EditText;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Filter;
 import com.application.microsoft.wayfarer.R;
 
 
-
-import com.application.microsoft.wayfarer.R;
 import com.application.microsoft.wayfarer.adapters.ListViewAdapter;
 import com.application.microsoft.wayfarer.adapters.TransparentProgressDialog;
 import com.application.microsoft.wayfarer.exception.GooglePlacesException;
 import com.application.microsoft.wayfarer.handlers.HttpHandler;
 import com.application.microsoft.wayfarer.adapters.CitiesAutoCompleteAdapter;
 import com.application.microsoft.wayfarer.models.Place;
-import com.application.microsoft.wayfarer.utils.CityAPI;
-import com.application.microsoft.wayfarer.utils.GifImageView;
+import com.application.microsoft.wayfarer.utils.ConnectionFactory;
+import com.application.microsoft.wayfarer.utils.URL;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,8 +54,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -81,26 +75,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
-    private static  ArrayList<String> listOfKeys = new ArrayList<String>(Arrays.asList(
-            "AIzaSyB_MKmWEjS9IuAxSvl0-H7145EoWdwlWP0",
-            "AIzaSyBG4_iI8Ukq0eoBrEZxR2sFDtPCH09kkL8",
-            "AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE",
-            "AIzaSyDpTC7gSRLeCq3dbjBeOgasnCqvfdNhkT0",
-            "AIzaSyCi9z5JsxnkjNLUimfpsQj-43yM653a_Dg",
-            "AIzaSyBWpF2dQ64Xw7cYevkEkHf6dY536VEFZAA",
-            "AIzaSyB6382PsNOmIiD70laaSCIYJNb7pUkmkH4",
-            "AIzaSyBnq6HpzvkR4J2X9d0dgC56fxsHrsPs1rM",
-            "AIzaSyANKg3XWWULaLTGbsO2A5krC7tDoQgJ8RA",
-            "AIzaSyCt6VuMs_JrUqAcFwn70UtZp4pfLntUivI",
-            "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8",
-            "AIzaSyDYp78kpJERRjh6tfAo47fVuA28hdiw8Jw",
-            "AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A",
-            "AIzaSyD5kgC_dBf_jOo-p1Is3YIQ-xIUgWeKWRw",
-            "AIzaSyAlZniTEl_tErWaqg5irbIxSkim3BZQDRU",
-            "AIzaSyBbAugBoZdYCVHYBOSL8Gtd76G2a_V4JPo",
-            "AIzaSyCEBCEvu9Z0Jhzm_WLdgkpUCZdSkcHmrXg"
-
-    ));
+//    private static  ArrayList<String> listOfKeys = new ArrayList<String>(Arrays.asList(
+//            "AIzaSyB_MKmWEjS9IuAxSvl0-H7145EoWdwlWP0",
+////            "AIzaSyBG4_iI8Ukq0eoBrEZxR2sFDtPCH09kkL8",
+////            "AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE",
+////            "AIzaSyDpTC7gSRLeCq3dbjBeOgasnCqvfdNhkT0",
+////            "AIzaSyCi9z5JsxnkjNLUimfpsQj-43yM653a_Dg",
+////            "AIzaSyBWpF2dQ64Xw7cYevkEkHf6dY536VEFZAA",
+////            "AIzaSyB6382PsNOmIiD70laaSCIYJNb7pUkmkH4",
+////            "AIzaSyBnq6HpzvkR4J2X9d0dgC56fxsHrsPs1rM",
+////            "AIzaSyANKg3XWWULaLTGbsO2A5krC7tDoQgJ8RA",
+////            "AIzaSyCt6VuMs_JrUqAcFwn70UtZp4pfLntUivI",
+////            "AIzaSyDUUBHfckNZX5kcVYv8bPXnaCaYLjxvX-8",
+////            "AIzaSyDYp78kpJERRjh6tfAo47fVuA28hdiw8Jw",
+////            "AIzaSyDG7S40R4SgClQX9Zbm59W9ctYocGEWR4A",
+////            "AIzaSyD5kgC_dBf_jOo-p1Is3YIQ-xIUgWeKWRw",
+////            "AIzaSyAlZniTEl_tErWaqg5irbIxSkim3BZQDRU",
+////            "AIzaSyBbAugBoZdYCVHYBOSL8Gtd76G2a_V4JPo",
+////            "AIzaSyCEBCEvu9Z0Jhzm_WLdgkpUCZdSkcHmrXg"
+//
+//    ));
+    private String city_json = "";
     // listOfKeys.add("AIzaSyCiaLGlljuLkLombPcv0RGXw_Tpit9KbbE");
     private static String API_KEY = "AIzaSyDkM0-WNudAA2S03EJDzC7xOfCCfo8jgDM";
     // private  static String API_KEY =  "AIzaSyDpTC7gSRLeCq3dbjBeOgasnCqvfdNhkT0"; //"AIzaSyAtmnpdgVvHyYyoILWHGzwqt_ePtrGmalk";
@@ -117,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Handler mThreadHandler;
     private GooglePlacesAutocompleteAdapter mAdapter;
     private HandlerThread mHandlerThread;
-
 
     public ArrayList<Place> getPlacesList() {
         return placesList;
@@ -159,15 +153,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if(index >= 0) {
                 hideKeyboard(MainActivity.this);
                 placesList.clear();
-                AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteText) ;
+                @SuppressLint("CutPasteId") AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteText) ;
                 autoCompleteTextView.setVisibility(View.VISIBLE);
                 Button button =(Button) findViewById(R.id.button);
                 button.setVisibility(View.VISIBLE);
-                Button button1 =(Button) findViewById(R.id.plus_button);
+                @SuppressLint("CutPasteId") Button button1 =(Button) findViewById(R.id.plus_button);
                 button1.setVisibility(View.VISIBLE);
                 PLACES_OF_INTEREST_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + city + "+point+of+interest&language=en&key=" + API_KEY + "";
 //                listView.clearAnimation();
 //                listAdapter.clear();
+                new GetCityInfo().execute();
+                city_json = "";
                 new GetPlaces().execute();
                 listAdapter.addAll(placesList);
                 listView = (ListView) findViewById(R.id.listView);
@@ -194,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     mContext);
             alertDialogBuilder.setTitle("Add Location");
             alertDialogBuilder.setView(dialogView);
-            final EditText userInput = (EditText) dialogView.findViewById(R.id.autoCompleteTextView);
+            @SuppressLint("CutPasteId") final EditText userInput = (EditText) dialogView.findViewById(R.id.autoCompleteTextView);
             AutoCompleteTextView actv1 = (AutoCompleteTextView) dialogView.findViewById(R.id.autoCompleteTextView);
             actv1.setAdapter(new GooglePlacesAutocompleteAdapter(mContext, R.layout.list_item));
             alertDialogBuilder
@@ -228,8 +224,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         });
 
-
-
     }
 
     public static void hideKeyboard(Activity activity) {
@@ -255,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             sb.append("&components=locality:" + city.toLowerCase());
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
 
-            URL url = new URL(sb.toString());
+            java.net.URL url = new java.net.URL(sb.toString());
             conn = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
 
@@ -387,6 +381,146 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
+    public class GetCityInfo extends AsyncTask<Void, Void, Void> {
+        String flag = "";
+        Boolean isSuccess = false;
+
+        @Override
+        protected void onPreExecute() {
+            //            LayoutInflater li = LayoutInflater.from(mContext);
+//            @SuppressLint("InflateParams") View dialogView = li.inflate(R.layout.progress_diaglog, null);
+//            final ImageView imgView = (ImageView) dialogView.findViewById(R.id.imageView);
+//            Glide.with(MainActivity.this).load(R.drawable.route).into(new GlideDrawableImageViewTarget(imgView));
+//            TextView tv = (TextView) dialogView.findViewById(R.id.textView);
+//            tv.setText("Searching for Places of Interests....");
+//            pDialog = new TransparentProgressDialog(MainActivity.this, R.drawable.search_places);
+//            for(int i = 0; i < 1000; i++);
+////              Ion.with(imgView).load("https://cdn.dribbble.com/users/127072/screenshots/1582404/pin-eye2.gif");
+//            pDialog.setContentView(dialogView);
+////              pDialog.setMessage("Please wait...");
+////            pDialog.setCancelable(false);
+//            pDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Void r) {
+            super.onPostExecute(r);
+            System.out.println("PostExecute!!");
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+           }
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                Connection con = ConnectionFactory.getConnection();
+                sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
+                if (con == null) {
+                    flag = "Error in connection with SQL server";
+                } else {
+                    String query = "select * from cities where place = '" + city + "';";
+                    System.out.println("MyPlans" + query);
+                    Statement stmt = con.createStatement();
+                    ResultSet rs = stmt.executeQuery(query);
+                    if (rs.next()) {
+                        System.out.print(rs.getString("json"));
+                        city_json = rs.getString("json");
+                    }
+                    rs.close();
+                    stmt.close();
+                    con.close();
+                }
+
+
+            } catch (Exception ex) {
+                isSuccess = false;
+                flag = "Exceptions";
+                Log.e("ERROR", ex.getMessage());
+
+            }
+
+            return null;
+        }
+    }
+
+    public class PutCityInfo extends AsyncTask<Void, Void, Void> {
+        String flag = "";
+        Boolean isSuccess = false;
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onPreExecute() {
+//            LayoutInflater li = LayoutInflater.from(mContext);
+//            @SuppressLint("InflateParams") View dialogView = li.inflate(R.layout.progress_diaglog, null);
+//            final ImageView imgView = (ImageView) dialogView.findViewById(R.id.imageView);
+//            Glide.with(MainActivity.this).load(R.drawable.route).into(new GlideDrawableImageViewTarget(imgView));
+//            TextView tv = (TextView) dialogView.findViewById(R.id.textView);
+//            tv.setText("Searching for Places of Interests....");
+//            pDialog = new TransparentProgressDialog(MainActivity.this, R.drawable.search_places);
+//            for(int i = 0; i < 1000; i++);
+////              Ion.with(imgView).load("https://cdn.dribbble.com/users/127072/screenshots/1582404/pin-eye2.gif");
+//            pDialog.setContentView(dialogView);
+////              pDialog.setMessage("Please wait...");
+////            pDialog.setCancelable(false);
+//            pDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            System.out.println("PostExecute!!");
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+        }
+
+
+        @Override
+
+        protected Void doInBackground(Void... arg0) {
+            try {
+                Connection con = ConnectionFactory.getConnection();
+                sharedPreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+                Statement stmt = null;
+                if (con == null) {
+                    flag = "Error in connection with SQL server";
+                } else {
+                    String query = "select * from cities where place = '" + city + "';";
+                    stmt = con.createStatement();
+                    ResultSet rs = stmt.executeQuery(query);
+                    if (rs.next()) {
+                        rs.close();
+                        stmt.close();
+                        con.close();
+                        return null;
+                    }
+                    query = "insert into cities(place, json) values('" + city + "', '"+city_json+"');";
+                    stmt = con.createStatement();
+                    int flag = stmt.executeUpdate(query);
+                    System.out.println("FLAG"+flag);
+                    if (flag < 1) {
+                        System.out.println("City not Added!");
+                    } else {
+                        System.out.println("City Added!!");
+                    }
+                    rs.close();
+                    stmt.close();
+                    con.close();
+                }
+
+
+            } catch (Exception ex) {
+                isSuccess = false;
+                flag = "Exceptions";
+                Log.e("ERROR", ex.getMessage());
+
+            }
+
+            return null;
+        }
+    }
+
     @SuppressLint("StaticFieldLeak")
 
     private class GetPlaces extends AsyncTask<Void, Void, Void> {
@@ -413,11 +547,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected Void doInBackground(Void... arg0) {
             HttpHandler sh = new HttpHandler();
-            String jsonStr = sh.makeServiceCall(PLACES_OF_INTEREST_URL);
+            String jsonStr ="";
+            if (city_json == "") {
+                System.out.println(PLACES_OF_INTEREST_URL);
+                jsonStr = sh.makeServiceCall(URL.URLify(PLACES_OF_INTEREST_URL));
+                new PutCityInfo().execute();
+            } else {
+                jsonStr = city_json;
+                System.out.println("++++++" + jsonStr + "========" + city_json + "++++++++");
+            }
+            city_json = jsonStr;
             Log.e(TAG, "Response from THE PLACES_OF_INTEREST_URL: " + jsonStr);
             if (jsonStr != null) {
                 try {
-                    System.out.println(PLACES_OF_INTEREST_URL);
+                    System.out.println(com.application.microsoft.wayfarer.utils.URL.URLify( PLACES_OF_INTEREST_URL));
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     String statusCode = jsonObj.getString("status");
                     System.out.println("Status: " +statusCode);
@@ -519,21 +662,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            listAdapter.notifyDataSetChanged();
             System.out.println("PostExecute!!" +isException);
             if (pDialog.isShowing())
                 pDialog.dismiss();
-            if(isException){
-                listOfKeys.remove(0);
-                listOfKeys.add(listOfKeys.size() - 1, API_KEY);
-                API_KEY = listOfKeys.get(0);
-                System.out.println("HELLO" + API_KEY);
-                isException = false;
-                System.out.println("Entered");
-                new GetPlaces().execute();
-                placesList.clear();
-            }
-
-            listAdapter.notifyDataSetChanged();
+//            if(isException){
+//                listOfKeys.remove(0);
+//                listOfKeys.add(listOfKeys.size() - 1, API_KEY);
+//                API_KEY = listOfKeys.get(0);
+//                System.out.println("HELLO" + API_KEY);
+//                isException = false;
+//                System.out.println("Entered");
+//                new GetPlaces().execute();
+//                placesList.clear();
+//            }
 
         }
 
